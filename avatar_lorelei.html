@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FNEX Avatar - Lorelei</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #f6f7f8; padding: 16px; }
+.wrap { max-width: 420px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 4px; color: #0f172a; }
+.subtitle { font-size: 12px; color: #94a3b8; text-align: center; margin-bottom: 20px; }
+
+/* 프리뷰 */
+.preview-area { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
+.avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #e2e8f0; overflow: hidden; background: #f1f5f9; position: relative; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; background: #f8fafc; }
+.btn-row { display: flex; gap: 8px; }
+.random-btn { padding: 8px 20px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; transition: all 0.15s; }
+.random-btn:hover { border-color: #025a93; color: #025a93; }
+
+/* 탭 */
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { padding: 7px 14px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
+.tab.active { background: #025a93; color: #fff; border-color: #025a93; }
+
+/* 패널 */
+.panel { display: none; }
+.panel.active { display: block; }
+.section-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 12px 0 8px; font-weight: 600; }
+
+/* 옵션 그리드 */
+.opt-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.opt-img { width: 60px; height: 60px; border-radius: 12px; border: 2px solid #e2e8f0; background: #f8fafc; overflow: hidden; transition: all 0.15s; }
+.opt-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.opt-img.sel { border: 2.5px solid #025a93; background: #eff6ff; box-shadow: 0 0 0 3px rgba(2,90,147,0.15); }
+.opt-label { font-size: 10px; color: #94a3b8; font-weight: 500; text-align: center; max-width: 60px; }
+
+/* 컬러 */
+.color-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.15s; }
+.color-dot.sel { border: 2px solid #025a93; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #025a93; transform: scale(1.1); }
+
+/* 저장 */
+.save-btn { width: 100%; padding: 14px; background: #025a93; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
+.save-btn:hover { background: #0369a1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>🎨 アバター設定</h2>
+  <p class="subtitle">Lorelei スタイル</p>
+
+  <!-- 프리뷰 -->
+  <div class="preview-area">
+    <div class="avatar-frame">
+      <img id="mainAvatar" src="" alt="avatar" onload="hideLoading()"/>
+      <div class="avatar-loading" id="loadingDiv">✨</div>
+    </div>
+    <div class="btn-row">
+      <button class="random-btn" onclick="randomize()">🔀 ランダム</button>
+    </div>
+  </div>
+
+  <!-- 탭 -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('hair',this)">💇 헤어</div>
+    <div class="tab" onclick="switchTab('face',this)">👁️ 얼굴</div>
+    <div class="tab" onclick="switchTab('color',this)">🎨 색상</div>
+    <div class="tab" onclick="switchTab('acc',this)">💎 악세사리</div>
+  </div>
+
+  <!-- 헤어 패널 -->
+  <div class="panel active" id="panel-hair">
+    <div class="section-label">헤어 스타일</div>
+    <div class="opt-grid" id="hairGrid"></div>
+  </div>
+
+  <!-- 얼굴 패널 -->
+  <div class="panel" id="panel-face">
+    <div class="section-label">눈</div>
+    <div class="opt-grid" id="eyeGrid"></div>
+    <div class="section-label">눈썹</div>
+    <div class="opt-grid" id="eyebrowGrid"></div>
+    <div class="section-label">코</div>
+    <div class="opt-grid" id="noseGrid"></div>
+    <div class="section-label">입</div>
+    <div class="opt-grid" id="mouthGrid"></div>
+    <div class="section-label">얼굴형</div>
+    <div class="opt-grid" id="faceShapeGrid"></div>
+  </div>
+
+  <!-- 색상 패널 -->
+  <div class="panel" id="panel-color">
+    <div class="section-label">피부색</div>
+    <div class="color-grid" id="skinGrid"></div>
+    <div class="section-label">머리 색</div>
+    <div class="color-grid" id="hairColorGrid"></div>
+    <div class="section-label">배경색</div>
+    <div class="color-grid" id="bgGrid"></div>
+  </div>
+
+  <!-- 악세사리 패널 -->
+  <div class="panel" id="panel-acc">
+    <div class="section-label">악세사리</div>
+    <div class="opt-grid" id="accGrid"></div>
+    <div class="section-label">귀걸이</div>
+    <div class="opt-grid" id="earringGrid"></div>
+  </div>
+
+  <button class="save-btn" onclick="saveAvatar()">アバターを保存 / 아바타 저장</button>
+</div>
+
+<script>
+var BASE = 'https://api.dicebear.com/9.x/lorelei/svg';
+
+var state = {
+  hair: 'variant01',
+  eyes: 'variant01',
+  eyebrows: 'variant01',
+  nose: 'variant01',
+  mouth: 'variant01',
+  freckles: '',
+  accessories: '',
+  earrings: '',
+  skinColor: 'f2d3b1',
+  hairColor: '2c1b18',
+  backgroundColor: 'b6e3f4',
+};
+
+// Lorelei 실제 옵션값
+var HAIR = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10','variant11','variant12','variant13','variant14','variant15','variant16','variant17','variant18','variant19','variant20','variant21','variant22','variant23','variant24'];
+var EYES = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10','variant11','variant12'];
+var EYEBROWS = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10'];
+var NOSE = ['variant01','variant02','variant03','variant04','variant05','variant06'];
+var MOUTHS = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10'];
+var ACCESSORIES = ['','variant01','variant02','variant03','variant04','variant05'];
+var EARRINGS = ['','variant01','variant02','variant03','variant04','variant05','variant06'];
+
+var SKIN_COLORS = ['f2d3b1','fddbb4','edb98a','e8a87c','d4a76a','c68642','a07850','8d5524','6b3a2a','4a2912','ffcc99','ffe0bd'];
+var HAIR_COLORS = ['2c1b18','1c0d05','3d2314','6b3a2a','a0522d','c8a165','d4af37','e8d5b7','c0c0c0','808080','f5f5f5','e8748a','4a90d9','7b2d8b','2d7b4a','e8472a'];
+var BG_COLORS = ['b6e3f4','c0aede','d1d4f9','ffd5dc','ffdfbf','f0fff4','e8f4ff','fff3e0','f3e5f5','e0f7fa','fce4ec','e8f5e9','ffe4c4','e8e4f9','f0e6ff','dff5e3'];
+
+function buildUrl(over) {
+  var s = Object.assign({}, state, over||{});
+  var p = '?radius=50&size=140';
+  p += '&backgroundColor=' + s.backgroundColor;
+  p += '&skinColor=' + s.skinColor;
+  p += '&hair=' + s.hair;
+  p += '&hairColor=' + s.hairColor;
+  p += '&eyes=' + s.eyes;
+  p += '&eyebrows=' + s.eyebrows;
+  p += '&nose=' + s.nose;
+  p += '&mouth=' + s.mouth;
+  if (s.accessories) p += '&accessories=' + s.accessories + '&accessoriesProbability=100';
+  if (s.earrings) p += '&earrings=' + s.earrings + '&earringsProbability=100';
+  return BASE + p;
+}
+
+function previewUrl(over) {
+  var s = Object.assign({}, state, over||{});
+  var p = '?radius=10&size=60';
+  p += '&backgroundColor=' + s.backgroundColor;
+  p += '&skinColor=' + s.skinColor;
+  p += '&hair=' + s.hair;
+  p += '&hairColor=' + s.hairColor;
+  p += '&eyes=' + s.eyes;
+  p += '&eyebrows=' + s.eyebrows;
+  p += '&nose=' + s.nose;
+  p += '&mouth=' + s.mouth;
+  if (s.accessories) p += '&accessories=' + s.accessories + '&accessoriesProbability=100';
+  if (s.earrings) p += '&earrings=' + s.earrings + '&earringsProbability=100';
+  return BASE + p;
+}
+
+function updateMain() {
+  var img = document.getElementById('mainAvatar');
+  document.getElementById('loadingDiv').style.display = 'flex';
+  img.src = buildUrl();
+}
+
+function hideLoading() {
+  document.getElementById('loadingDiv').style.display = 'none';
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+function makeOptGrid(gridId, arr, stateKey, labelFn, overrideFn) {
+  var grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  arr.forEach(function(val, i) {
+    var over = {}; over[stateKey] = val;
+    if (overrideFn) over = overrideFn(val);
+    var div = document.createElement('div');
+    div.className = 'opt-item';
+    var imgDiv = document.createElement('div');
+    imgDiv.className = 'opt-img' + (state[stateKey]===val?' sel':'');
+    var img = document.createElement('img');
+    img.src = previewUrl(over);
+    imgDiv.appendChild(img);
+    var span = document.createElement('span');
+    span.className = 'opt-label';
+    span.textContent = labelFn ? labelFn(val, i) : (i+1)+'번';
+    div.appendChild(imgDiv);
+    div.appendChild(span);
+    div.onclick = (function(v, id, g) {
+      return function() {
+        state[stateKey] = v;
+        g.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+        id.classList.add('sel');
+        updateMain();
+      };
+    })(val, imgDiv, grid);
+    grid.appendChild(div);
+  });
+}
+
+function makeAccGrid(gridId, arr, stateKey, labelFn) {
+  var grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  arr.forEach(function(val, i) {
+    var over = {};
+    if (stateKey === 'accessories') {
+      over = { accessories: val };
+    } else {
+      over = { earrings: val };
+    }
+    var div = document.createElement('div');
+    div.className = 'opt-item';
+    var imgDiv = document.createElement('div');
+    imgDiv.className = 'opt-img' + (state[stateKey]===val?' sel':'');
+    var img = document.createElement('img');
+    img.src = previewUrl(over);
+    imgDiv.appendChild(img);
+    var span = document.createElement('span');
+    span.className = 'opt-label';
+    span.textContent = labelFn ? labelFn(val, i) : (val===''?'없음':(i)+'번');
+    div.appendChild(imgDiv);
+    div.appendChild(span);
+    div.onclick = (function(v, id, g) {
+      return function() {
+        state[stateKey] = v;
+        g.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+        id.classList.add('sel');
+        updateMain();
+      };
+    })(val, imgDiv, grid);
+    grid.appendChild(div);
+  });
+}
+
+function makeColorGrid(gridId, colors, stateKey) {
+  var grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  colors.forEach(function(c) {
+    var dot = document.createElement('div');
+    dot.className = 'color-dot' + (state[stateKey]===c?' sel':'');
+    dot.style.background = '#'+c;
+    dot.onclick = function() {
+      state[stateKey] = c;
+      grid.querySelectorAll('.color-dot').forEach(function(d){ d.classList.remove('sel'); });
+      dot.classList.add('sel');
+      updateMain();
+      renderAll();
+    };
+    grid.appendChild(dot);
+  });
+}
+
+var hairLabels = ['단발①','단발②','단발③','단발④','단발⑤','단발⑥','단발⑦','단발⑧','중단①','중단②','중단③','중단④','장발①','장발②','장발③','장발④','장발⑤','컬리①','컬리②','컬리③','묶음①','묶음②','묶음③','묶음④'];
+
+function renderAll() {
+  makeOptGrid('hairGrid', HAIR, 'hair', function(v,i){ return hairLabels[i]||((i+1)+'번'); });
+  makeOptGrid('eyeGrid', EYES, 'eyes', function(v,i){ return '눈 '+(i+1); });
+  makeOptGrid('eyebrowGrid', EYEBROWS, 'eyebrows', function(v,i){ return '눈썹 '+(i+1); });
+  makeOptGrid('noseGrid', NOSE, 'nose', function(v,i){ return '코 '+(i+1); });
+  makeOptGrid('mouthGrid', MOUTHS, 'mouth', function(v,i){ return '입 '+(i+1); });
+  makeAccGrid('accGrid', ACCESSORIES, 'accessories', function(v,i){ return v===''?'없음':'악세 '+i; });
+  makeAccGrid('earringGrid', EARRINGS, 'earrings', function(v,i){ return v===''?'없음':'귀걸이 '+i; });
+  makeColorGrid('skinGrid', SKIN_COLORS, 'skinColor');
+  makeColorGrid('hairColorGrid', HAIR_COLORS, 'hairColor');
+  makeColorGrid('bgGrid', BG_COLORS, 'backgroundColor');
+}
+
+function randomize() {
+  function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+  state.hair = pick(HAIR);
+  state.eyes = pick(EYES);
+  state.eyebrows = pick(EYEBROWS);
+  state.nose = pick(NOSE);
+  state.mouth = pick(MOUTHS);
+  state.skinColor = pick(SKIN_COLORS);
+  state.hairColor = pick(HAIR_COLORS);
+  state.backgroundColor = pick(BG_COLORS);
+  state.accessories = pick(ACCESSORIES);
+  state.earrings = pick(EARRINGS);
+  renderAll();
+  updateMain();
+}
+
+function saveAvatar() {
+  var btn = document.querySelector('.save-btn');
+  btn.textContent = '✓ 保存しました！/ 저장됐어요!';
+  btn.style.background = '#16a34a';
+  setTimeout(function() {
+    btn.textContent = 'アバターを保存 / 아바타 저장';
+    btn.style.background = '#025a93';
+  }, 2000);
+}
+
+renderAll();
+updateMain();
+</script>
+</body>
+</html>
