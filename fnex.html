@@ -13,20 +13,16 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .pulse-dot { animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
-
-/* 페이지 전환 */
-.page { display: none; position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh; background: #fff; }
-.page.active { display: block; }
-
-/* 사이드바 */
+.page { display:none;position:absolute;top:0;left:0;width:100%;min-height:100vh;background:#fff;transition:transform 0.35s ease; }
+.page.active { display:block; }
+.page.slide-up { display:block;transform:translateY(100%); }
+.page.slide-up.active { transform:translateY(0); }
 .overlay { position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.3s; }
 .overlay.open { opacity:1;pointer-events:all; }
-.sidebar { position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:201;transition:left 0.3s ease;display:flex;flex-direction:column;box-shadow:4px 0 20px rgba(0,0,0,0.2); }
-.sidebar.open { left:0; }
+.sidebar { position:fixed;bottom:-100%;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:85vh;background:#fff;z-index:201;transition:bottom 0.35s ease;display:flex;flex-direction:column;box-shadow:0 -4px 20px rgba(0,0,0,0.2);border-radius:20px 20px 0 0; }
+.sidebar.open { bottom:0; }
 .menu-item { display:flex;align-items:center;gap:16px;padding:16px;border-radius:12px;text-decoration:none;color:#1e293b;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif;transition:background 0.2s; }
 .menu-item:hover { background:#f1f5f9; }
-
-/* 카드 */
 .news-card { background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.08);border:1px solid #f1f5f9;margin-bottom:16px;padding:16px; }
 .breaking-card { background:#fff5f5;border-radius:12px;border:2px solid #ef4444;margin-bottom:16px;padding:12px;display:flex;align-items:center;justify-content:space-between; }
 .ad-card { background:linear-gradient(135deg,#1e3a8a,#025a93);border-radius:16px;margin-bottom:16px;padding:24px;display:flex;align-items:center;justify-content:space-between;min-height:130px; }
@@ -39,25 +35,102 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
 .bear-btn { display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer; }
 .bear-btn.active { background:#fff5f5;color:#dc2626;border:1px solid #fecaca; }
 .bear-btn.inactive { background:#f8fafc;color:#94a3b8;border:1px solid transparent; }
-
-/* 프로필 */
 .avatar-circle { width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;border:2px solid #e2e8f0;transition:all 0.2s; }
 .avatar-circle.selected { border:3px solid #025a93;box-shadow:0 0 0 3px rgba(2,90,147,0.2); }
 .pair-tag { display:flex;align-items:center;gap:6px;padding:6px 12px;background:#025a93;color:#fff;border-radius:999px;font-size:13px;font-weight:600; }
 .pair-tag button { background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:0; }
-.add-pair-btn { display:flex;align-items:center;gap:4px;padding:6px 12px;border:2px dashed #cbd5e1;border-radius:999px;font-size:13px;color:#94a3b8;cursor:pointer;background:none;font-family:'Inter',sans-serif;transition:all 0.2s; }
-.broker-select { width:100%;padding:12px 16px 12px 60px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;font-size:14px;outline:none;appearance:none;color:#1e293b;font-family:'Inter',sans-serif; }
-.broker-select:focus { border-color:#025a93;box-shadow:0 0 0 3px rgba(2,90,147,0.1); }
+.add-pair-btn { display:flex;align-items:center;gap:4px;padding:6px 12px;border:2px dashed #cbd5e1;border-radius:999px;font-size:13px;color:#94a3b8;cursor:pointer;background:none;font-family:'Inter',sans-serif; }
+.point-item { display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #f1f5f9;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+.point-icon { width:48px;height:48px;border-radius:12px;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; }
+
+/* 브로커 선택 팝업 */
+.broker-modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center; }
+.broker-modal-overlay.open { display:flex; }
+.broker-modal { width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;max-height:85vh;display:flex;flex-direction:column;animation:slideUp 0.3s ease; }
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+.broker-item { display:flex;align-items:center;gap:16px;padding:14px 16px;border-radius:12px;cursor:pointer;transition:background 0.15s;border:1.5px solid transparent; }
+.broker-item:hover { background:#f8fafc; }
+.broker-item.selected { background:rgba(2,90,147,0.08);border-color:rgba(2,90,147,0.2); }
+.broker-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0; }
+.broker-select-row { position:relative;margin-bottom:10px; }
+.broker-select-btn { width:100%;padding:14px 16px 14px 60px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;font-size:14px;font-family:'Inter',sans-serif;color:#1e293b;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.2s; }
+.broker-select-btn:hover { border-color:#025a93; }
+.broker-select-btn.has-value { border-color:#025a93;background:rgba(2,90,147,0.04); }
+
+/* 통화 페어 팝업 */
+.pair-modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;display:none; }
+.pair-modal-overlay.open { display:flex;align-items:flex-end;justify-content:center; }
+.pair-modal { width:100%;max-width:430px;height:90vh;background:#fff;display:flex;flex-direction:column;border-radius:20px 20px 0 0;transform:translateY(100%);transition:transform 0.35s ease; }
+.pair-modal-overlay.open .pair-modal { transform:translateY(0); }
+.pair-tab { padding:12px 4px;font-size:13px;font-weight:600;color:#64748b;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'Inter',sans-serif; }
+.pair-tab.active { color:#025a93;border-bottom-color:#025a93; }
+.pair-row { display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #f8fafc;justify-content:space-between; }
+.pair-icon { width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+.pair-add-btn { width:32px;height:32px;border-radius:50%;border:1.5px solid #e2e8f0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#94a3b8;transition:all 0.15s; }
+.pair-add-btn:hover { border-color:#025a93;color:#025a93;background:rgba(2,90,147,0.05); }
+.pair-add-btn.added { background:rgba(2,90,147,0.1);border-color:#025a93;color:#025a93; }
 </style>
 </head>
 <body>
 
-<!-- 오버레이 -->
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- 사이드바 -->
+<!-- 브로커 선택 모달 -->
+<div class="broker-modal-overlay" id="brokerModal">
+  <div class="broker-modal">
+    <div style="padding:20px 20px 12px;border-bottom:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h3 style="font-size:18px;font-weight:700;color:#0f172a">ブローカーを選択</h3>
+        <button onclick="closeBrokerModal()" style="background:none;border:none;cursor:pointer;font-size:24px;color:#94a3b8;padding:4px">×</button>
+      </div>
+      <div style="display:flex;align-items:center;background:#f1f5f9;border-radius:12px;height:44px;padding:0 14px;gap:8px">
+        <span style="color:#94a3b8;font-size:16px">🔍</span>
+        <input id="brokerSearch" style="flex:1;border:none;background:transparent;font-size:14px;color:#1e293b;outline:none;font-family:'Inter',sans-serif;" placeholder="ブローカーを検索..." oninput="filterBrokers(this.value)"/>
+      </div>
+    </div>
+    <div style="overflow-y:auto;padding:16px 16px 32px">
+      <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">⭐ おすすめブローカー</p>
+      <div id="featuredBrokers"></div>
+      <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px">📋 全ブローカー一覧</p>
+      <div id="allBrokers"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 통화 페어 선택 모달 -->
+<div class="pair-modal-overlay" id="pairModal" onclick="handlePairOverlayClick(event)">
+  <div class="pair-modal" onclick="event.stopPropagation()">
+    <div style="background:#fff;position:sticky;top:0;z-index:10;border-radius:20px 20px 0 0">
+      <div style="padding:10px;display:flex;justify-content:center">
+        <div style="width:40px;height:4px;background:#e2e8f0;border-radius:999px"></div>
+      </div>
+      <div style="padding:0 16px 16px;border-bottom:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700;color:#0f172a">お気に入りペアを追加</h2>
+        <button onclick="closePairModal()" style="background:none;border:none;cursor:pointer;font-size:24px;color:#94a3b8;padding:4px;line-height:1">×</button>
+      </div>
+
+      <div style="display:flex;gap:24px;border-bottom:1px solid #f1f5f9;overflow-x:auto" class="no-scrollbar">
+        <button class="pair-tab active" id="tab-all" onclick="switchPairTab('all',this)">すべて</button>
+        <button class="pair-tab" id="tab-forex" onclick="switchPairTab('forex',this)">Forex</button>
+        <button class="pair-tab" id="tab-crypto" onclick="switchPairTab('crypto',this)">Crypto</button>
+        <button class="pair-tab" id="tab-commodity" onclick="switchPairTab('commodity',this)">商品</button>
+      </div>
+      </div>
+    </div>
+    <div style="overflow-y:auto;padding:0 16px 100px" id="pairList"></div>
+    <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-top:1px solid #f1f5f9">
+      <button onclick="savePairs()" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:15px;padding:16px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:1px;text-transform:uppercase">お気に入りを保存</button>
+    </div>
+  </div>
+</div>
+
 <div class="sidebar" id="sidebar">
-  <div style="padding:40px 24px 28px;background:linear-gradient(135deg,#025a93,#137fec);color:#fff;display:flex;flex-direction:column;align-items:center;gap:14px">
+  <div style="padding:10px;display:flex;justify-content:center;flex-shrink:0">
+    <div style="width:40px;height:4px;background:#e2e8f0;border-radius:999px"></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
+  <div style="padding:24px 24px 20px;background:linear-gradient(135deg,#025a93,#137fec);color:#fff;display:flex;flex-direction:column;align-items:center;gap:14px">
     <div id="sidebarAvatar" style="width:80px;height:80px;border-radius:50%;border:3px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:40px">🦊</div>
     <div style="text-align:center">
       <div style="font-size:20px;font-weight:700">Trader_Kim</div>
@@ -65,31 +138,29 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
     </div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:12px 8px">
-    <button class="menu-item" onclick="showPage('profile');closeSidebar()"><span style="font-size:20px;width:28px;text-align:center">👤</span><span style="font-size:16px;font-weight:600">プロフィール設定</span></button>
-    <button class="menu-item"><span style="font-size:20px;width:28px;text-align:center">🎨</span><span style="font-size:16px;font-weight:600">テーマ設定</span></button>
-    <button class="menu-item"><span style="font-size:20px;width:28px;text-align:center">📖</span><span style="font-size:16px;font-weight:600">FX用語辞典</span></button>
-    <button class="menu-item"><span style="font-size:20px;width:28px;text-align:center">⚖️</span><span style="font-size:16px;font-weight:600">利用規約・ポリシー</span></button>
-    <button class="menu-item"><span style="font-size:20px;width:28px;text-align:center">🤝</span><span style="font-size:16px;font-weight:600">提携・広告のお問い合わせ</span></button>
+    <button class="menu-item" onclick="pageHistory=['main'];showPage('profile',false);closeSidebar()"><span style="font-size:20px;width:28px;text-align:center">👤</span><span style="font-size:16px;font-weight:600">プロフィール設定</span></button>
+    <button class="menu-item" onclick="pageHistory=['main'];showPage('theme',false);closeSidebar()"><span style="font-size:20px;width:28px;text-align:center">🎨</span><span style="font-size:16px;font-weight:600">テーマ設定</span></button>
+    <button class="menu-item" onclick="pageHistory=['main'];showPage('glossary',false);closeSidebar()"><span style="font-size:20px;width:28px;text-align:center">📖</span><span style="font-size:16px;font-weight:600">FX用語辞典</span></button>
+    <button class="menu-item" onclick="pageHistory=['main'];showPage('policy',false);closeSidebar()"><span style="font-size:20px;width:28px;text-align:center">⚖️</span><span style="font-size:16px;font-weight:600">利用規約・ポリシー</span></button>
+    <button class="menu-item" onclick="pageHistory=['main'];showPage('contact',false);closeSidebar()"><span style="font-size:20px;width:28px;text-align:center">🤝</span><span style="font-size:16px;font-weight:600">提携・広告のお問い合わせ</span></button>
   </div>
   <div style="padding:8px;border-top:1px solid #f1f5f9">
     <button class="menu-item" style="color:#ef4444"><span style="font-size:20px;width:28px;text-align:center">🚪</span><span style="font-size:16px;font-weight:600;color:#ef4444">ログアウト</span></button>
   </div>
-  <div style="padding:16px;text-align:center;border-top:1px solid #f1f5f9">
+  <div style="padding:16px;text-align:center;border-top:1px solid #f1f5f9;flex-shrink:0">
     <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px">
       <div style="width:26px;height:26px;background:#025a93;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:900">FNX</div>
       <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase">Finance Network</span>
     </div>
     <p style="font-size:11px;color:#94a3b8">Version 1.0.0</p>
   </div>
+  </div>
 </div>
 
-<!-- 앱 컨테이너 -->
 <div style="max-width:430px;margin:0 auto;min-height:100vh;background:#fff;box-shadow:0 0 40px rgba(0,0,0,0.12);position:relative;overflow:hidden">
 
-  <!-- ========== 메인 페이지 ========== -->
+  <!-- ===== 메인 페이지 ===== -->
   <div class="page active" id="page-main">
-
-    <!-- 헤더 -->
     <div style="position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #f1f5f9;padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:12px">
         <button id="menuBtn" style="background:none;border:none;cursor:pointer;font-size:24px;padding:4px 8px;border-radius:8px">☰</button>
@@ -97,27 +168,21 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
       </div>
       <div style="display:flex;gap:8px">
         <button style="background:none;border:none;cursor:pointer;font-size:22px">🔔</button>
-        <button onclick="showPage('profile')" style="background:none;border:none;cursor:pointer;font-size:22px">👤</button>
+        <button onclick="pageHistory=['main'];showPage('profile',false)" style="background:none;border:none;cursor:pointer;font-size:22px">👤</button>
       </div>
     </div>
-
-    <!-- 검색 -->
     <div style="padding:16px 16px 8px">
       <div style="display:flex;align-items:center;background:#f1f5f9;border-radius:12px;height:48px;padding:0 16px;gap:8px">
         <span style="color:#94a3b8;font-size:18px">🔍</span>
         <input style="flex:1;border:none;background:transparent;font-size:15px;color:#1e293b;outline:none;" placeholder="ニュース、シンボル、トレンドを検索..."/>
       </div>
     </div>
-
-    <!-- 카테고리 -->
     <div style="display:flex;gap:8px;padding:12px 16px;overflow-x:auto" class="no-scrollbar">
       <button class="cat-btn active" id="cat-all" onclick="filterNews('all')">すべて</button>
       <button class="cat-btn inactive" id="cat-breaking" onclick="filterNews('breaking')">⚡ 速報</button>
       <button class="cat-btn inactive" id="cat-bull" onclick="filterNews('bull')">🐂 強気</button>
       <button class="cat-btn inactive" id="cat-bear" onclick="filterNews('bear')">🐻 弱気</button>
     </div>
-
-    <!-- Flash News 헤더 -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px 12px">
       <h3 style="font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px">
         <span class="pulse-dot" style="width:12px;height:12px;border-radius:50%;background:#ef4444;display:inline-block"></span>
@@ -125,8 +190,6 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
       </h3>
       <span id="updateTime" style="font-size:11px;font-weight:600;color:#94a3b8">読み込み中...</span>
     </div>
-
-    <!-- 콘텐츠 -->
     <div style="padding:0 16px;padding-bottom:100px">
       <div id="loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px">
         <div class="spin" style="width:40px;height:40px;border:4px solid #025a93;border-top-color:transparent;border-radius:50%"></div>
@@ -137,286 +200,1639 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
         <p style="color:#64748b;font-size:14px">読み込みに失敗しました</p>
         <button onclick="loadNews()" style="background:#025a93;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">再試行</button>
       </div>
-      <div id="newsList" style="display:none">
-        <div id="newsItems"></div>
-      </div>
+      <div id="newsList" style="display:none"><div id="newsItems"></div></div>
     </div>
-
-    <!-- 하단 네비 -->
     <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,255,255,0.97);border-top:1px solid #f1f5f9;padding:8px 16px 20px;display:flex;justify-content:space-around;z-index:50">
-      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#025a93;text-decoration:none">
-        <span style="font-size:24px">📰</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">News</span>
-      </a>
-      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none">
-        <span style="font-size:24px">📊</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Market</span>
-      </a>
-      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none">
-        <span style="font-size:24px">📅</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Calendar</span>
-      </a>
-      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none">
-        <span style="font-size:24px">🏦</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Broker</span>
-      </a>
-      <button onclick="showPage('profile')" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif">
-        <span style="font-size:24px">👥</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Profile</span>
-      </button>
+      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#025a93;text-decoration:none"><span style="font-size:24px">📰</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">News</span></a>
+      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none"><span style="font-size:24px">📊</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Market</span></a>
+      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none"><span style="font-size:24px">📅</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Calendar</span></a>
+      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none"><span style="font-size:24px">🏦</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Broker</span></a>
+      <button onclick="pageHistory=['main'];showPage('profile',false)" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">👥</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Profile</span></button>
     </div>
   </div>
 
-  <!-- ========== 프로필 페이지 ========== -->
-  <div class="page" id="page-profile">
-
-    <!-- 헤더 -->
+  <!-- ===== 프로필 페이지 ===== -->
+  <div class="page slide-up" id="page-profile">
     <div style="display:flex;align-items:center;padding:16px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:10">
-      <button onclick="showPage('main')" style="background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;font-size:20px;color:#475569">←</button>
+      <button onclick="goBack()" style="background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;font-size:20px;color:#475569">←</button>
       <h1 style="font-size:18px;font-weight:700;margin-left:8px;flex:1">プロフィール設定</h1>
-      <div style="width:40px"></div>
     </div>
-
     <div style="overflow-y:auto;padding-bottom:100px">
-
-      <!-- 프로필 상단 -->
-      <div style="display:flex;flex-direction:column;align-items:center;padding:28px 24px 20px;background:linear-gradient(to bottom, rgba(2,90,147,0.05), transparent)">
-        <div style="position:relative;margin-bottom:12px">
+      <div style="display:flex;flex-direction:column;align-items:center;padding:28px 24px 20px;background:linear-gradient(to bottom,rgba(2,90,147,0.05),transparent)">
+        <div style="margin-bottom:12px">
           <div id="avatarMain" style="width:120px;height:120px;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,0.12);background:#e0f0ff;display:flex;align-items:center;justify-content:center;font-size:56px">🦊</div>
-          <button style="position:absolute;bottom:4px;right:4px;background:#025a93;color:#fff;border:2px solid #fff;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">📷</button>
         </div>
         <h2 style="font-size:20px;font-weight:700">Trader_Kim</h2>
         <p style="color:#94a3b8;font-size:13px;margin-top:2px">@trader_kim_fnx</p>
-        <button style="margin-top:12px;padding:8px 24px;background:rgba(2,90,147,0.1);color:#025a93;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">写真を変更</button>
       </div>
 
-      <!-- 아바타 선택 -->
       <div style="padding:20px 16px">
         <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:16px">アバターを選択</h3>
         <div style="display:flex;gap:16px;overflow-x:auto;padding-bottom:8px" class="no-scrollbar">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-            <div class="avatar-circle selected" style="background:#dbeafe" onclick="selectAvatar(this,'🦊')">🦊</div>
-            <span style="font-size:11px;font-weight:500">Foxy</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-            <div class="avatar-circle" style="background:#ffedd5" onclick="selectAvatar(this,'🦁')">🦁</div>
-            <span style="font-size:11px;font-weight:500">Leo</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-            <div class="avatar-circle" style="background:#f3e8ff" onclick="selectAvatar(this,'🦄')">🦄</div>
-            <span style="font-size:11px;font-weight:500">Luna</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-            <div class="avatar-circle" style="background:#dcfce7" onclick="selectAvatar(this,'🐼')">🐼</div>
-            <span style="font-size:11px;font-weight:500">Bamboo</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-            <div class="avatar-circle" style="background:#fef9c3" onclick="selectAvatar(this,'🐯')">🐯</div>
-            <span style="font-size:11px;font-weight:500">Stripes</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-            <div class="avatar-circle" style="background:#fce7f3" onclick="selectAvatar(this,'🐰')">🐰</div>
-            <span style="font-size:11px;font-weight:500">Hops</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-            <div class="avatar-circle" style="background:#e0f2fe" onclick="selectAvatar(this,'🐬')">🐬</div>
-            <span style="font-size:11px;font-weight:500">Dolphin</span>
-          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle selected" style="background:#dbeafe" onclick="selectAvatar(this,'🦊')">🦊</div><span style="font-size:11px;font-weight:500">Foxy</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#ffedd5" onclick="selectAvatar(this,'🦁')">🦁</div><span style="font-size:11px;font-weight:500">Leo</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#f3e8ff" onclick="selectAvatar(this,'🦄')">🦄</div><span style="font-size:11px;font-weight:500">Luna</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#dcfce7" onclick="selectAvatar(this,'🐼')">🐼</div><span style="font-size:11px;font-weight:500">Bamboo</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#fef9c3" onclick="selectAvatar(this,'🐯')">🐯</div><span style="font-size:11px;font-weight:500">Stripes</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#fce7f3" onclick="selectAvatar(this,'🐰')">🐰</div><span style="font-size:11px;font-weight:500">Hops</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#e0f2fe" onclick="selectAvatar(this,'🐬')">🐬</div><span style="font-size:11px;font-weight:500">Dolphin</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#fef3c7" onclick="selectAvatar(this,'🦅')">🦅</div><span style="font-size:11px;font-weight:500">Eagle</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#ffe4e6" onclick="selectAvatar(this,'🐲')">🐲</div><span style="font-size:11px;font-weight:500">Dragon</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0"><div class="avatar-circle" style="background:#f0fdf4" onclick="selectAvatar(this,'🦋')">🦋</div><span style="font-size:11px;font-weight:500">Butterfly</span></div>
         </div>
       </div>
 
-      <!-- 닉네임 -->
       <div style="padding:0 16px 20px">
         <label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:8px">ニックネーム</label>
         <input type="text" value="Trader_Kim" style="width:100%;padding:12px 16px;border-radius:12px;border:1px solid #e2e8f0;background:#f8fafc;font-size:15px;outline:none;color:#1e293b;font-family:'Inter',sans-serif;"/>
       </div>
 
-      <!-- 포인트 -->
-      <div style="margin:0 16px 20px;background:rgba(2,90,147,0.05);border-radius:16px;padding:20px;border:1px solid rgba(2,90,147,0.1)">
+      <div onclick="pageHistory.push('profile');showPage('points',false)" style="margin:0 16px 20px;background:rgba(2,90,147,0.05);border-radius:16px;padding:20px;border:1px solid rgba(2,90,147,0.1);cursor:pointer">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:20px">⭐</span>
-            <span style="font-weight:700;color:#1e293b;font-size:15px">マイポイント</span>
-          </div>
-          <span style="font-size:22px;font-weight:900;color:#025a93">1,250 P</span>
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">⭐</span><span style="font-weight:700;color:#1e293b;font-size:15px">マイポイント</span></div>
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:22px;font-weight:900;color:#025a93">1,250 P</span><span style="color:#94a3b8;font-size:16px">›</span></div>
         </div>
-        <p style="font-size:13px;color:#64748b;line-height:1.6">投稿・ログイン・投票・アラート設定でポイントが貯まります。近日中にポイントを報酬と交換できます！</p>
+        <p style="font-size:13px;color:#64748b;line-height:1.6">タップしてポイントガイドを確認 →</p>
       </div>
 
-      <!-- 브로커 순위 -->
       <div style="padding:0 16px 20px">
         <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:16px">取引の好み</h3>
         <label style="display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:12px">お気に入りブローカー（順位付け）</label>
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="position:relative">
-            <div style="position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:1">
-              <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#64748b;padding:2px 6px;border-radius:4px">1位</span>
-            </div>
-            <select class="broker-select">
-              <option value="">ブローカーを選択</option>
-              <option>Exness Global</option><option>IC Markets</option><option>Pepperstone</option><option>XM Trading</option><option>FXGT</option><option>TitanFX</option>
-            </select>
-            <span style="position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none">▾</span>
+          <div class="broker-select-row">
+            <div style="position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:1"><span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#64748b;padding:2px 6px;border-radius:4px">1位</span></div>
+            <button class="broker-select-btn" id="broker1-btn" onclick="openBrokerModal(1)">
+              <span id="broker1-text" style="color:#94a3b8">ブローカーを選択</span>
+              <span style="color:#94a3b8;font-size:14px">▾</span>
+            </button>
           </div>
-          <div style="position:relative">
-            <div style="position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:1">
-              <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#64748b;padding:2px 6px;border-radius:4px">2位</span>
-            </div>
-            <select class="broker-select">
-              <option value="">ブローカーを選択</option>
-              <option>Exness Global</option><option>IC Markets</option><option>Pepperstone</option><option>XM Trading</option><option>FXGT</option><option>TitanFX</option>
-            </select>
-            <span style="position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none">▾</span>
+          <div class="broker-select-row">
+            <div style="position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:1"><span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#64748b;padding:2px 6px;border-radius:4px">2位</span></div>
+            <button class="broker-select-btn" id="broker2-btn" onclick="openBrokerModal(2)">
+              <span id="broker2-text" style="color:#94a3b8">ブローカーを選択</span>
+              <span style="color:#94a3b8;font-size:14px">▾</span>
+            </button>
           </div>
-          <div style="position:relative">
-            <div style="position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:1">
-              <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#64748b;padding:2px 6px;border-radius:4px">3位</span>
-            </div>
-            <select class="broker-select">
-              <option value="">ブローカーを選択</option>
-              <option>Exness Global</option><option>IC Markets</option><option>Pepperstone</option><option>XM Trading</option><option>FXGT</option><option>TitanFX</option>
-            </select>
-            <span style="position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none">▾</span>
+          <div class="broker-select-row">
+            <div style="position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:1"><span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#64748b;padding:2px 6px;border-radius:4px">3位</span></div>
+            <button class="broker-select-btn" id="broker3-btn" onclick="openBrokerModal(3)">
+              <span id="broker3-text" style="color:#94a3b8">ブローカーを選択</span>
+              <span style="color:#94a3b8;font-size:14px">▾</span>
+            </button>
           </div>
         </div>
         <p style="font-size:11px;color:#94a3b8;margin-top:8px">※ 最大3つのブローカーをランク付けできます</p>
       </div>
 
       <!-- 통화 페어 -->
-      <div style="padding:0 16px 32px">
+      <div style="padding:0 16px 20px">
         <label style="display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:12px">お気に入り通貨ペア</label>
         <div id="pairsContainer" style="display:flex;flex-wrap:wrap;gap:8px">
           <div class="pair-tag">EUR/USD <button onclick="removePair(this)">×</button></div>
           <div class="pair-tag">USD/JPY <button onclick="removePair(this)">×</button></div>
-          <button class="add-pair-btn" onclick="addPair()">＋ ペアを追加</button>
+          <button class="add-pair-btn" onclick="openPairModal()">＋ ペアを追加</button>
         </div>
       </div>
 
-      <!-- 이메일 -->
       <div style="padding:0 16px 32px">
         <label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:8px">メールアドレス</label>
         <input type="email" placeholder="your@email.com" style="width:100%;padding:12px 16px;border-radius:12px;border:1px solid #e2e8f0;background:#f8fafc;font-size:15px;outline:none;color:#1e293b;font-family:'Inter',sans-serif;"/>
       </div>
     </div>
+    <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-top:1px solid #f1f5f9">
+      <button id="saveBtn" onclick="saveProfile()" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter',sans-serif;">変更を保存</button>
+    </div>
+  </div>
+
+  <!-- ===== 포인트 가이드 페이지 ===== -->
+  <div class="page slide-up" id="page-points">
+    <div style="display:flex;align-items:center;padding:16px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:10">
+      <button onclick="goBack()" style="background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;font-size:20px;color:#475569">←</button>
+      <h1 style="font-size:18px;font-weight:700;margin-left:8px;flex:1">ポイントガイド</h1>
+    </div>
+    <div style="overflow-y:auto;padding-bottom:40px">
+      <div style="margin:16px;border-radius:20px;padding:28px;background:linear-gradient(135deg,#025a93,#137fec);color:#fff;box-shadow:0 8px 24px rgba(2,90,147,0.3)">
+        <p style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">現在のポイント残高</p>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px">
+          <span style="font-size:48px;font-weight:900;line-height:1">1,250</span>
+          <span style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.9)">P</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600">📈 今週のユーザーTOP 15%</div>
+      </div>
+      <div style="padding:0 16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <h3 style="font-size:17px;font-weight:700">ポイントの獲得方法</h3>
+          <button style="color:#025a93;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer">履歴を見る</button>
+        </div>
+        <div class="point-item"><div class="point-icon">📅</div><div style="flex:1"><p style="font-size:15px;font-weight:600;color:#0f172a;margin-bottom:2px">デイリーログイン</p><p style="font-size:13px;color:#64748b">毎日チェックインしてストリークを積もう</p></div><span style="font-size:18px;font-weight:700;color:#025a93;flex-shrink:0">+10P</span></div>
+        <div class="point-item"><div class="point-icon">📊</div><div style="flex:1"><p style="font-size:15px;font-weight:600;color:#0f172a;margin-bottom:2px">Bull/Bear 投票</p><p style="font-size:13px;color:#64748b">市場センチメントを予測しよう</p></div><span style="font-size:18px;font-weight:700;color:#025a93;flex-shrink:0">+5P</span></div>
+        <div class="point-item"><div class="point-icon">✍️</div><div style="flex:1"><p style="font-size:15px;font-weight:600;color:#0f172a;margin-bottom:2px">投稿を書く</p><p style="font-size:13px;color:#64748b">マーケット分析をシェアしよう</p></div><span style="font-size:18px;font-weight:700;color:#025a93;flex-shrink:0">+20P</span></div>
+        <div class="point-item"><div class="point-icon">🔔</div><div style="flex:1"><p style="font-size:15px;font-weight:600;color:#0f172a;margin-bottom:2px">価格アラート設定</p><p style="font-size:13px;color:#64748b">ボラティリティ情報をリアルタイムで受け取ろう</p></div><span style="font-size:18px;font-weight:700;color:#025a93;flex-shrink:0">+15P</span></div>
+        <div class="point-item"><div class="point-icon">👥</div><div style="flex:1"><p style="font-size:15px;font-weight:600;color:#0f172a;margin-bottom:2px">友達を招待</p><p style="font-size:13px;color:#64748b">紹介するたびにボーナスポイント獲得</p></div><span style="font-size:18px;font-weight:700;color:#025a93;flex-shrink:0">+50P</span></div>
+        <div style="margin-top:8px;background:#f8fafc;border-radius:16px;padding:20px;border:2px dashed #e2e8f0">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <span style="font-size:24px;flex-shrink:0">🎁</span>
+            <div>
+              <h4 style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:6px">Coming Soon: リワードセンター</h4>
+              <p style="font-size:13px;color:#64748b;line-height:1.6">FNXポイントを使って、限定リワード・取引手数料割引・プレミアム機能と交換できるリワードセンターが近日公開予定！</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ===== 테마 설정 페이지 ===== -->
+  <div class="page slide-up" id="page-theme">
+    <div style="display:flex;align-items:center;padding:16px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:10;backdrop-filter:blur(8px)">
+      <button onclick="goBack()" style="background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;font-size:20px;color:#475569">←</button>
+      <h1 style="font-size:18px;font-weight:700;margin-left:8px;flex:1">テーマ設定</h1>
+      <div style="width:40px"></div>
+    </div>
+    <div style="overflow-y:auto;padding-bottom:100px">
+
+      <!-- 화면 모드 -->
+      <div style="padding:24px 16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+          <span style="font-size:20px">🎨</span>
+          <h2 style="font-size:17px;font-weight:700;color:#0f172a">画面モード</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+
+          <label style="cursor:pointer" onclick="selectTheme('light',this)">
+            <div id="theme-light" style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:14px;border:2px solid #025a93;background:rgba(2,90,147,0.05);transition:all 0.2s">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="font-size:20px">☀️</span>
+                <span style="font-size:15px;font-weight:500;color:#0f172a">ライトモード</span>
+              </div>
+              <div id="radio-light" style="width:20px;height:20px;border-radius:50%;border:2px solid #025a93;display:flex;align-items:center;justify-content:center">
+                <div style="width:10px;height:10px;border-radius:50%;background:#025a93"></div>
+              </div>
+            </div>
+          </label>
+
+          <label style="cursor:pointer" onclick="selectTheme('dark',this)">
+            <div id="theme-dark" style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:14px;border:2px solid #e2e8f0;background:#fff;transition:all 0.2s">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="font-size:20px">🌙</span>
+                <span style="font-size:15px;font-weight:500;color:#0f172a">ダークモード</span>
+              </div>
+              <div id="radio-dark" style="width:20px;height:20px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center">
+                <div style="width:10px;height:10px;border-radius:50%;background:#025a93;opacity:0"></div>
+              </div>
+            </div>
+          </label>
+
+          <label style="cursor:pointer" onclick="selectTheme('system',this)">
+            <div id="theme-system" style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:14px;border:2px solid #e2e8f0;background:#fff;transition:all 0.2s">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="font-size:20px">⚙️</span>
+                <span style="font-size:15px;font-weight:500;color:#0f172a">システム設定に従う</span>
+              </div>
+              <div id="radio-system" style="width:20px;height:20px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center">
+                <div style="width:10px;height:10px;border-radius:50%;background:#025a93;opacity:0"></div>
+              </div>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+      <div style="margin:0 16px;border-top:1px solid #f1f5f9"></div>
+
+      <!-- 글자 크기 -->
+      <div style="padding:24px 16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+          <span style="font-size:20px">🔤</span>
+          <h2 style="font-size:17px;font-weight:700;color:#0f172a">文字サイズ調整</h2>
+        </div>
+
+        <!-- 미리보기 -->
+        <div style="margin-bottom:24px;padding:20px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0">
+          <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">プレビュー</p>
+          <p id="previewText" style="font-size:16px;font-weight:500;line-height:1.7;color:#1e293b">
+            FNEXアプリでは、ユーザーの利便性のためにさまざまな文字サイズをサポートしています。スライダーを調整して、最も快適なサイズを選択してください。
+          </p>
+        </div>
+
+        <!-- 슬라이더 -->
+        <div style="padding:0 8px">
+          <div style="position:relative;margin-bottom:32px">
+            <!-- 트랙 배경 -->
+            <div style="position:absolute;width:100%;height:6px;background:#e2e8f0;border-radius:999px;top:50%;transform:translateY(-50%)"></div>
+            <!-- 활성 트랙 -->
+            <div id="activeTrack" style="position:absolute;width:33%;height:6px;background:#025a93;border-radius:999px;top:50%;transform:translateY(-50%);transition:width 0.2s"></div>
+            <!-- 포인트들 -->
+            <div style="display:flex;justify-content:space-between;position:relative;z-index:1">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <button onclick="setFontSize(0)" id="dot-0" style="width:16px;height:16px;border-radius:50%;background:#cbd5e1;border:none;cursor:pointer;transition:all 0.2s"></button>
+                <span style="font-size:11px;color:#94a3b8;font-weight:500">小</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <button onclick="setFontSize(1)" id="dot-1" style="width:22px;height:22px;border-radius:50%;background:#025a93;border:none;cursor:pointer;box-shadow:0 0 0 4px rgba(2,90,147,0.2);transition:all 0.2s"></button>
+                <span id="label-1" style="font-size:12px;font-weight:700;color:#025a93">普通 (16px)</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <button onclick="setFontSize(2)" id="dot-2" style="width:16px;height:16px;border-radius:50%;background:#cbd5e1;border:none;cursor:pointer;transition:all 0.2s"></button>
+                <span style="font-size:11px;color:#94a3b8;font-weight:500">中</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <button onclick="setFontSize(3)" id="dot-3" style="width:16px;height:16px;border-radius:50%;background:#cbd5e1;border:none;cursor:pointer;transition:all 0.2s"></button>
+                <span style="font-size:11px;color:#94a3b8;font-weight:500">大</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 안내 -->
+        <div style="padding:16px;border-radius:12px;background:rgba(2,90,147,0.08);border:1px solid rgba(2,90,147,0.15);display:flex;align-items:flex-start;gap:10px">
+          <span style="font-size:18px;flex-shrink:0">ℹ️</span>
+          <p style="font-size:13px;color:#475569;line-height:1.6">文字サイズを変更すると、アプリ全体のテキストとUI要素が一緒に調整され、最適な読みやすさを提供します。</p>
+        </div>
+      </div>
+    </div>
 
     <!-- 저장 버튼 -->
     <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-top:1px solid #f1f5f9">
-      <button id="saveBtn" onclick="saveProfile()" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 12px rgba(2,90,147,0.3)">
-        変更を保存
-      </button>
+      <button onclick="saveTheme()" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter',sans-serif;">設定を保存</button>
     </div>
   </div>
+
+  <!-- ===== FX 용어사전 페이지 ===== -->
+  <div class="page slide-up" id="page-glossary">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:10">
+      <div style="display:flex;align-items:center">
+        <button onclick="goBack()" style="background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;font-size:20px;color:#475569">←</button>
+        <h1 style="font-size:18px;font-weight:700;margin-left:8px">FX用語辞典</h1>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;color:#025a93;font-size:16px;cursor:pointer">ℹ️</div>
+    </div>
+
+    <!-- 검색바 -->
+    <div style="padding:16px;position:sticky;top:57px;background:#fff;z-index:9;border-bottom:1px solid #f8fafc">
+      <div style="display:flex;align-items:center;background:#f1f5f9;border-radius:12px;height:48px;padding:0 16px;gap:8px">
+        <span style="color:#94a3b8;font-size:18px">🔍</span>
+        <input id="glossarySearch" style="flex:1;border:none;background:transparent;font-size:15px;color:#1e293b;outline:none;font-family:'Inter',sans-serif;" placeholder="用語を検索 (例: レバレッジ、スプレッド)" oninput="searchGlossary(this.value)"/>
+      </div>
+    </div>
+
+    <!-- 용어 목록 -->
+    <div style="padding:16px;padding-bottom:40px" id="glossaryList"></div>
+  </div>
+
+  <!-- ===== FX용어사전 페이지 ===== -->
+  <div class="page slide-up" id="page-glossary">
+    <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button onclick="goBack()" style="background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#475569">←</button>
+          <h1 style="font-size:19px;font-weight:700;color:#0f172a">FX用語辞典</h1>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;color:#025a93;font-size:18px">ℹ️</div>
+      </div>
+      <!-- 검색 -->
+      <div style="padding:0 16px 16px">
+        <div style="display:flex;align-items:center;background:#f1f5f9;border-radius:12px;height:48px;padding:0 16px;gap:8px">
+          <span style="color:#94a3b8;font-size:18px">🔍</span>
+          <input id="glossarySearch" style="flex:1;border:none;background:transparent;font-size:15px;color:#1e293b;outline:none;font-family:'Inter',sans-serif;" placeholder="用語を検索 (例: レバレッジ、スプレッド)" oninput="filterGlossary(this.value)"/>
+        </div>
+      </div>
+    </div>
+    <div style="padding:16px;padding-bottom:40px" id="glossaryList"></div>
+  </div>
+
+  <!-- ===== 약관 및 정책 페이지 ===== -->
+  <div class="page slide-up" id="page-policy">
+    <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button onclick="goBack()" style="background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#025a93">←</button>
+          <h1 style="font-size:19px;font-weight:700;color:#025a93">利用規約・ポリシー</h1>
+        </div>
+        <div style="width:40px"></div>
+      </div>
+    </div>
+    <div style="padding:20px 16px;padding-bottom:60px">
+      <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">基本ポリシー</p>
+      <div style="background:#fff;border-radius:16px;border:1px solid #f1f5f9;box-shadow:0 1px 4px rgba(0,0,0,0.06);overflow:hidden">
+
+        <button onclick="openPolicy('privacy')" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;border:none;background:none;cursor:pointer;border-bottom:1px solid #f8fafc;font-family:'Inter',sans-serif;transition:background 0.15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;font-size:18px">🛡️</div>
+            <span style="font-size:15px;font-weight:500;color:#1e293b">プライバシーポリシー</span>
+          </div>
+          <span style="color:#94a3b8;font-size:18px">›</span>
+        </button>
+
+        <button onclick="openPolicy('terms')" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;border:none;background:none;cursor:pointer;border-bottom:1px solid #f8fafc;font-family:'Inter',sans-serif;transition:background 0.15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;font-size:18px">📋</div>
+            <span style="font-size:15px;font-weight:500;color:#1e293b">サービス利用規約</span>
+          </div>
+          <span style="color:#94a3b8;font-size:18px">›</span>
+        </button>
+
+        <button onclick="openPolicy('community')" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;border:none;background:none;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;font-size:18px">👥</div>
+            <span style="font-size:15px;font-weight:500;color:#1e293b">コミュニティ運営ポリシー</span>
+          </div>
+          <span style="color:#94a3b8;font-size:18px">›</span>
+        </button>
+      </div>
+
+      <div style="text-align:center;margin-top:40px">
+        <p style="font-size:13px;color:#94a3b8">最終更新日: 2025年1月1日</p>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:16px">
+          <div style="width:36px;height:36px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px">❓</div>
+          <div style="width:36px;height:36px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px">✉️</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 약관 상세 슬라이드 패널 -->
+  <div id="policyPanelOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;display:none" onclick="closePolicy()"></div>
+  <div id="policyPanel" style="position:fixed;bottom:-100%;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:90vh;background:#fff;z-index:401;transition:bottom 0.35s ease;display:flex;flex-direction:column;box-shadow:0 -4px 20px rgba(0,0,0,0.15);border-radius:20px 20px 0 0">
+    <div style="padding:10px;display:flex;justify-content:center"><div style="width:40px;height:4px;background:#e2e8f0;border-radius:999px"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:1">
+      <button onclick="closePolicy()" style="background:none;border:none;cursor:pointer;font-size:20px;color:#475569;padding:4px 8px 4px 0">←</button>
+      <h2 id="policyTitle" style="font-size:17px;font-weight:700;color:#0f172a;flex:1;text-align:center"></h2>
+      <div style="width:32px"></div>
+    </div>
+    <div id="policyContent" style="overflow-y:auto;padding:20px 16px;flex:1"></div>
+  </div>
+
+  <!-- ===== 제휴/광고 문의 페이지 ===== -->
+  <div class="page slide-up" id="page-contact">
+    <div style="display:flex;align-items:center;padding:16px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:10">
+      <button onclick="goBack()" style="background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;font-size:20px;color:#475569;width:40px;height:40px;display:flex;align-items:center;justify-content:center">←</button>
+      <h1 style="font-size:18px;font-weight:700;margin-left:8px;flex:1">提携・広告のお問い合わせ</h1>
+      <div style="width:40px"></div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding-bottom:100px">
+      <!-- 안내 문구 -->
+      <div style="padding:24px 16px 16px">
+        <p style="font-size:14px;color:#64748b;line-height:1.7">トレーディングサービスに関する提携のご提案や広告のお問い合わせをいただければ、担当者が確認後にご連絡いたします。</p>
+      </div>
+
+      <!-- 폼 -->
+      <div style="display:flex;flex-direction:column;gap:20px;padding:0 16px">
+
+        <!-- 제목 -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600;color:#1e293b">件名</label>
+          <input id="contact-title" type="text" placeholder="件名を入力してください" style="width:100%;height:52px;padding:0 16px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;font-family:'Inter',sans-serif;color:#1e293b;outline:none;transition:border-color 0.2s;background:#fff;" onfocus="this.style.borderColor='#025a93';this.style.boxShadow='0 0 0 3px rgba(2,90,147,0.1)'" onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"/>
+        </div>
+
+        <!-- 이메일 -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600;color:#1e293b">連絡先メールアドレス</label>
+          <input id="contact-email" type="email" placeholder="example@email.com" style="width:100%;height:52px;padding:0 16px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;font-family:'Inter',sans-serif;color:#1e293b;outline:none;transition:border-color 0.2s;background:#fff;" onfocus="this.style.borderColor='#025a93';this.style.boxShadow='0 0 0 3px rgba(2,90,147,0.1)'" onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"/>
+        </div>
+
+        <!-- 문의 유형 -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600;color:#1e293b">お問い合わせ種別</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="selectContactType(this,'提携提案')" class="contact-type-btn" style="padding:8px 16px;border-radius:999px;border:1.5px solid #025a93;background:#025a93;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">提携提案</button>
+            <button onclick="selectContactType(this,'広告掲載')" class="contact-type-btn" style="padding:8px 16px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">広告掲載</button>
+            <button onclick="selectContactType(this,'ブローカー連携')" class="contact-type-btn" style="padding:8px 16px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">ブローカー連携</button>
+            <button onclick="selectContactType(this,'その他')" class="contact-type-btn" style="padding:8px 16px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">その他</button>
+          </div>
+        </div>
+
+        <!-- 문의 내용 -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600;color:#1e293b">お問い合わせ内容</label>
+          <textarea id="contact-body" placeholder="提携目的・会社名・担当者の連絡先などを含めてご記入ください。" style="width:100%;min-height:180px;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;font-family:'Inter',sans-serif;color:#1e293b;outline:none;resize:none;line-height:1.6;transition:border-color 0.2s;background:#fff;" onfocus="this.style.borderColor='#025a93';this.style.boxShadow='0 0 0 3px rgba(2,90,147,0.1)'" onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"></textarea>
+          <p id="contact-count" style="font-size:11px;color:#94a3b8;text-align:right">0 / 500文字</p>
+        </div>
+
+        <!-- 개인정보 동의 -->
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:4px 0">
+          <input id="contact-privacy" type="checkbox" style="width:18px;height:18px;margin-top:2px;accent-color:#025a93;flex-shrink:0;cursor:pointer"/>
+          <label for="contact-privacy" style="font-size:12px;color:#64748b;line-height:1.7;cursor:pointer">個人情報の収集および利用に同意します。入力いただいた情報はお問い合わせの処理および回答のためにのみ使用されます。</label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 제출 버튼 -->
+    <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-top:1px solid #f1f5f9">
+      <button id="contact-submit" onclick="submitContact()" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 12px rgba(2,90,147,0.3);letter-spacing:0.5px">お問い合わせを送信</button>
+    </div>
+  </div>
+
+  <!-- ===== 프로모션 상세 페이지 ===== -->
+  <div class="page slide-up" id="page-promo">
+    <!-- 헤더 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;position:absolute;top:0;left:0;right:0;z-index:10">
+      <button onclick="goBack()" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);border:none;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff">←</button>
+      <span style="font-size:15px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5)">Promotion Details</span>
+      <div style="width:36px"></div>
+    </div>
+
+    <div style="overflow-y:auto;height:100vh;padding-bottom:120px">
+
+      <!-- 히어로 이미지 영역 -->
+      <div id="promoHero" style="position:relative;width:100%;height:280px;background:linear-gradient(135deg,#0f2744,#025a93,#1a4f8a);overflow:hidden;flex-shrink:0">
+        <!-- 배경 일러스트 효과 -->
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0a1628 0%,#025a93 50%,#0f3460 100%)"></div>
+        <div style="position:absolute;top:20%;right:10%;width:120px;height:120px;border-radius:50%;background:rgba(255,215,0,0.15);filter:blur(30px)"></div>
+        <div style="position:absolute;bottom:10%;left:20%;width:80px;height:80px;border-radius:50%;background:rgba(19,127,236,0.3);filter:blur(20px)"></div>
+        <!-- 차트 라인 장식 -->
+        <svg style="position:absolute;bottom:0;left:0;width:100%;opacity:0.3" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="0,90 40,70 80,85 120,50 160,65 200,30 240,45 280,20 320,35 360,15 400,25" fill="none" stroke="#4ade80" stroke-width="2"/>
+          <polyline points="0,110 40,95 80,105 120,80 160,90 200,60 240,75 280,50 320,65 360,45 400,55" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+        </svg>
+        <!-- 태그 + 제목 -->
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
+          <div id="promoTag" style="display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:900;padding:3px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">NEW FEATURE</div>
+          <h1 id="promoTitle" style="font-size:22px;font-weight:900;color:#fff;line-height:1.3;text-shadow:0 2px 8px rgba(0,0,0,0.5)">Dexia FX-MBTI:<br/>16 Trading Personalities</h1>
+        </div>
+      </div>
+
+      <!-- 콘텐츠 영역 -->
+      <div style="padding:24px 16px;background:#fff">
+
+        <!-- 메인 타이틀 -->
+        <h2 id="promoSubtitle" style="font-size:16px;font-weight:700;color:#025a93;line-height:1.5;margin-bottom:12px">Dexiaの技術と長年の経験で生み出した<br/>16種類のFX-MBTI</h2>
+        <div id="promoDesc" style="font-size:14px;color:#475569;line-height:1.8;margin-bottom:24px">
+          <p style="margin-bottom:8px">なぜ利益率が低いのか、なぜ勝てないのか。</p>
+          <p style="font-weight:700;color:#1e293b;margin-bottom:8px">自分を知って、相手を攻略しよう。</p>
+          <p>自分のトレードを確認し、長所と短所を把握して攻略しよう。</p>
+        </div>
+
+        <!-- How to Participate -->
+        <div style="margin-bottom:24px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+            <div style="width:4px;height:20px;background:#025a93;border-radius:2px"></div>
+            <h3 style="font-size:15px;font-weight:700;color:#025a93">参加方法</h3>
+          </div>
+          <div id="promoSteps" style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="width:24px;height:24px;border-radius:50%;background:#025a93;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</span>
+              <span style="font-size:14px;color:#475569">登録する</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="width:24px;height:24px;border-radius:50%;background:#025a93;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</span>
+              <span style="font-size:14px;color:#475569">口座を開設する</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="width:24px;height:24px;border-radius:50%;background:#025a93;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</span>
+              <span style="font-size:14px;color:#475569">Dexiaで取引する</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="width:24px;height:24px;border-radius:50%;background:#025a93;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</span>
+              <span style="font-size:14px;color:#475569">取引分析を依頼する</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q&A -->
+        <div style="margin-bottom:24px;display:flex;flex-direction:column;gap:12px" id="promoQA">
+          <div style="padding:16px;border-left:3px solid #e2e8f0;background:#f8fafc;border-radius:0 12px 12px 0">
+            <p style="font-size:14px;font-weight:600;color:#475569">Q: 入金して取引しなければダメ？？</p>
+          </div>
+          <div style="padding:16px;border-left:3px solid #025a93;background:rgba(2,90,147,0.05);border-radius:0 12px 12px 0">
+            <p style="font-size:14px;font-weight:700;color:#025a93;margin-bottom:6px">A: そう〜 取引しないとダメだよ、教えてあげる。</p>
+            <p style="font-size:13px;color:#64748b;line-height:1.6">他のブローカーで取引してるって、なんで私が教えるの？笑<br/>こっちに来て取引してくれれば〜 ！</p>
+          </div>
+        </div>
+
+        <!-- 구분선 -->
+        <div style="border-top:1px solid #f1f5f9;margin-bottom:24px"></div>
+
+        <!-- 브로커 정보 -->
+        <div style="display:flex;align-items:center;gap:12px;padding:16px;background:#f8fafc;border-radius:14px;margin-bottom:8px">
+          <div id="promoBrokerIcon" style="width:48px;height:48px;border-radius:12px;background:#025a93;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:900;flex-shrink:0">E</div>
+          <div>
+            <p id="promoBrokerName" style="font-size:15px;font-weight:700;color:#0f172a">Exness Global</p>
+            <p style="font-size:12px;color:#94a3b8;margin-top:2px">⭐ おすすめブローカー</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 하단 버튼 -->
+    <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-top:1px solid #f1f5f9;display:flex;flex-direction:column;gap:10px">
+      <button id="promoMainBtn" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 12px rgba(2,90,147,0.3)">アカウントを作成</button>
+      <button id="promoSecondBtn" style="width:100%;background:#fff;color:#025a93;font-weight:700;font-size:15px;padding:14px;border-radius:12px;border:1.5px solid #025a93;cursor:pointer;font-family:'Inter',sans-serif;">Dexia へ移動</button>
+    </div>
+  </div>
+
 
 </div>
 
 <script>
-// ===== 페이지 전환 =====
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-  document.getElementById('page-' + name).classList.add('active');
-  window.scrollTo(0, 0);
-}
+// ===== 통화 페어 데이터 =====
+var PAIRS = {
+  forex: [
+    {pair:'EUR/USD', name:'ユーロ / 米ドル', icon:'€', color:'#025a93'},
+    {pair:'GBP/USD', name:'ポンド / 米ドル', icon:'£', color:'#475569'},
+    {pair:'USD/JPY', name:'米ドル / 日本円', icon:'¥', color:'#475569'},
+    {pair:'AUD/USD', name:'豪ドル / 米ドル', icon:'$', color:'#475569'},
+    {pair:'USD/CHF', name:'米ドル / スイスフラン', icon:'₣', color:'#475569'},
+    {pair:'USD/CAD', name:'米ドル / カナダドル', icon:'$', color:'#475569'},
+    {pair:'NZD/USD', name:'NZドル / 米ドル', icon:'$', color:'#475569'},
+    {pair:'EUR/JPY', name:'ユーロ / 日本円', icon:'€', color:'#025a93'},
+    {pair:'GBP/JPY', name:'ポンド / 日本円', icon:'£', color:'#475569'},
+    {pair:'EUR/GBP', name:'ユーロ / ポンド', icon:'€', color:'#025a93'},
+  ],
+  crypto: [
+    {pair:'BTC/USDT', name:'ビットコイン / テザー', icon:'₿', color:'#f7931a'},
+    {pair:'ETH/USDT', name:'イーサリアム / テザー', icon:'Ξ', color:'#627eea'},
+    {pair:'XRP/USDT', name:'リップル / テザー', icon:'✕', color:'#00aae4'},
+    {pair:'SOL/USDT', name:'ソラナ / テザー', icon:'◎', color:'#9945ff'},
+    {pair:'BNB/USDT', name:'バイナンスコイン / テザー', icon:'B', color:'#f3ba2f'},
+  ],
+  commodity: [
+    {pair:'GOLD/USD', name:'ゴールド / 米ドル', icon:'🥇', color:'#d4af37'},
+    {pair:'SILVER/USD', name:'シルバー / 米ドル', icon:'🥈', color:'#94a3b8'},
+    {pair:'OIL/USD', name:'原油 / 米ドル', icon:'🛢️', color:'#78350f'},
+    {pair:'NATGAS/USD', name:'天然ガス / 米ドル', icon:'🔥', color:'#ea580c'},
+  ]
+};
 
-// ===== 사이드바 =====
-document.getElementById('menuBtn').addEventListener('click', function() { openSidebar(); });
-function openSidebar() {
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('overlay').classList.add('open');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('open');
-}
+var selectedPairs = ['EUR/USD','USD/JPY'];
+var currentPairTab = 'all';
 
-// ===== 프로필 =====
-function selectAvatar(el, emoji) {
-  document.querySelectorAll('.avatar-circle').forEach(function(c) { c.classList.remove('selected'); });
-  el.classList.add('selected');
-  document.getElementById('avatarMain').textContent = emoji;
-  document.getElementById('sidebarAvatar').textContent = emoji;
-}
-function removePair(btn) { btn.parentElement.remove(); }
-function addPair() {
-  var pair = prompt('通貨ペアを入力してください (例: GBP/USD)');
-  if (pair && pair.trim()) {
-    var container = document.getElementById('pairsContainer');
-    var addBtn = container.querySelector('.add-pair-btn');
-    var tag = document.createElement('div');
-    tag.className = 'pair-tag';
-    tag.innerHTML = pair.trim() + ' <button onclick="removePair(this)">×</button>';
-    container.insertBefore(tag, addBtn);
+function handlePairOverlayClick(e) {
+  if(e.target === document.getElementById('pairModal')) {
+    closePairModal();
   }
 }
-function saveProfile() {
-  var btn = document.getElementById('saveBtn');
-  btn.textContent = '✓ 保存しました！';
+
+function openPairModal() {
+  currentPairTab = 'all';
+  document.querySelectorAll('.pair-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('tab-all').classList.add('active');
+  renderPairs('');
+  document.getElementById('pairModal').classList.add('open');
+}
+
+function closePairModal() {
+  document.getElementById('pairModal').classList.remove('open');
+}
+
+function switchPairTab(tab, el) {
+  currentPairTab = tab;
+  document.querySelectorAll('.pair-tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  renderPairs('');
+}
+
+function filterPairs(q) { renderPairs(q); }
+
+function renderPairs(query) {
+  var q = query.toLowerCase();
+  var list = document.getElementById('pairList');
+  list.innerHTML = '';
+
+  var sections = currentPairTab === 'all'
+    ? [{key:'forex',label:'📊 Forexペア'},{key:'crypto',label:'🪙 Cryptoペア'},{key:'commodity',label:'🏅 商品'}]
+    : [{key:currentPairTab, label: currentPairTab==='forex'?'📊 Forexペア':currentPairTab==='crypto'?'🪙 Cryptoペア':'🏅 商品'}];
+
+  sections.forEach(function(sec) {
+    var items = PAIRS[sec.key].filter(function(p){ return !q || p.pair.toLowerCase().includes(q) || p.name.toLowerCase().includes(q); });
+    if(!items.length) return;
+
+    var label = document.createElement('p');
+    label.style.cssText = 'font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding:16px 0 8px';
+    label.textContent = sec.label;
+    list.appendChild(label);
+
+    items.forEach(function(p) {
+      var isAdded = selectedPairs.indexOf(p.pair) !== -1;
+      var row = document.createElement('div');
+      row.className = 'pair-row';
+
+      var left = document.createElement('div');
+      left.style.cssText = 'display:flex;align-items:center;gap:12px';
+      left.innerHTML =
+        '<div class="pair-icon" style="background:'+p.color+'20;color:'+p.color+';font-size:18px;font-weight:700">'+p.icon+'</div>' +
+        '<div><p style="font-size:15px;font-weight:600;color:#0f172a">'+p.pair+'</p><p style="font-size:12px;color:#94a3b8;margin-top:2px">'+p.name+'</p></div>';
+
+      var btn = document.createElement('button');
+      btn.className = 'pair-add-btn' + (isAdded?' added':'');
+      btn.textContent = isAdded ? '✓' : '+';
+
+      btn.onclick = (function(pair, b) {
+        return function() {
+          var idx = selectedPairs.indexOf(pair);
+          if(idx !== -1) {
+            selectedPairs.splice(idx,1);
+            b.className = 'pair-add-btn';
+            b.textContent = '+';
+          } else {
+            selectedPairs.push(pair);
+            b.className = 'pair-add-btn added';
+            b.textContent = '✓';
+          }
+        };
+      })(p.pair, btn);
+
+      row.appendChild(left);
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
+  });
+}
+
+function savePairs() {
+  var container = document.getElementById('pairsContainer');
+  var addBtn = container.querySelector('.add-pair-btn');
+  container.innerHTML = '';
+  selectedPairs.forEach(function(p) {
+    var tag = document.createElement('div');
+    tag.className = 'pair-tag';
+    tag.innerHTML = p + ' <button onclick="removePair(this)">×</button>';
+    container.appendChild(tag);
+  });
+  var newAddBtn = document.createElement('button');
+  newAddBtn.className = 'add-pair-btn';
+  newAddBtn.onclick = openPairModal;
+  newAddBtn.textContent = '＋ ペアを追加';
+  container.appendChild(newAddBtn);
+  closePairModal();
+}
+
+// ===== 브로커 =====
+var BROKERS_FEATURED = [
+  {name:'Exness', color:'#025a93', icon:'E'},
+  {name:'XM Trading', color:'#e53e3e', icon:'X'},
+  {name:'FXGT', color:'#d97706', icon:'F'},
+  {name:'TitanFX', color:'#7c3aed', icon:'T'},
+];
+var BROKERS_ALL = [
+  {name:'FXCM', color:'#475569', icon:'F'},
+  {name:'IC Markets', color:'#0369a1', icon:'I'},
+  {name:'IG', color:'#15803d', icon:'I'},
+  {name:'OANDA', color:'#b45309', icon:'O'},
+  {name:'Pepperstone', color:'#be123c', icon:'P'},
+  {name:'Saxo Bank', color:'#1e40af', icon:'S'},
+  {name:'Tickmill', color:'#0f766e', icon:'T'},
+  {name:'FBS', color:'#7c2d12', icon:'F'},
+  {name:'HotForex', color:'#c2410c', icon:'H'},
+  {name:'RoboForex', color:'#1d4ed8', icon:'R'},
+];
+var currentModalSlot = 1;
+var selectedBrokers = {1:null,2:null,3:null};
+
+function openBrokerModal(slot) {
+  currentModalSlot = slot;
+  document.getElementById('brokerSearch').value = '';
+  renderBrokerModal('');
+  document.getElementById('brokerModal').classList.add('open');
+}
+function closeBrokerModal() { document.getElementById('brokerModal').classList.remove('open'); }
+function renderBrokerModal(query) {
+  var q = query.toLowerCase();
+  function makeItem(b) {
+    var isSelected = selectedBrokers[currentModalSlot] === b.name;
+    var div = document.createElement('div');
+    div.className = 'broker-item'+(isSelected?' selected':'');
+    div.innerHTML = '<div class="broker-icon" style="background:'+b.color+'20;color:'+b.color+'">'+b.icon+'</div><span style="font-size:15px;font-weight:'+(isSelected?'700':'500')+';color:'+(isSelected?'#025a93':'#1e293b')+';flex:1">'+b.name+'</span>'+(isSelected?'<span style="color:#025a93;font-size:18px">✓</span>':'<span style="color:#e2e8f0;font-size:18px">›</span>');
+    div.onclick = (function(broker) {
+      return function() {
+        selectedBrokers[currentModalSlot] = broker.name;
+        var txt = document.getElementById('broker'+currentModalSlot+'-text');
+        txt.textContent = broker.name;
+        txt.style.color = '#1e293b';
+        document.getElementById('broker'+currentModalSlot+'-btn').classList.add('has-value');
+        closeBrokerModal();
+      };
+    })(b);
+    return div;
+  }
+  var f = document.getElementById('featuredBrokers');
+  var a = document.getElementById('allBrokers');
+  f.innerHTML = ''; a.innerHTML = '';
+  BROKERS_FEATURED.filter(function(b){ return !q||b.name.toLowerCase().includes(q); }).forEach(function(b){ f.appendChild(makeItem(b)); });
+  BROKERS_ALL.filter(function(b){ return !q||b.name.toLowerCase().includes(q); }).forEach(function(b){ a.appendChild(makeItem(b)); });
+}
+function filterBrokers(q) { renderBrokerModal(q); }
+document.getElementById('brokerModal').addEventListener('click',function(e){ if(e.target===this) closeBrokerModal(); });
+
+// ===== 공통 =====
+
+
+
+
+
+// ===== 프로모션 상세 =====
+function openPromo(brokerName, brokerColor, brokerIcon) {
+  // 브로커 정보 업데이트
+  var iconEl = document.getElementById('promoBrokerIcon');
+  var nameEl = document.getElementById('promoBrokerName');
+  var mainBtn = document.getElementById('promoMainBtn');
+  var secondBtn = document.getElementById('promoSecondBtn');
+
+  if(iconEl) {
+    iconEl.textContent = brokerIcon || 'E';
+    iconEl.style.background = brokerColor || '#025a93';
+  }
+  if(nameEl) nameEl.textContent = brokerName || 'Exness Global';
+  if(mainBtn) mainBtn.textContent = brokerName ? brokerName + 'でアカウント作成' : 'アカウントを作成';
+  if(secondBtn) secondBtn.textContent = brokerName ? brokerName + ' へ移動' : 'ブローカーへ移動';
+
+  pageHistory.push('main');
+  showPage('promo', false);
+}
+
+// ===== 제휴/광고 문의 =====
+var selectedContactType = '提携提案';
+
+function selectContactType(btn, type) {
+  selectedContactType = type;
+  document.querySelectorAll('.contact-type-btn').forEach(function(b) {
+    b.style.background = '#fff';
+    b.style.borderColor = '#e2e8f0';
+    b.style.color = '#475569';
+  });
+  btn.style.background = '#025a93';
+  btn.style.borderColor = '#025a93';
+  btn.style.color = '#fff';
+}
+
+function submitContact() {
+  var title = document.getElementById('contact-title').value.trim();
+  var email = document.getElementById('contact-email').value.trim();
+  var body = document.getElementById('contact-body').value.trim();
+  var privacy = document.getElementById('contact-privacy').checked;
+
+  // 유효성 검사
+  if(!title) { alert('件名を入力してください'); return; }
+  if(!email || !email.includes('@')) { alert('正しいメールアドレスを入力してください'); return; }
+  if(!body) { alert('お問い合わせ内容を入力してください'); return; }
+  if(!privacy) { alert('個人情報の収集および利用に同意してください'); return; }
+
+  // 메일 내용 구성
+  var mailSubject = '[FNEX ' + selectedContactType + '] ' + title;
+  var mailBody =
+    '■ お問い合わせ種別: ' + selectedContactType + '\n' +
+    '■ 件名: ' + title + '\n' +
+    '■ 連絡先メール: ' + email + '\n' +
+    '\n' +
+    '■ お問い合わせ内容:\n' +
+    body + '\n' +
+    '\n' +
+    '---\n' +
+    'FNEX アプリからの送信';
+
+  // mailto 링크 생성 및 열기
+  var mailtoLink = 'mailto:japan.fx.info@gmail.com' +
+    '?subject=' + encodeURIComponent(mailSubject) +
+    '&body=' + encodeURIComponent(mailBody);
+
+  window.location.href = mailtoLink;
+
+  // 버튼 상태 변경
+  var btn = document.getElementById('contact-submit');
+  btn.textContent = '✓ メールアプリを開きました';
   btn.style.background = '#16a34a';
+  btn.disabled = true;
+
+  // 입력 초기화
   setTimeout(function() {
-    btn.textContent = '変更を保存';
+    document.getElementById('contact-title').value = '';
+    document.getElementById('contact-email').value = '';
+    document.getElementById('contact-body').value = '';
+    document.getElementById('contact-privacy').checked = false;
+    document.getElementById('contact-count').textContent = '0 / 500文字';
+    btn.textContent = 'お問い合わせを送信';
     btn.style.background = '#025a93';
-  }, 2000);
+    btn.disabled = false;
+  }, 3000);
 }
 
-// ===== 뉴스 =====
-var API_URL = 'https://script.google.com/macros/s/AKfycbw4gTOAOihrpZPi_1AtWGqHt064etf-02M5Y8cZwC9jwwN7uQl0WRMCQkg0-7zs_yA/exec';
-var allNews = [];
+// 글자수 카운터
+document.addEventListener('DOMContentLoaded', function() {
+  var textarea = document.getElementById('contact-body');
+  if(textarea) {
+    textarea.addEventListener('input', function() {
+      var count = this.value.length;
+      var counter = document.getElementById('contact-count');
+      if(counter) {
+        counter.textContent = count + ' / 500文字';
+        counter.style.color = count > 450 ? '#ef4444' : '#94a3b8';
+      }
+      if(count > 500) this.value = this.value.substring(0, 500);
+    });
+  }
+});
 
-function timeAgo(dateStr) {
-  try {
-    var date = new Date(dateStr);
-    if (isNaN(date)) return '';
-    var diff = Math.floor((new Date() - date) / 60000);
-    if (diff < 1) return 'たった今';
-    if (diff < 60) return diff + '分前';
-    if (diff < 1440) return Math.floor(diff/60) + '時間前';
-    return Math.floor(diff/1440) + '日前';
-  } catch(e) { return ''; }
+// ===== 이용약관 =====
+var POLICY_DATA = {
+  privacy: {
+    title: 'プライバシーポリシー',
+    sections: [
+      {
+        heading: '1. 収集する個人情報',
+        content: 'FNEXは、サービス提供のために以下の個人情報を収集します。\n\n・氏名、メールアドレス\n・ニックネーム、プロフィール画像\n・利用履歴、取引設定情報\n・デバイス情報（機種、OSバージョン）\n\n個人情報は、お客様の同意のもと収集し、法令に基づき適切に管理します。'
+      },
+      {
+        heading: '2. 個人情報の利用目的',
+        content: '収集した個人情報は以下の目的で利用します。\n\n・サービスの提供および改善\n・お客様へのお知らせ・通知\n・不正利用の防止および安全管理\n・統計データの作成（個人を特定しない形式）'
+      },
+      {
+        heading: '3. 第三者への提供',
+        content: 'FNEXは、以下の場合を除き、お客様の個人情報を第三者に提供しません。\n\n・お客様の同意がある場合\n・法令に基づく場合\n・人命・財産の保護に必要な場合\n\n提携ブローカーへの情報提供は、お客様が明示的に同意した場合のみ行います。'
+      },
+      {
+        heading: '4. 個人情報の保管期間',
+        content: '個人情報は、サービス利用期間中および退会後5年間保管します。ただし、法令で定められた保管期間がある場合はそれに従います。'
+      },
+      {
+        heading: '5. お問い合わせ',
+        content: 'プライバシーポリシーに関するお問い合わせは、アプリ内の「提携・広告のお問い合わせ」からご連絡ください。'
+      }
+    ]
+  },
+  terms: {
+    title: 'サービス利用規約',
+    sections: [
+      {
+        heading: '第1条（目的）',
+        content: '本規約は、FNEX（以下「当社」）が提供するFXニュース・情報サービス（以下「本サービス」）の利用に関する条件を定めることを目的とします。'
+      },
+      {
+        heading: '第2条（利用登録）',
+        content: '本サービスの利用には、所定の方法による登録が必要です。以下に該当する方の利用登録はお断りする場合があります。\n\n・虚偽の情報を登録した方\n・過去に利用規約違反により退会処分を受けた方\n・18歳未満の方（保護者の同意がある場合を除く）'
+      },
+      {
+        heading: '第3条（禁止事項）',
+        content: '本サービスの利用にあたり、以下の行為を禁止します。\n\n・法令または公序良俗に反する行為\n・他のユーザーへの誹謗中傷・ハラスメント\n・虚偽情報の流布\n・当社の許可なく商業目的でサービスを利用する行為\n・システムへの不正アクセス・改ざん'
+      },
+      {
+        heading: '第4条（免責事項）',
+        content: '本サービスが提供するFX情報・ニュースは参考情報であり、投資判断の根拠とする場合はご自身の責任において行ってください。当社は投資の結果について一切の責任を負いません。'
+      },
+      {
+        heading: '第5条（規約の変更）',
+        content: '当社は必要に応じて本規約を変更することができます。変更後の規約はアプリ内に掲載した時点から効力を生じます。継続してサービスを利用された場合、変更後の規約に同意したものとみなします。'
+      }
+    ]
+  },
+  community: {
+    title: 'コミュニティ運営ポリシー',
+    sections: [
+      {
+        heading: '1. コミュニティの目的',
+        content: 'FNEXのコミュニティは、FXトレーダーが情報を共有し、互いに学び合う場です。健全で有益な情報交換ができる環境を維持するため、以下のルールを設けています。'
+      },
+      {
+        heading: '2. 投稿ガイドライン',
+        content: '以下のような投稿を推奨します。\n\n・市場分析・チャート解説\n・ブローカーの体験談・レビュー（公平・客観的なもの）\n・取引戦略の共有\n・FX学習に役立つ情報\n\n投稿内容は正確な情報に基づいたものとし、他者を誤解させる内容は避けてください。'
+      },
+      {
+        heading: '3. 禁止コンテンツ',
+        content: '以下のコンテンツは削除対象となります。\n\n・スパム・広告目的の投稿\n・他ユーザーへの誹謗中傷\n・根拠のない投資推奨・詐欺的勧誘\n・著作権を侵害するコンテンツ\n・政治・宗教に関する過激な発言'
+      },
+      {
+        heading: '4. 違反への対応',
+        content: 'ポリシー違反が確認された場合、以下の措置を取ることがあります。\n\n・投稿の削除\n・警告メッセージの送信\n・一時的なコメント・投稿制限\n・アカウントの永久停止\n\n重大な違反の場合は、事前通知なく対応を行う場合があります。'
+      },
+      {
+        heading: '5. 報告機能の利用',
+        content: 'ガイドライン違反のコンテンツを発見した場合は、投稿の報告機能をご利用ください。報告内容はモデレーターが確認し、適切な対応を行います。'
+      }
+    ]
+  }
+};
+
+function openPolicy(type) {
+  var data = POLICY_DATA[type];
+  if(!data) return;
+
+  document.getElementById('policyTitle').textContent = data.title;
+
+  var content = data.sections.map(function(s) {
+    return '<div style="margin-bottom:24px">' +
+      '<h3 style="font-size:15px;font-weight:700;color:#025a93;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f1f5f9">' + s.heading + '</h3>' +
+      '<p style="font-size:14px;color:#475569;line-height:1.8;white-space:pre-line">' + s.content + '</p>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('policyContent').innerHTML = content +
+    '<div style="text-align:center;padding:20px 0;color:#94a3b8;font-size:12px">最終更新日: 2025年1月1日</div>';
+
+  document.getElementById('policyPanelOverlay').style.display = 'block';
+  setTimeout(function(){ document.getElementById('policyPanel').style.bottom = '0'; }, 10);
 }
-function getDir(text) {
-  if (!text) return 'neutral';
-  if (text.includes('強気') || text.includes('🐂')) return 'bull';
-  if (text.includes('弱気') || text.includes('🐻')) return 'bear';
+
+function closePolicy() {
+  document.getElementById('policyPanel').style.bottom = '-100%';
+  setTimeout(function(){ document.getElementById('policyPanelOverlay').style.display = 'none'; }, 350);
+}
+
+// ===== FX 용어사전 =====
+var GLOSSARY = [
+  {
+    term: 'Leverage（レバレッジ）',
+    desc: 'レバレッジとは、少ない証拠金で自分の資本よりはるかに大きな規模の取引ができる仕組みです。例えば100:1のレバレッジを使うと、1,000ドルで100,000ドル相当のポジションを保有できます。利益を最大化できる一方、損失も拡大する諸刃の剣です。',
+    tag: '基礎'
+  },
+  {
+    term: 'Currency Pairs（通貨ペア）',
+    desc: '外国為替取引において、2カ国の通貨が対となって交換されるものを指します。前の通貨を基準通貨（Base Currency）、後の通貨を決済通貨（Quote Currency）と呼びます。例：EUR/USD。',
+    tag: '基礎'
+  },
+  {
+    term: 'Major Currencies（主要通貨）',
+    desc: '世界の外国為替市場で最も活発に取引される通貨のことです。米ドル（USD）、ユーロ（EUR）、日本円（JPY）、英国ポンド（GBP）、豪ドル（AUD）、カナダドル（CAD）、スイスフラン（CHF）などが含まれます。',
+    tag: '基礎'
+  },
+  {
+    term: 'Spread（スプレッド）',
+    desc: '買い値（Ask）と売り値（Bid）の価格差のことです。取引を成立させる際に発生するコストとみなされ、市場の流動性が高いほどスプレッドは狭くなる傾向があります。',
+    tag: 'コスト'
+  },
+  {
+    term: 'Pip（ピップ）',
+    desc: '為替レートの最小変動単位です。多くの通貨ペアでは小数点第4位（0.0001）が1pipsとなります。例えばEUR/USDが1.1050から1.1051に動いた場合、1pips上昇したことになります。',
+    tag: '基礎'
+  },
+  {
+    term: 'Lot（ロット）',
+    desc: 'FX取引における取引単位です。標準ロットは通常100,000通貨単位、ミニロットは10,000単位、マイクロロットは1,000単位です。ロットサイズが大きいほど、1pipsあたりの損益も大きくなります。',
+    tag: '基礎'
+  },
+  {
+    term: 'Margin Call（マージンコール）',
+    desc: '口座の評価資産が維持証拠金水準を下回った際に、ブローカーが追加資金の入金またはポジションの縮小を求める通知です。',
+    tag: 'リスク'
+  },
+  {
+    term: 'Stop Loss（ストップロス）',
+    desc: '特定の価格水準に達すると自動的にポジションを決済し、それ以上の損失を防ぐために設定する注文方法です。リスク管理の重要なツールです。',
+    tag: 'リスク'
+  },
+  {
+    term: 'Take Profit（テイクプロフィット）',
+    desc: '目標利益に達した時点で自動的にポジションを決済する注文です。あらかじめ設定した利益確定ラインで自動的に利食いができます。',
+    tag: 'リスク'
+  },
+  {
+    term: 'Stop Out（強制ロスカット）',
+    desc: '口座の証拠金維持率が特定水準（例：20%または50%）を下回った際に、ブローカーがそれ以上の損失拡大を防ぐため、最も損失の大きいポジションから順次強制決済する手続きです。',
+    tag: 'リスク'
+  },
+  {
+    term: 'Trailing Stop（トレイリングストップ）',
+    desc: '価格が有利な方向に動くにつれて、自動的に損切り価格を追従させる注文です。利益を確保しながら、相場の反転にも備えることができます。',
+    tag: 'リスク'
+  },
+  {
+    term: 'Swap（スワップ）',
+    desc: '異なる金利を持つ2通貨のポジションを翌日に持ち越した際に発生する金利差調整分のことです。高金利通貨を買い、低金利通貨を売るポジションでは受け取りとなります。',
+    tag: 'コスト'
+  },
+  {
+    term: 'Position（ポジション）',
+    desc: '現在保有している取引の状態を指します。買い建て（ロング）は価格上昇を期待する場合、売り建て（ショート）は価格下落を期待する場合に取ります。',
+    tag: '基礎'
+  },
+  {
+    term: 'Long / Short（ロング / ショート）',
+    desc: 'ロング（買い）は価格が上がると予測して通貨を購入すること。ショート（売り）は価格が下がると予測して通貨を売ること。FXでは両方向から利益を狙えます。',
+    tag: '基礎'
+  },
+  {
+    term: 'Bull / Bear（強気 / 弱気）',
+    desc: '強気（ブル）は価格上昇を予想する市場見通しや投資家のこと。弱気（ベア）は価格下落を予想する市場見通しや投資家のことです。強気市場をブルマーケット、弱気市場をベアマーケットと呼びます。',
+    tag: '基礎'
+  },
+  {
+    term: 'Volatility（ボラティリティ）',
+    desc: '価格変動の大きさや激しさを表す指標です。ボラティリティが高いと価格の変動幅が大きく、取引機会は増えますがリスクも高まります。',
+    tag: '市場'
+  },
+  {
+    term: 'Liquidity（流動性）',
+    desc: '市場で資産をすばやく売買できる度合いのことです。流動性が高い市場ではスプレッドが狭く、大口の注文でも価格への影響が小さくなります。',
+    tag: '市場'
+  },
+  {
+    term: 'IB（紹介ブローカー）',
+    desc: 'Introducing Brokerの略。新規顧客をブローカーに紹介する代理店のことです。紹介した顧客の取引量に応じてコミッション（紹介料）を受け取る仕組みです。',
+    tag: 'ブローカー'
+  },
+];
+
+var openGlossaryIdx = -1;
+
+function renderGlossary(query) {
+  var list = document.getElementById('glossaryList');
+  var q = (query||'').toLowerCase();
+  var filtered = GLOSSARY.filter(function(g){
+    return !q || g.term.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q) || g.tag.toLowerCase().includes(q);
+  });
+
+  if(!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:40px;margin-bottom:12px">📭</div><p style="font-size:14px">該当する用語が見つかりません</p></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(function(g, i) {
+    var tagColors = {
+      '基礎': '#025a93', 'コスト': '#d97706', 'リスク': '#dc2626',
+      '市場': '#16a34a', 'ブローカー': '#7c3aed'
+    };
+    var tagColor = tagColors[g.tag] || '#025a93';
+    return '<div style="margin-bottom:10px;border-radius:14px;border:1px solid #f1f5f9;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06)">' +
+      '<button onclick="toggleGlossary('+i+')" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;background:#fff;border:none;cursor:pointer;font-family:Inter,sans-serif;text-align:left">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;background:'+tagColor+'18;color:'+tagColor+'">'+g.tag+'</span>' +
+          '<span style="font-size:15px;font-weight:600;color:#0f172a">'+g.term+'</span>' +
+        '</div>' +
+        '<span id="arrow-'+i+'" style="font-size:18px;color:#94a3b8;transition:transform 0.2s;display:inline-block">▾</span>' +
+      '</button>' +
+      '<div id="desc-'+i+'" style="display:none;padding:0 16px 16px">' +
+        '<p style="font-size:14px;color:#475569;line-height:1.8;border-top:1px solid #f8fafc;padding-top:12px">'+g.desc+'</p>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleGlossary(idx) {
+  var desc = document.getElementById('desc-'+idx);
+  var arrow = document.getElementById('arrow-'+idx);
+  var btn = arrow.closest('button').parentElement;
+  if(desc.style.display === 'none') {
+    desc.style.display = 'block';
+    arrow.style.transform = 'rotate(180deg)';
+    arrow.style.color = '#025a93';
+    btn.style.background = 'rgba(2,90,147,0.03)';
+  } else {
+    desc.style.display = 'none';
+    arrow.style.transform = 'rotate(0deg)';
+    arrow.style.color = '#94a3b8';
+    btn.style.background = '#fff';
+  }
+}
+
+function searchGlossary(q) { renderGlossary(q); }
+
+
+
+
+
+// ===== 프로모션 상세 =====
+function openPromo(brokerName, brokerColor, brokerIcon) {
+  // 브로커 정보 업데이트
+  var iconEl = document.getElementById('promoBrokerIcon');
+  var nameEl = document.getElementById('promoBrokerName');
+  var mainBtn = document.getElementById('promoMainBtn');
+  var secondBtn = document.getElementById('promoSecondBtn');
+
+  if(iconEl) {
+    iconEl.textContent = brokerIcon || 'E';
+    iconEl.style.background = brokerColor || '#025a93';
+  }
+  if(nameEl) nameEl.textContent = brokerName || 'Exness Global';
+  if(mainBtn) mainBtn.textContent = brokerName ? brokerName + 'でアカウント作成' : 'アカウントを作成';
+  if(secondBtn) secondBtn.textContent = brokerName ? brokerName + ' へ移動' : 'ブローカーへ移動';
+
+  pageHistory.push('main');
+  showPage('promo', false);
+}
+
+// ===== 제휴/광고 문의 =====
+var selectedContactType = '提携提案';
+
+function selectContactType(btn, type) {
+  selectedContactType = type;
+  document.querySelectorAll('.contact-type-btn').forEach(function(b) {
+    b.style.background = '#fff';
+    b.style.borderColor = '#e2e8f0';
+    b.style.color = '#475569';
+  });
+  btn.style.background = '#025a93';
+  btn.style.borderColor = '#025a93';
+  btn.style.color = '#fff';
+}
+
+function submitContact() {
+  var title = document.getElementById('contact-title').value.trim();
+  var email = document.getElementById('contact-email').value.trim();
+  var body = document.getElementById('contact-body').value.trim();
+  var privacy = document.getElementById('contact-privacy').checked;
+
+  // 유효성 검사
+  if(!title) { alert('件名を入力してください'); return; }
+  if(!email || !email.includes('@')) { alert('正しいメールアドレスを入力してください'); return; }
+  if(!body) { alert('お問い合わせ内容を入力してください'); return; }
+  if(!privacy) { alert('個人情報の収集および利用に同意してください'); return; }
+
+  // 메일 내용 구성
+  var mailSubject = '[FNEX ' + selectedContactType + '] ' + title;
+  var mailBody =
+    '■ お問い合わせ種別: ' + selectedContactType + '\n' +
+    '■ 件名: ' + title + '\n' +
+    '■ 連絡先メール: ' + email + '\n' +
+    '\n' +
+    '■ お問い合わせ内容:\n' +
+    body + '\n' +
+    '\n' +
+    '---\n' +
+    'FNEX アプリからの送信';
+
+  // mailto 링크 생성 및 열기
+  var mailtoLink = 'mailto:japan.fx.info@gmail.com' +
+    '?subject=' + encodeURIComponent(mailSubject) +
+    '&body=' + encodeURIComponent(mailBody);
+
+  window.location.href = mailtoLink;
+
+  // 버튼 상태 변경
+  var btn = document.getElementById('contact-submit');
+  btn.textContent = '✓ メールアプリを開きました';
+  btn.style.background = '#16a34a';
+  btn.disabled = true;
+
+  // 입력 초기화
+  setTimeout(function() {
+    document.getElementById('contact-title').value = '';
+    document.getElementById('contact-email').value = '';
+    document.getElementById('contact-body').value = '';
+    document.getElementById('contact-privacy').checked = false;
+    document.getElementById('contact-count').textContent = '0 / 500文字';
+    btn.textContent = 'お問い合わせを送信';
+    btn.style.background = '#025a93';
+    btn.disabled = false;
+  }, 3000);
+}
+
+// 글자수 카운터
+document.addEventListener('DOMContentLoaded', function() {
+  var textarea = document.getElementById('contact-body');
+  if(textarea) {
+    textarea.addEventListener('input', function() {
+      var count = this.value.length;
+      var counter = document.getElementById('contact-count');
+      if(counter) {
+        counter.textContent = count + ' / 500文字';
+        counter.style.color = count > 450 ? '#ef4444' : '#94a3b8';
+      }
+      if(count > 500) this.value = this.value.substring(0, 500);
+    });
+  }
+});
+
+// ===== 이용약관 =====
+var POLICY_DATA = {
+  privacy: {
+    title: 'プライバシーポリシー',
+    sections: [
+      {
+        heading: '1. 収集する個人情報',
+        content: 'FNEXは、サービス提供のために以下の個人情報を収集します。\n\n・氏名、メールアドレス\n・ニックネーム、プロフィール画像\n・利用履歴、取引設定情報\n・デバイス情報（機種、OSバージョン）\n\n個人情報は、お客様の同意のもと収集し、法令に基づき適切に管理します。'
+      },
+      {
+        heading: '2. 個人情報の利用目的',
+        content: '収集した個人情報は以下の目的で利用します。\n\n・サービスの提供および改善\n・お客様へのお知らせ・通知\n・不正利用の防止および安全管理\n・統計データの作成（個人を特定しない形式）'
+      },
+      {
+        heading: '3. 第三者への提供',
+        content: 'FNEXは、以下の場合を除き、お客様の個人情報を第三者に提供しません。\n\n・お客様の同意がある場合\n・法令に基づく場合\n・人命・財産の保護に必要な場合\n\n提携ブローカーへの情報提供は、お客様が明示的に同意した場合のみ行います。'
+      },
+      {
+        heading: '4. 個人情報の保管期間',
+        content: '個人情報は、サービス利用期間中および退会後5年間保管します。ただし、法令で定められた保管期間がある場合はそれに従います。'
+      },
+      {
+        heading: '5. お問い合わせ',
+        content: 'プライバシーポリシーに関するお問い合わせは、アプリ内の「提携・広告のお問い合わせ」からご連絡ください。'
+      }
+    ]
+  },
+  terms: {
+    title: 'サービス利用規約',
+    sections: [
+      {
+        heading: '第1条（目的）',
+        content: '本規約は、FNEX（以下「当社」）が提供するFXニュース・情報サービス（以下「本サービス」）の利用に関する条件を定めることを目的とします。'
+      },
+      {
+        heading: '第2条（利用登録）',
+        content: '本サービスの利用には、所定の方法による登録が必要です。以下に該当する方の利用登録はお断りする場合があります。\n\n・虚偽の情報を登録した方\n・過去に利用規約違反により退会処分を受けた方\n・18歳未満の方（保護者の同意がある場合を除く）'
+      },
+      {
+        heading: '第3条（禁止事項）',
+        content: '本サービスの利用にあたり、以下の行為を禁止します。\n\n・法令または公序良俗に反する行為\n・他のユーザーへの誹謗中傷・ハラスメント\n・虚偽情報の流布\n・当社の許可なく商業目的でサービスを利用する行為\n・システムへの不正アクセス・改ざん'
+      },
+      {
+        heading: '第4条（免責事項）',
+        content: '本サービスが提供するFX情報・ニュースは参考情報であり、投資判断の根拠とする場合はご自身の責任において行ってください。当社は投資の結果について一切の責任を負いません。'
+      },
+      {
+        heading: '第5条（規約の変更）',
+        content: '当社は必要に応じて本規約を変更することができます。変更後の規約はアプリ内に掲載した時点から効力を生じます。継続してサービスを利用された場合、変更後の規約に同意したものとみなします。'
+      }
+    ]
+  },
+  community: {
+    title: 'コミュニティ運営ポリシー',
+    sections: [
+      {
+        heading: '1. コミュニティの目的',
+        content: 'FNEXのコミュニティは、FXトレーダーが情報を共有し、互いに学び合う場です。健全で有益な情報交換ができる環境を維持するため、以下のルールを設けています。'
+      },
+      {
+        heading: '2. 投稿ガイドライン',
+        content: '以下のような投稿を推奨します。\n\n・市場分析・チャート解説\n・ブローカーの体験談・レビュー（公平・客観的なもの）\n・取引戦略の共有\n・FX学習に役立つ情報\n\n投稿内容は正確な情報に基づいたものとし、他者を誤解させる内容は避けてください。'
+      },
+      {
+        heading: '3. 禁止コンテンツ',
+        content: '以下のコンテンツは削除対象となります。\n\n・スパム・広告目的の投稿\n・他ユーザーへの誹謗中傷\n・根拠のない投資推奨・詐欺的勧誘\n・著作権を侵害するコンテンツ\n・政治・宗教に関する過激な発言'
+      },
+      {
+        heading: '4. 違反への対応',
+        content: 'ポリシー違反が確認された場合、以下の措置を取ることがあります。\n\n・投稿の削除\n・警告メッセージの送信\n・一時的なコメント・投稿制限\n・アカウントの永久停止\n\n重大な違反の場合は、事前通知なく対応を行う場合があります。'
+      },
+      {
+        heading: '5. 報告機能の利用',
+        content: 'ガイドライン違反のコンテンツを発見した場合は、投稿の報告機能をご利用ください。報告内容はモデレーターが確認し、適切な対応を行います。'
+      }
+    ]
+  }
+};
+
+function openPolicy(type) {
+  var data = POLICY_DATA[type];
+  if(!data) return;
+
+  document.getElementById('policyTitle').textContent = data.title;
+
+  var content = data.sections.map(function(s) {
+    return '<div style="margin-bottom:24px">' +
+      '<h3 style="font-size:15px;font-weight:700;color:#025a93;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f1f5f9">' + s.heading + '</h3>' +
+      '<p style="font-size:14px;color:#475569;line-height:1.8;white-space:pre-line">' + s.content + '</p>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('policyContent').innerHTML = content +
+    '<div style="text-align:center;padding:20px 0;color:#94a3b8;font-size:12px">最終更新日: 2025年1月1日</div>';
+
+  document.getElementById('policyPanelOverlay').style.display = 'block';
+  setTimeout(function(){ document.getElementById('policyPanel').style.bottom = '0'; }, 10);
+}
+
+function closePolicy() {
+  document.getElementById('policyPanel').style.bottom = '-100%';
+  setTimeout(function(){ document.getElementById('policyPanelOverlay').style.display = 'none'; }, 350);
+}
+
+// ===== FX 용어사전 =====
+var GLOSSARY = [
+  {
+    term: 'Leverage（レバレッジ）',
+    en: 'Leverage',
+    desc: 'レバレッジとは、少ない証拠金で自分の資本よりもはるかに大きな規模の取引ができる仕組みです。例えば100:1のレバレッジを使うと、1,000ドルで100,000ドル相当のポジションを運用できます。利益を最大化できますが、損失も拡大する「諸刃の剣」です。',
+    tags: ['レバレッジ','証拠金','リスク']
+  },
+  {
+    term: 'Currency Pairs（通貨ペア）',
+    en: 'Currency Pairs',
+    desc: '外国為替取引において、2つの国の通貨が組み合わさって交換されるものを指します。前の通貨を基準通貨（Base Currency）、後ろの通貨を決済通貨（Quote Currency）と呼びます。例：EUR/USD。',
+    tags: ['通貨ペア','基準通貨','決済通貨']
+  },
+  {
+    term: 'Major Currencies（主要通貨）',
+    en: 'Major Currencies',
+    desc: '世界の外為市場で最も活発に取引される通貨のことです。米ドル（USD）、ユーロ（EUR）、日本円（JPY）、英ポンド（GBP）、豪ドル（AUD）、カナダドル（CAD）、スイスフラン（CHF）などが含まれます。',
+    tags: ['主要通貨','USD','EUR','JPY']
+  },
+  {
+    term: 'Spread（スプレッド）',
+    en: 'Spread',
+    desc: '買値（Ask）と売値（Bid）の価格差のことです。取引を成立させる際に発生するコストとみなされ、市場の流動性が高いほどスプレッドは狭くなる傾向があります。',
+    tags: ['スプレッド','コスト','流動性']
+  },
+  {
+    term: 'Margin Call（マージンコール）',
+    en: 'Margin Call',
+    desc: '口座の評価額が維持証拠金水準を下回ったとき、ブローカーが追加資金の入金またはポジション縮小を求める通知です。リスク管理において非常に重要な概念です。',
+    tags: ['マージンコール','証拠金','リスク管理']
+  },
+  {
+    term: 'Stop Loss（損切り）',
+    en: 'Stop Loss',
+    desc: '特定の価格水準に達したとき、自動的にポジションを決済してそれ以上の損失を防ぐために設定する注文方式です。リスク管理の重要なツールです。',
+    tags: ['損切り','ストップロス','リスク管理']
+  },
+  {
+    term: 'Stop Out（強制ロスカット）',
+    en: 'Stop Out',
+    desc: '口座の証拠金維持率が特定の水準（例：20%または50%）を下回ったとき、ブローカーがそれ以上の損失拡大を防ぐために最も損失の大きいポジションから順番に強制的に決済する手続きです。',
+    tags: ['ロスカット','強制決済','証拠金']
+  },
+  {
+    term: 'Trailing Stop（トレーリングストップ）',
+    en: 'Trailing Stop',
+    desc: '価格が有利な方向に動くとき、自動的に損切り価格を追随させる設定注文です。利益を確保しながら、市場の反転にも備えることができます。',
+    tags: ['トレーリングストップ','利益確定','自動注文']
+  },
+  {
+    term: 'Pip（ピップ）',
+    en: 'Pip',
+    desc: '外為取引における最小価格変動単位です。ほとんどの通貨ペアでは小数点4桁目（0.0001）が1pipsです。例えばEUR/USDが1.1050から1.1051に動いた場合、1pip上昇したことになります。',
+    tags: ['pip','ピップ','価格変動']
+  },
+  {
+    term: 'Lot（ロット）',
+    en: 'Lot',
+    desc: '外為取引の取引単位です。標準ロットは100,000通貨、ミニロットは10,000通貨、マイクロロットは1,000通貨です。取引量を決める際の基本単位として使われます。',
+    tags: ['ロット','取引単位','標準ロット']
+  },
+  {
+    term: 'Take Profit（利益確定）',
+    en: 'Take Profit',
+    desc: '特定の利益目標価格に達したとき、自動的にポジションを決済して利益を確定する注文方式です。感情に左右されずに利益を確実に取るために活用されます。',
+    tags: ['テイクプロフィット','利益確定','注文']
+  },
+  {
+    term: 'Swap（スワップ）',
+    en: 'Swap',
+    desc: 'ポジションを翌日に持ち越す際に発生する金利調整額です。高金利通貨を買い低金利通貨を売る場合はスワップを受け取り、逆の場合は支払います。スワップポイントとも呼ばれます。',
+    tags: ['スワップ','金利','オーバーナイト']
+  },
+  {
+    term: 'Volatility（ボラティリティ）',
+    en: 'Volatility',
+    desc: '価格の変動幅や変動の激しさを示す指標です。ボラティリティが高いほど価格の上下動が大きく、取引機会も多いですが、リスクも高まります。',
+    tags: ['ボラティリティ','価格変動','リスク']
+  },
+  {
+    term: 'Bull Market（強気相場）',
+    en: 'Bull Market',
+    desc: '価格が持続的に上昇している市場の状態を指します。強気派（Bull）は価格が上がると予測してロングポジション（買い）を取ります。',
+    tags: ['強気相場','ブル','上昇']
+  },
+  {
+    term: 'Bear Market（弱気相場）',
+    en: 'Bear Market',
+    desc: '価格が持続的に下落している市場の状態を指します。弱気派（Bear）は価格が下がると予測してショートポジション（売り）を取ります。',
+    tags: ['弱気相場','ベア','下落']
+  },
+  {
+    term: 'Liquidity（流動性）',
+    en: 'Liquidity',
+    desc: '資産を迅速に売買できる能力を指します。流動性が高い市場では取引が素早く成立しスプレッドも狭くなります。外為市場は世界最大の金融市場で、流動性が非常に高いです。',
+    tags: ['流動性','市場','スプレッド']
+  },
+];
+
+var openGlossaryIdx = -1;
+
+function renderGlossary(query) {
+  var q = (query||'').toLowerCase();
+  var list = document.getElementById('glossaryList');
+  list.innerHTML = '';
+
+  var filtered = GLOSSARY.filter(function(item) {
+    return !q || item.term.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q) || item.tags.some(function(t){ return t.toLowerCase().includes(q); });
+  });
+
+  if(!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#94a3b8;font-size:14px">🔍 該当する用語が見つかりませんでした</div>';
+    return;
+  }
+
+  filtered.forEach(function(item, i) {
+    var idx = GLOSSARY.indexOf(item);
+    var isOpen = idx === openGlossaryIdx;
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:14px;border:1px solid '+(isOpen?'#025a93':'#f1f5f9')+';margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);transition:border-color 0.2s';
+
+    var header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;background:'+(isOpen?'rgba(2,90,147,0.05)':'#fff');
+    header.innerHTML =
+      '<span style="font-size:15px;font-weight:600;color:#0f172a">'+item.term+'</span>' +
+      '<span style="font-size:18px;transition:transform 0.2s;display:inline-block;transform:'+(isOpen?'rotate(180deg)':'rotate(0deg)')+'">▾</span>';
+
+    var body = document.createElement('div');
+    body.style.cssText = 'padding:'+(isOpen?'0 16px 16px':'0')+';max-height:'+(isOpen?'500px':'0')+';overflow:hidden;transition:max-height 0.3s ease,padding 0.2s';
+
+    var inner = document.createElement('p');
+    inner.style.cssText = 'font-size:14px;color:#64748b;line-height:1.7;border-top:1px solid #f1f5f9;padding-top:12px';
+    inner.textContent = item.desc;
+    body.appendChild(inner);
+
+    // 태그
+    var tagDiv = document.createElement('div');
+    tagDiv.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:10px';
+    item.tags.forEach(function(tag) {
+      var t = document.createElement('span');
+      t.style.cssText = 'font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(2,90,147,0.08);color:#025a93';
+      t.textContent = '#'+tag;
+      tagDiv.appendChild(t);
+    });
+    body.appendChild(tagDiv);
+
+    header.onclick = (function(cardEl, bodyEl, headerEl, itemIdx) {
+      return function() {
+        if(openGlossaryIdx === itemIdx) {
+          openGlossaryIdx = -1;
+        } else {
+          openGlossaryIdx = itemIdx;
+        }
+        renderGlossary(document.getElementById('glossarySearch').value);
+      };
+    })(card, body, header, idx);
+
+    card.appendChild(header);
+    card.appendChild(body);
+    list.appendChild(card);
+  });
+}
+
+function filterGlossary(q) {
+  openGlossaryIdx = -1;
+  renderGlossary(q);
+}
+
+// page-glossary 진입 시 렌더링
+var origShowPage = showPage;
+// ===== 테마 설정 =====
+var currentTheme = 'light';
+var currentFontSize = 1;
+var fontSizes = [13, 16, 19, 22];
+var fontLabels = ['小 (13px)', '普通 (16px)', '中 (19px)', '大 (22px)'];
+var trackWidths = ['0%', '33%', '66%', '100%'];
+
+function selectTheme(mode) {
+  currentTheme = mode;
+  ['light','dark','system'].forEach(function(m) {
+    var card = document.getElementById('theme-'+m);
+    var radio = document.getElementById('radio-'+m);
+    var dot = radio.querySelector('div');
+    if(m === mode) {
+      card.style.border = '2px solid #025a93';
+      card.style.background = 'rgba(2,90,147,0.05)';
+      radio.style.border = '2px solid #025a93';
+      dot.style.opacity = '1';
+    } else {
+      card.style.border = '2px solid #e2e8f0';
+      card.style.background = '#fff';
+      radio.style.border = '2px solid #e2e8f0';
+      dot.style.opacity = '0';
+    }
+  });
+}
+
+function setFontSize(idx) {
+  currentFontSize = idx;
+  for(var i=0; i<4; i++) {
+    var dot = document.getElementById('dot-'+i);
+    if(i === idx) {
+      dot.style.width = '22px';
+      dot.style.height = '22px';
+      dot.style.background = '#025a93';
+      dot.style.boxShadow = '0 0 0 4px rgba(2,90,147,0.2)';
+    } else {
+      dot.style.width = '16px';
+      dot.style.height = '16px';
+      dot.style.background = '#cbd5e1';
+      dot.style.boxShadow = 'none';
+    }
+  }
+  document.getElementById('activeTrack').style.width = trackWidths[idx];
+  document.getElementById('previewText').style.fontSize = fontSizes[idx]+'px';
+  var label = document.getElementById('label-1');
+  if(label) label.textContent = fontLabels[idx];
+}
+
+function saveTheme() {
+  var btn = document.querySelector('#page-theme button[onclick="saveTheme()"]');
+  if(btn) {
+    btn.textContent = '✓ 保存しました！';
+    btn.style.background = '#16a34a';
+    setTimeout(function(){ btn.textContent='設定を保存'; btn.style.background='#025a93'; }, 2000);
+  }
+}
+
+var pageHistory = [];
+
+function showPage(name, addHistory) {
+  var SUB_PAGES = ['profile','points','theme','glossary','policy'];
+  var currentActive = document.querySelector('.page.active');
+  var currentId = currentActive ? currentActive.id.replace('page-','') : 'main';
+
+  if(addHistory !== false && currentId !== name) {
+    pageHistory.push(currentId);
+  }
+
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-'+name).classList.add('active');
+
+  if(SUB_PAGES.indexOf(name) !== -1) {
+    var el = document.getElementById('page-'+name);
+    if(el) el.scrollTop = 0;
+  } else {
+    window.scrollTo(0,0);
+  }
+
+  if(name==='glossary'){
+    document.getElementById('glossarySearch').value='';
+    renderGlossary('');
+  }
+}
+
+function goBack() {
+  if(pageHistory.length > 0) {
+    var prev = pageHistory.pop();
+    showPage(prev, false);
+  } else {
+    showPage('main', false);
+  }
+}
+document.getElementById('menuBtn').addEventListener('click',function(){ openSidebar(); });
+function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('open'); document.getElementById('sidebar').scrollTop=0; }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+function selectAvatar(el,emoji){
+  document.querySelectorAll('.avatar-circle').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('avatarMain').textContent=emoji;
+  document.getElementById('sidebarAvatar').textContent=emoji;
+}
+function removePair(btn){
+  var pair = btn.parentElement.textContent.replace('×','').trim();
+  var idx = selectedPairs.indexOf(pair);
+  if(idx !== -1) selectedPairs.splice(idx,1);
+  btn.parentElement.remove();
+}
+function saveProfile(){
+  var btn=document.getElementById('saveBtn');
+  btn.textContent='✓ 保存しました！';
+  btn.style.background='#16a34a';
+  setTimeout(function(){ btn.textContent='変更を保存'; btn.style.background='#025a93'; },2000);
+}
+
+var API_URL='https://script.google.com/macros/s/AKfycbw4gTOAOihrpZPi_1AtWGqHt064etf-02M5Y8cZwC9jwwN7uQl0WRMCQkg0-7zs_yA/exec';
+var allNews=[];
+function timeAgo(dateStr){
+  try{
+    var date=new Date(dateStr);
+    if(isNaN(date)) return '';
+    var diff=Math.floor((new Date()-date)/60000);
+    if(diff<1) return 'たった今';
+    if(diff<60) return diff+'分前';
+    if(diff<1440) return Math.floor(diff/60)+'時間前';
+    return Math.floor(diff/1440)+'日前';
+  }catch(e){ return ''; }
+}
+function getDir(text){
+  if(!text) return 'neutral';
+  if(text.includes('強気')||text.includes('🐂')) return 'bull';
+  if(text.includes('弱気')||text.includes('🐻')) return 'bear';
   return 'neutral';
 }
-function getSummary(text) {
-  if (!text) return '';
-  var m = text.match(/⚡\s*要約[:\：]\s*([\s\S]+?)(?=📊|$)/);
-  if (m) return m[1].trim().replace(/\n/g,' ').substring(0,120);
+function getSummary(text){
+  if(!text) return '';
+  var m=text.match(/⚡\s*要約[:\：]\s*([\s\S]+?)(?=📊|$)/);
+  if(m) return m[1].trim().replace(/\n/g,' ').substring(0,120);
   return text.replace(/📌[^\n]+\n?/g,'').replace(/📊[^\n]+\n?/g,'').trim().substring(0,120);
 }
-function createCard(item, i) {
-  var dir = getDir(item.summary);
-  var time = timeAgo(item.date);
-  var summary = getSummary(item.summary);
-  var title = (item.title||'タイトルなし').substring(0,80);
-  var link = item.link||'#';
-  var bull = dir==='bull'?Math.floor(60+Math.random()*25):dir==='bear'?Math.floor(10+Math.random()*20):Math.floor(40+Math.random()*20);
-  var bear = 100-bull;
-  var emoji = dir==='bull'?'📈':dir==='bear'?'📉':'➡️';
-  var comments = Math.floor(Math.random()*150);
-  if (i===0) return '<div class="breaking-card"><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:#ef4444;color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px">BREAKING</span><span style="color:#94a3b8;font-size:10px">'+time+'</span></div><h4 style="color:#ef4444;font-weight:900;font-size:14px;line-height:1.3">'+title+'</h4></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-left:12px"><span style="font-size:20px">'+emoji+'</span><a href="'+link+'" target="_blank" style="color:#ef4444;font-size:10px;font-weight:700;text-decoration:underline">More</a></div></div>';
-  var ad = i%5===4?'<div class="ad-card"><div><div style="font-size:10px;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">🎯 Broker Event</div><h4 style="color:#fff;font-weight:700;font-size:15px;line-height:1.4;max-width:180px">FXブローカーを比較して最高の条件を見つけよう</h4></div><button style="background:#fff;color:#025a93;font-size:12px;font-weight:700;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;white-space:nowrap">Check Now</button></div>':'';
+function createCard(item,i){
+  var dir=getDir(item.summary);
+  var time=timeAgo(item.date);
+  var summary=getSummary(item.summary);
+  var title=(item.title||'タイトルなし').substring(0,80);
+  var link=item.link||'#';
+  var bull=dir==='bull'?Math.floor(60+Math.random()*25):dir==='bear'?Math.floor(10+Math.random()*20):Math.floor(40+Math.random()*20);
+  var bear=100-bull;
+  var emoji=dir==='bull'?'📈':dir==='bear'?'📉':'➡️';
+  var comments=Math.floor(Math.random()*150);
+  if(i===0) return '<div class="breaking-card"><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:#ef4444;color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px">BREAKING</span><span style="color:#94a3b8;font-size:10px">'+time+'</span></div><h4 style="color:#ef4444;font-weight:900;font-size:14px;line-height:1.3">'+title+'</h4></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-left:12px"><span style="font-size:20px">'+emoji+'</span><a href="'+link+'" target="_blank" style="color:#ef4444;font-size:10px;font-weight:700;text-decoration:underline">More</a></div></div>';
+  var ad=i%5===4?'<div class="ad-card" onclick="openPromo(\'Exness Global\',\'#025a93\',\'E\')" style="cursor:pointer"><div><div style="font-size:10px;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">🎯 Broker Event</div><h4 style="color:#fff;font-weight:700;font-size:15px;line-height:1.4;max-width:180px">FXブローカーを比較して最高の条件を見つけよう</h4></div><button onclick="openPromo(\'Exness Global\',\'#025a93\',\'E\')" style="background:#fff;color:#025a93;font-size:12px;font-weight:700;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;white-space:nowrap">Check Now</button></div>':'';
   return ad+'<div class="news-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="background:rgba(2,90,147,0.1);color:#025a93;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">FX News</span><span style="color:#94a3b8;font-size:11px">'+time+'</span></div><h4 style="color:#0f172a;font-weight:700;font-size:15px;line-height:1.4;margin-bottom:8px">'+title+'</h4><p style="color:#64748b;font-size:13px;line-height:1.6;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+summary+'...</p><a href="'+link+'" target="_blank" style="color:#025a93;font-size:12px;font-weight:600;text-decoration:none;display:block;margin-bottom:12px">Read More →</a><div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:8px"><button class="bull-btn '+(dir==='bull'?'active':'inactive')+'">📈 Bull '+bull+'%</button><button class="bear-btn '+(dir==='bear'?'active':'inactive')+'">📉 Bear '+bear+'%</button></div><div style="display:flex;align-items:center;gap:12px;color:#94a3b8"><span style="font-size:12px">💬 '+comments+'</span><span>🔗</span></div></div></div>';
 }
-function filterNews(type) {
-  ['all','breaking','bull','bear'].forEach(function(t) {
-    document.getElementById('cat-'+t).className='cat-btn '+(t===type?'active':'inactive');
-  });
+function filterNews(type){
+  ['all','breaking','bull','bear'].forEach(function(t){ document.getElementById('cat-'+t).className='cat-btn '+(t===type?'active':'inactive'); });
   var filtered=allNews;
   if(type==='breaking') filtered=allNews.slice(0,5);
-  else if(type==='bull') filtered=allNews.filter(function(n){return getDir(n.summary)==='bull';});
-  else if(type==='bear') filtered=allNews.filter(function(n){return getDir(n.summary)==='bear';});
-  document.getElementById('newsItems').innerHTML=filtered.map(function(item,i){return createCard(item,i);}).join('');
+  else if(type==='bull') filtered=allNews.filter(function(n){ return getDir(n.summary)==='bull'; });
+  else if(type==='bear') filtered=allNews.filter(function(n){ return getDir(n.summary)==='bear'; });
+  document.getElementById('newsItems').innerHTML=filtered.map(function(item,i){ return createCard(item,i); }).join('');
 }
-async function loadNews() {
+async function loadNews(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('error').style.display='none';
   document.getElementById('newsList').style.display='none';
-  try {
+  try{
     var res=await fetch(API_URL);
     var data=await res.json();
     if(!data||data.length===0) throw new Error('no data');
-    allNews=data.filter(function(d){return d.title;}).reverse().slice(0,20);
-    document.getElementById('newsItems').innerHTML=allNews.map(function(item,i){return createCard(item,i);}).join('');
+    allNews=data.filter(function(d){ return d.title; }).reverse().slice(0,20);
+    document.getElementById('newsItems').innerHTML=allNews.map(function(item,i){ return createCard(item,i); }).join('');
     document.getElementById('updateTime').textContent='たった今 更新';
     document.getElementById('loading').style.display='none';
     document.getElementById('newsList').style.display='block';
-  } catch(e) {
+  }catch(e){
     document.getElementById('loading').style.display='none';
     document.getElementById('error').style.display='flex';
   }
