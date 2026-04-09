@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="referrer" content="no-referrer"/>
 <title>FNEX Avatar</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,21 +12,20 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; padding: 16px; }
 h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #0f172a; }
 .preview-area { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
 .avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #e2e8f0; overflow: hidden; background: #f1f5f9; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-.avatar-frame img { width: 140px; height: 140px; }
+.avatar-frame img { width: 140px; height: 140px; display: block; }
 .random-btn { padding: 8px 20px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; }
-.random-btn:hover { border-color: #025a93; color: #025a93; }
 .tabs { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
 .tabs::-webkit-scrollbar { display: none; }
-.tab { padding: 7px 14px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
+.tab { padding: 7px 14px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; white-space: nowrap; flex-shrink: 0; }
 .tab.active { background: #025a93; color: #fff; border-color: #025a93; }
 .panel { display: none; }
 .panel.active { display: block; }
 .section-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 12px 0 8px; font-weight: 600; }
 .opt-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .opt-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-.opt-img { width: 64px; height: 64px; border-radius: 12px; border: 2px solid #e2e8f0; background: #f8fafc; overflow: hidden; transition: all 0.15s; }
-.opt-img img { width: 64px; height: 64px; }
-.opt-img.sel { border: 2.5px solid #025a93; background: #eff6ff; box-shadow: 0 0 0 3px rgba(2,90,147,0.15); }
+.opt-img { width: 64px; height: 64px; border-radius: 12px; border: 2px solid #e2e8f0; overflow: hidden; background: #f8fafc; }
+.opt-img img { width: 64px; height: 64px; display: block; }
+.opt-img.sel { border: 2.5px solid #025a93; box-shadow: 0 0 0 3px rgba(2,90,147,0.15); }
 .opt-label { font-size: 10px; color: #94a3b8; font-weight: 500; text-align: center; max-width: 64px; }
 .color-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.15s; }
@@ -39,7 +39,7 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
 
   <div class="preview-area">
     <div class="avatar-frame">
-      <img id="mainAvatar" src="" alt="avatar"/>
+      <img id="mainAvatar" referrerpolicy="no-referrer" crossorigin="anonymous" src="" alt="avatar"/>
     </div>
     <button class="random-btn" onclick="randomize()">🔀 ランダム</button>
   </div>
@@ -100,14 +100,12 @@ var MOUTHS = ['variant01','variant02','variant03','variant04','variant05','varia
 var ACCESSORIES = ['','variant01','variant02','variant03','variant04','variant05'];
 var EARRINGS = ['','variant01','variant02','variant03','variant04','variant05','variant06'];
 var SKIN_COLORS = ['f2d3b1','fddbb4','edb98a','e8a87c','c68642','8d5524','4a2912','ffcc99','d4a76a','a07850'];
-var HAIR_COLORS = ['2c1b18','1c0d05','6b3a2a','a0522d','d4af37','c0c0c0','f5f5f5','e8748a','4a90d9','7b2d8b','e8472a','2d7b4a'];
+var HAIR_COLORS = ['2c1b18','1c0d05','6b3a2a','a0522d','d4af37','c0c0c0','f5f5f5','e8748a','4a90d9','7b2d8b'];
 var BG_COLORS = ['b6e3f4','c0aede','d1d4f9','ffd5dc','ffdfbf','f0fff4','e8f4ff','fff3e0','f3e5f5','e0f7fa','fce4ec','e8f5e9'];
 
-// PNG 형식으로 변경 (img 태그 직접 로드 가능)
 function buildUrl(over, size) {
   var s = Object.assign({}, state, over||{});
-  var sz = size || 140;
-  var base = 'https://api.dicebear.com/9.x/lorelei/png';
+  var sz = size||140;
   var p = '?size='+sz;
   p += '&backgroundColor='+s.backgroundColor;
   p += '&skinColor='+s.skinColor;
@@ -119,11 +117,18 @@ function buildUrl(over, size) {
   p += '&mouth='+s.mouth;
   if(s.accessories) p += '&accessories='+s.accessories+'&accessoriesProbability=100';
   if(s.earrings) p += '&earrings='+s.earrings+'&earringsProbability=100';
-  return base + p;
+  // v7 사용 (더 안정적)
+  return 'https://api.dicebear.com/7.x/lorelei/png'+p;
+}
+
+function setImg(el, url) {
+  el.referrerPolicy = 'no-referrer';
+  el.crossOrigin = 'anonymous';
+  el.src = url;
 }
 
 function updateMain() {
-  document.getElementById('mainAvatar').src = buildUrl({}, 140);
+  setImg(document.getElementById('mainAvatar'), buildUrl({}, 140));
 }
 
 function switchTab(name, el) {
@@ -143,9 +148,9 @@ function makeGrid(gridId, arr, stateKey, labelFn, overFn) {
     var imgDiv = document.createElement('div');
     imgDiv.className = 'opt-img'+(state[stateKey]===val?' sel':'');
     var img = document.createElement('img');
-    img.src = buildUrl(over, 64);
     img.width = 64; img.height = 64;
     img.loading = 'lazy';
+    setImg(img, buildUrl(over, 64));
     imgDiv.appendChild(img);
     var span = document.createElement('span');
     span.className = 'opt-label';
