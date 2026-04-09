@@ -10,8 +10,8 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; padding: 16px; }
 .wrap { max-width: 420px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
 h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #0f172a; }
 .preview-area { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
-.avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #e2e8f0; overflow: hidden; background: #f1f5f9; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-.avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #e2e8f0; overflow: hidden; background: #f1f5f9; box-shadow: 0 4px 16px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
+.avatar-frame svg { width: 140px; height: 140px; }
 .random-btn { padding: 8px 20px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; }
 .random-btn:hover { border-color: #025a93; color: #025a93; }
 .tabs { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
@@ -24,13 +24,15 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
 .opt-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .opt-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
 .opt-img { width: 64px; height: 64px; border-radius: 12px; border: 2px solid #e2e8f0; background: #f8fafc; overflow: hidden; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
-.opt-img img { width: 64px; height: 64px; }
+.opt-img svg { width: 64px; height: 64px; }
 .opt-img.sel { border: 2.5px solid #025a93; background: #eff6ff; box-shadow: 0 0 0 3px rgba(2,90,147,0.15); }
 .opt-label { font-size: 10px; color: #94a3b8; font-weight: 500; text-align: center; max-width: 64px; }
 .color-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.15s; }
 .color-dot.sel { border: 2px solid #025a93; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #025a93; transform: scale(1.1); }
 .save-btn { width: 100%; padding: 14px; background: #025a93; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 20px; }
+.loading-spinner { width: 30px; height: 30px; border: 3px solid #e2e8f0; border-top-color: #025a93; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -38,8 +40,8 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
   <h2>🎨 アバター設定</h2>
 
   <div class="preview-area">
-    <div class="avatar-frame">
-      <img id="mainAvatar" src="" alt="avatar"/>
+    <div class="avatar-frame" id="mainFrame">
+      <div class="loading-spinner"></div>
     </div>
     <button class="random-btn" onclick="randomize()">🔀 ランダム</button>
   </div>
@@ -55,7 +57,6 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
     <div class="section-label">헤어 스타일</div>
     <div class="opt-grid" id="hairGrid"></div>
   </div>
-
   <div class="panel" id="panel-face">
     <div class="section-label">눈</div>
     <div class="opt-grid" id="eyeGrid"></div>
@@ -66,7 +67,6 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
     <div class="section-label">입</div>
     <div class="opt-grid" id="mouthGrid"></div>
   </div>
-
   <div class="panel" id="panel-color">
     <div class="section-label">피부색</div>
     <div class="color-grid" id="skinGrid"></div>
@@ -75,7 +75,6 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
     <div class="section-label">배경색</div>
     <div class="color-grid" id="bgGrid"></div>
   </div>
-
   <div class="panel" id="panel-acc">
     <div class="section-label">악세사리</div>
     <div class="opt-grid" id="accGrid"></div>
@@ -88,10 +87,10 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
 
 <script>
 var state = {
-  hair: 'variant01', eyes: 'variant01', eyebrows: 'variant01',
-  nose: 'variant01', mouth: 'variant01',
-  accessories: '', earrings: '',
-  skinColor: 'f2d3b1', hairColor: '2c1b18', backgroundColor: 'b6e3f4'
+  hair:'variant01', eyes:'variant01', eyebrows:'variant01',
+  nose:'variant01', mouth:'variant01',
+  accessories:'', earrings:'',
+  skinColor:'f2d3b1', hairColor:'2c1b18', backgroundColor:'b6e3f4'
 };
 
 var HAIR = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10','variant11','variant12','variant13','variant14','variant15','variant16','variant17','variant18','variant19','variant20','variant21','variant22','variant23','variant24'];
@@ -102,26 +101,51 @@ var NOSE = ['variant01','variant02','variant03','variant04','variant05','variant
 var MOUTHS = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10'];
 var ACCESSORIES = ['','variant01','variant02','variant03','variant04','variant05'];
 var EARRINGS = ['','variant01','variant02','variant03','variant04','variant05','variant06'];
-var SKIN_COLORS = ['f2d3b1','fddbb4','edb98a','e8a87c','c68642','8d5524','4a2912','ffcc99','ffe0bd','d4a76a'];
+var SKIN_COLORS = ['f2d3b1','fddbb4','edb98a','e8a87c','c68642','8d5524','4a2912','ffcc99','d4a76a','a07850'];
 var HAIR_COLORS = ['2c1b18','1c0d05','6b3a2a','a0522d','d4af37','c0c0c0','f5f5f5','e8748a','4a90d9','7b2d8b','e8472a','2d7b4a'];
 var BG_COLORS = ['b6e3f4','c0aede','d1d4f9','ffd5dc','ffdfbf','f0fff4','e8f4ff','fff3e0','f3e5f5','e0f7fa','fce4ec','e8f5e9','dff5e3','e8e4f9'];
 
-function url(over, size) {
+function buildParams(over, size) {
   var s = Object.assign({}, state, over||{});
-  var sz = size||140;
-  var p = '?radius=50&size='+sz;
-  p += '&backgroundColor='+s.backgroundColor;
-  p += '&skinColor='+s.skinColor;
-  p += '&hair='+s.hair+'&hairColor='+s.hairColor;
-  p += '&eyes='+s.eyes+'&eyebrows='+s.eyebrows;
-  p += '&nose='+s.nose+'&mouth='+s.mouth;
-  if(s.accessories) p += '&accessories='+s.accessories+'&accessoriesProbability=100';
-  if(s.earrings) p += '&earrings='+s.earrings+'&earringsProbability=100';
-  return 'https://api.dicebear.com/9.x/lorelei/svg'+p;
+  var p = new URLSearchParams();
+  p.set('radius','50');
+  p.set('size', size||'140');
+  p.set('backgroundColor', s.backgroundColor);
+  p.set('skinColor', s.skinColor);
+  p.set('hair', s.hair);
+  p.set('hairColor', s.hairColor);
+  p.set('eyes', s.eyes);
+  p.set('eyebrows', s.eyebrows);
+  p.set('nose', s.nose);
+  p.set('mouth', s.mouth);
+  if(s.accessories){ p.set('accessories', s.accessories); p.set('accessoriesProbability','100'); }
+  if(s.earrings){ p.set('earrings', s.earrings); p.set('earringsProbability','100'); }
+  return 'https://api.dicebear.com/9.x/lorelei/svg?' + p.toString();
+}
+
+// fetch로 SVG 직접 가져오기
+function fetchSVG(url, callback) {
+  fetch(url)
+    .then(function(r){ return r.text(); })
+    .then(function(svg){ callback(svg); })
+    .catch(function(){ callback(null); });
 }
 
 function updateMain() {
-  document.getElementById('mainAvatar').src = url({}, 140);
+  var frame = document.getElementById('mainFrame');
+  frame.innerHTML = '<div class="loading-spinner"></div>';
+  fetchSVG(buildParams({}, 140), function(svg) {
+    if(svg) frame.innerHTML = svg;
+    else frame.innerHTML = '<div style="font-size:40px">😊</div>';
+  });
+}
+
+function updateOptImg(el, url) {
+  el.innerHTML = '<div class="loading-spinner" style="width:20px;height:20px;border-width:2px"></div>';
+  fetchSVG(url, function(svg) {
+    if(svg) el.innerHTML = svg;
+    else el.innerHTML = '<div style="font-size:20px;color:#94a3b8">?</div>';
+  });
 }
 
 function switchTab(name, el) {
@@ -140,11 +164,7 @@ function makeGrid(gridId, arr, stateKey, labelFn, overFn) {
     div.className = 'opt-item';
     var imgDiv = document.createElement('div');
     imgDiv.className = 'opt-img'+(state[stateKey]===val?' sel':'');
-    var img = document.createElement('img');
-    img.width = 64; img.height = 64;
-    img.src = url(over, 64);
-    img.onerror = function(){ this.src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" fill="%23f1f5f9" rx="8"/><text x="32" y="36" text-anchor="middle" font-size="20" fill="%2394a3b8">'+(i+1)+'</text></svg>'; };
-    imgDiv.appendChild(img);
+    updateOptImg(imgDiv, buildParams(over, 64));
     var span = document.createElement('span');
     span.className = 'opt-label';
     span.textContent = labelFn ? labelFn(val,i) : (i+1)+'번';
@@ -182,11 +202,11 @@ function makeColorGrid(gridId, colors, stateKey) {
 
 function randomize() {
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  state.hair = pick(HAIR); state.eyes = pick(EYES); state.eyebrows = pick(EYEBROWS);
-  state.nose = pick(NOSE); state.mouth = pick(MOUTHS);
-  state.skinColor = pick(SKIN_COLORS); state.hairColor = pick(HAIR_COLORS);
-  state.backgroundColor = pick(BG_COLORS);
-  state.accessories = pick(ACCESSORIES); state.earrings = pick(EARRINGS);
+  state.hair=pick(HAIR); state.eyes=pick(EYES); state.eyebrows=pick(EYEBROWS);
+  state.nose=pick(NOSE); state.mouth=pick(MOUTHS);
+  state.skinColor=pick(SKIN_COLORS); state.hairColor=pick(HAIR_COLORS);
+  state.backgroundColor=pick(BG_COLORS);
+  state.accessories=pick(ACCESSORIES); state.earrings=pick(EARRINGS);
   renderAll(); updateMain();
 }
 
