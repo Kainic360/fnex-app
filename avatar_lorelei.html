@@ -3,34 +3,37 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta name="referrer" content="no-referrer"/>
 <title>FNEX Avatar</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Inter', sans-serif; background: #f6f7f8; padding: 16px; }
 .wrap { max-width: 420px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
 h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #0f172a; }
-.preview-area { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
-.avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #e2e8f0; overflow: hidden; background: #f1f5f9; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.preview-area { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 28px; }
+.avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #e2e8f0; overflow: hidden; background: #f1f5f9; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
 .avatar-frame img { width: 140px; height: 140px; display: block; }
-.random-btn { padding: 8px 20px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; }
-.tabs { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
-.tabs::-webkit-scrollbar { display: none; }
-.tab { padding: 7px 14px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; white-space: nowrap; flex-shrink: 0; }
-.tab.active { background: #025a93; color: #fff; border-color: #025a93; }
-.panel { display: none; }
-.panel.active { display: block; }
-.section-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 12px 0 8px; font-weight: 600; }
-.opt-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-.opt-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-.opt-img { width: 64px; height: 64px; border-radius: 12px; border: 2px solid #e2e8f0; overflow: hidden; background: #f8fafc; }
-.opt-img img { width: 64px; height: 64px; display: block; }
-.opt-img.sel { border: 2.5px solid #025a93; box-shadow: 0 0 0 3px rgba(2,90,147,0.15); }
-.opt-label { font-size: 10px; color: #94a3b8; font-weight: 500; text-align: center; max-width: 64px; }
+.nickname-row { display: flex; gap: 8px; width: 100%; }
+.nickname-input { flex: 1; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 14px; outline: none; font-family: 'Inter', sans-serif; color: #1e293b; }
+.nickname-input:focus { border-color: #025a93; }
+.apply-btn { padding: 10px 16px; border-radius: 10px; background: #025a93; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+
+.section-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 10px; font-weight: 600; }
+
+/* 아바타 프리셋 그리드 */
+.preset-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.preset-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+.preset-img { width: 70px; height: 70px; border-radius: 50%; border: 2.5px solid #e2e8f0; overflow: hidden; background: #f8fafc; transition: all 0.15s; }
+.preset-img img { width: 70px; height: 70px; display: block; }
+.preset-img.sel { border: 3px solid #025a93; box-shadow: 0 0 0 3px rgba(2,90,147,0.2); }
+.preset-label { font-size: 10px; color: #94a3b8; font-weight: 600; text-align: center; }
+
+/* 배경색 */
 .color-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.15s; }
 .color-dot.sel { border: 2px solid #025a93; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #025a93; transform: scale(1.1); }
-.save-btn { width: 100%; padding: 14px; background: #025a93; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 20px; }
+
+.random-btn { width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px; }
+.save-btn { width: 100%; padding: 14px; background: #025a93; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; }
 </style>
 </head>
 <body>
@@ -39,185 +42,158 @@ h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px;
 
   <div class="preview-area">
     <div class="avatar-frame">
-      <img id="mainAvatar" referrerpolicy="no-referrer" crossorigin="anonymous" src="" alt="avatar"/>
+      <img id="mainAvatar" src="" alt="avatar"/>
     </div>
-    <button class="random-btn" onclick="randomize()">🔀 ランダム</button>
+    <div class="nickname-row">
+      <input class="nickname-input" id="nicknameInput" placeholder="닉네임 입력..." value="Trader_Kim"/>
+      <button class="apply-btn" onclick="applyNickname()">적용</button>
+    </div>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('hair',this)">💇 헤어</div>
-    <div class="tab" onclick="switchTab('face',this)">👁️ 얼굴</div>
-    <div class="tab" onclick="switchTab('color',this)">🎨 색상</div>
-    <div class="tab" onclick="switchTab('acc',this)">💎 악세사리</div>
-  </div>
+  <div class="section-label">🎭 아바타 선택 (클릭해서 고르세요)</div>
+  <div class="preset-grid" id="presetGrid"></div>
 
-  <div class="panel active" id="panel-hair">
-    <div class="section-label">헤어 스타일</div>
-    <div class="opt-grid" id="hairGrid"></div>
-  </div>
-  <div class="panel" id="panel-face">
-    <div class="section-label">눈</div>
-    <div class="opt-grid" id="eyeGrid"></div>
-    <div class="section-label">눈썹</div>
-    <div class="opt-grid" id="eyebrowGrid"></div>
-    <div class="section-label">코</div>
-    <div class="opt-grid" id="noseGrid"></div>
-    <div class="section-label">입</div>
-    <div class="opt-grid" id="mouthGrid"></div>
-  </div>
-  <div class="panel" id="panel-color">
-    <div class="section-label">피부색</div>
-    <div class="color-grid" id="skinGrid"></div>
-    <div class="section-label">머리 색</div>
-    <div class="color-grid" id="hairColorGrid"></div>
-    <div class="section-label">배경색</div>
-    <div class="color-grid" id="bgGrid"></div>
-  </div>
-  <div class="panel" id="panel-acc">
-    <div class="section-label">악세사리</div>
-    <div class="opt-grid" id="accGrid"></div>
-    <div class="section-label">귀걸이</div>
-    <div class="opt-grid" id="earringGrid"></div>
-  </div>
+  <div class="section-label">🎨 배경색</div>
+  <div class="color-grid" id="colorGrid"></div>
 
+  <button class="random-btn" onclick="randomize()">🔀 랜덤으로 바꾸기</button>
   <button class="save-btn" onclick="saveAvatar()">アバターを保存 / 아바타 저장</button>
 </div>
 
 <script>
-var state = {
-  hair:'variant01', eyes:'variant01', eyebrows:'variant01',
-  nose:'variant01', mouth:'variant01',
-  accessories:'', earrings:'',
-  skinColor:'f2d3b1', hairColor:'2c1b18', backgroundColor:'b6e3f4'
-};
+var currentSeed = 'Trader_Kim';
+var currentBg = 'b6e3f4';
+var selectedPreset = null;
 
-var HAIR = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10','variant11','variant12','variant13','variant14','variant15','variant16','variant17','variant18','variant19','variant20','variant21','variant22','variant23','variant24'];
-var HAIR_LABELS = ['단발①','단발②','단발③','단발④','단발⑤','단발⑥','단발⑦','단발⑧','중단①','중단②','중단③','중단④','장발①','장발②','장발③','장발④','장발⑤','컬리①','컬리②','컬리③','묶음①','묶음②','묶음③','묶음④'];
-var EYES = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10','variant11','variant12'];
-var EYEBROWS = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10'];
-var NOSE = ['variant01','variant02','variant03','variant04','variant05','variant06'];
-var MOUTHS = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10'];
-var ACCESSORIES = ['','variant01','variant02','variant03','variant04','variant05'];
-var EARRINGS = ['','variant01','variant02','variant03','variant04','variant05','variant06'];
-var SKIN_COLORS = ['f2d3b1','fddbb4','edb98a','e8a87c','c68642','8d5524','4a2912','ffcc99','d4a76a','a07850'];
-var HAIR_COLORS = ['2c1b18','1c0d05','6b3a2a','a0522d','d4af37','c0c0c0','f5f5f5','e8748a','4a90d9','7b2d8b'];
-var BG_COLORS = ['b6e3f4','c0aede','d1d4f9','ffd5dc','ffdfbf','f0fff4','e8f4ff','fff3e0','f3e5f5','e0f7fa','fce4ec','e8f5e9'];
+// 다양한 시드로 아바타 프리셋 24개
+var PRESETS = [
+  {seed:'Alpha Wolf', label:'Wolf'},
+  {seed:'Silver Fox', label:'Fox'},
+  {seed:'Blue Eagle', label:'Eagle'},
+  {seed:'Red Panda', label:'Panda'},
+  {seed:'Dark Tiger', label:'Tiger'},
+  {seed:'Ocean Wave', label:'Ocean'},
+  {seed:'Fire Storm', label:'Storm'},
+  {seed:'Green Leaf', label:'Leaf'},
+  {seed:'Star Nova', label:'Nova'},
+  {seed:'Moon Shine', label:'Moon'},
+  {seed:'Sun Blaze', label:'Blaze'},
+  {seed:'Ice Crystal', label:'Ice'},
+  {seed:'Gold Rush', label:'Gold'},
+  {seed:'Shadow Ace', label:'Ace'},
+  {seed:'Purple Zen', label:'Zen'},
+  {seed:'Pink Dream', label:'Dream'},
+  {seed:'Black Night', label:'Night'},
+  {seed:'White Snow', label:'Snow'},
+  {seed:'Cyber Punk', label:'Cyber'},
+  {seed:'Neon Light', label:'Neon'},
+  {seed:'Retro Wave', label:'Retro'},
+  {seed:'Future Tech', label:'Tech'},
+  {seed:'Wild Nature', label:'Wild'},
+  {seed:'Urban Style', label:'Urban'},
+];
 
-function buildUrl(over, size) {
-  var s = Object.assign({}, state, over||{});
-  var sz = size||140;
-  var p = '?size='+sz;
-  p += '&backgroundColor='+s.backgroundColor;
-  p += '&skinColor='+s.skinColor;
-  p += '&hair='+s.hair;
-  p += '&hairColor='+s.hairColor;
-  p += '&eyes='+s.eyes;
-  p += '&eyebrows='+s.eyebrows;
-  p += '&nose='+s.nose;
-  p += '&mouth='+s.mouth;
-  if(s.accessories) p += '&accessories='+s.accessories+'&accessoriesProbability=100';
-  if(s.earrings) p += '&earrings='+s.earrings+'&earringsProbability=100';
-  // v7 사용 (더 안정적)
-  return 'https://api.dicebear.com/7.x/lorelei/png'+p;
-}
+var BG_COLORS = [
+  'b6e3f4','c0aede','d1d4f9','ffd5dc',
+  'ffdfbf','f0fff4','e8f4ff','fff3e0',
+  'f3e5f5','e0f7fa','fce4ec','e8f5e9',
+  'dff5e3','e8e4f9','ffe4b5','e0e0e0'
+];
 
-function setImg(el, url) {
-  el.referrerPolicy = 'no-referrer';
-  el.crossOrigin = 'anonymous';
-  el.src = url;
+function getUrl(seed, size) {
+  return 'https://api.multiavatar.com/' + encodeURIComponent(seed) + '.png?apikey=&size=' + (size||140);
 }
 
 function updateMain() {
-  setImg(document.getElementById('mainAvatar'), buildUrl({}, 140));
+  document.getElementById('mainAvatar').src = getUrl(currentSeed, 140);
 }
 
-function switchTab(name, el) {
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
-  el.classList.add('active');
-  document.getElementById('panel-'+name).classList.add('active');
+function applyNickname() {
+  var val = document.getElementById('nicknameInput').value.trim();
+  if(val) {
+    currentSeed = val;
+    selectedPreset = null;
+    document.querySelectorAll('.preset-img').forEach(function(d){ d.classList.remove('sel'); });
+    updateMain();
+  }
 }
 
-function makeGrid(gridId, arr, stateKey, labelFn, overFn) {
-  var grid = document.getElementById(gridId);
+function renderPresets() {
+  var grid = document.getElementById('presetGrid');
   grid.innerHTML = '';
-  arr.forEach(function(val, i) {
-    var over = overFn ? overFn(val) : (function(v){ var o={}; o[stateKey]=v; return o; })(val);
+  PRESETS.forEach(function(p, i) {
     var div = document.createElement('div');
-    div.className = 'opt-item';
+    div.className = 'preset-item';
     var imgDiv = document.createElement('div');
-    imgDiv.className = 'opt-img'+(state[stateKey]===val?' sel':'');
+    imgDiv.className = 'preset-img' + (currentSeed === p.seed ? ' sel' : '');
     var img = document.createElement('img');
-    img.width = 64; img.height = 64;
+    img.src = getUrl(p.seed, 70);
+    img.width = 70; img.height = 70;
     img.loading = 'lazy';
-    setImg(img, buildUrl(over, 64));
     imgDiv.appendChild(img);
     var span = document.createElement('span');
-    span.className = 'opt-label';
-    span.textContent = labelFn ? labelFn(val,i) : (i+1)+'번';
+    span.className = 'preset-label';
+    span.textContent = p.label;
     div.appendChild(imgDiv);
     div.appendChild(span);
-    div.onclick = (function(v, id, g, key) {
+    div.onclick = (function(preset, id) {
       return function() {
-        state[key] = v;
-        g.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+        currentSeed = preset.seed;
+        document.getElementById('nicknameInput').value = preset.seed;
+        document.querySelectorAll('.preset-img').forEach(function(d){ d.classList.remove('sel'); });
         id.classList.add('sel');
         updateMain();
       };
-    })(val, imgDiv, grid, stateKey);
+    })(p, imgDiv);
     grid.appendChild(div);
   });
 }
 
-function makeColorGrid(gridId, colors, stateKey) {
-  var grid = document.getElementById(gridId);
+function renderColors() {
+  var grid = document.getElementById('colorGrid');
   grid.innerHTML = '';
-  colors.forEach(function(c) {
+  BG_COLORS.forEach(function(c) {
     var dot = document.createElement('div');
-    dot.className = 'color-dot'+(state[stateKey]===c?' sel':'');
-    dot.style.background = '#'+c;
+    dot.className = 'color-dot' + (currentBg === c ? ' sel' : '');
+    dot.style.background = '#' + c;
     dot.onclick = function() {
-      state[stateKey] = c;
+      currentBg = c;
       grid.querySelectorAll('.color-dot').forEach(function(d){ d.classList.remove('sel'); });
       dot.classList.add('sel');
-      updateMain();
-      renderAll();
+      // Multiavatar는 배경색 파라미터 없음 - 프레임 배경색만 변경
+      document.querySelector('.avatar-frame').style.background = '#' + c;
     };
     grid.appendChild(dot);
   });
 }
 
 function randomize() {
-  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  state.hair=pick(HAIR); state.eyes=pick(EYES); state.eyebrows=pick(EYEBROWS);
-  state.nose=pick(NOSE); state.mouth=pick(MOUTHS);
-  state.skinColor=pick(SKIN_COLORS); state.hairColor=pick(HAIR_COLORS);
-  state.backgroundColor=pick(BG_COLORS);
-  state.accessories=pick(ACCESSORIES); state.earrings=pick(EARRINGS);
-  renderAll(); updateMain();
+  var adjectives = ['Cool','Wild','Dark','Bright','Swift','Bold','Calm','Sharp','Wise','Noble'];
+  var nouns = ['Trader','Wolf','Eagle','Tiger','Panda','Fox','Lion','Bear','Hawk','Dragon'];
+  var seed = adjectives[Math.floor(Math.random()*adjectives.length)] + ' ' + nouns[Math.floor(Math.random()*nouns.length)] + Math.floor(Math.random()*999);
+  currentSeed = seed;
+  document.getElementById('nicknameInput').value = seed;
+  document.querySelectorAll('.preset-img').forEach(function(d){ d.classList.remove('sel'); });
+  updateMain();
 }
 
 function saveAvatar() {
   var btn = document.querySelector('.save-btn');
   btn.textContent = '✓ 保存しました！/ 저장됐어요!';
   btn.style.background = '#16a34a';
-  setTimeout(function(){ btn.textContent='アバターを保存 / 아바타 저장'; btn.style.background='#025a93'; }, 2000);
+  setTimeout(function(){
+    btn.textContent = 'アバターを保存 / 아바타 저장';
+    btn.style.background = '#025a93';
+  }, 2000);
 }
 
-function renderAll() {
-  makeGrid('hairGrid', HAIR, 'hair', function(v,i){ return HAIR_LABELS[i]; });
-  makeGrid('eyeGrid', EYES, 'eyes', function(v,i){ return '눈 '+(i+1); });
-  makeGrid('eyebrowGrid', EYEBROWS, 'eyebrows', function(v,i){ return '눈썹 '+(i+1); });
-  makeGrid('noseGrid', NOSE, 'nose', function(v,i){ return '코 '+(i+1); });
-  makeGrid('mouthGrid', MOUTHS, 'mouth', function(v,i){ return '입 '+(i+1); });
-  makeGrid('accGrid', ACCESSORIES, 'accessories', function(v,i){ return v===''?'없음':'악세 '+i; }, function(v){ return {accessories:v}; });
-  makeGrid('earringGrid', EARRINGS, 'earrings', function(v,i){ return v===''?'없음':'귀걸이 '+i; }, function(v){ return {earrings:v}; });
-  makeColorGrid('skinGrid', SKIN_COLORS, 'skinColor');
-  makeColorGrid('hairColorGrid', HAIR_COLORS, 'hairColor');
-  makeColorGrid('bgGrid', BG_COLORS, 'backgroundColor');
-}
+// 엔터키로 닉네임 적용
+document.getElementById('nicknameInput').addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') applyNickname();
+});
 
-renderAll();
+renderPresets();
+renderColors();
 updateMain();
 </script>
 </body>
