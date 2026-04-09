@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FNEX Avatar Customizer</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #f6f7f8; padding: 16px; }
+.wrap { max-width: 420px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+h2 { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #0f172a; }
+
+/* 프리뷰 */
+.preview-area { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
+.avatar-frame { width: 130px; height: 130px; border-radius: 50%; border: 3px solid #e2e8f0; overflow: hidden; background: #f1f5f9; position: relative; }
+.avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.random-btn { padding: 8px 20px; border-radius: 999px; border: 1px solid #e2e8f0; background: #f8fafc; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; }
+
+/* 탭 */
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+.tab { padding: 7px 14px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; white-space: nowrap; transition: all 0.15s; }
+.tab.active { background: #025a93; color: #fff; border-color: #025a93; }
+
+/* 옵션 패널 */
+.panel { display: none; }
+.panel.active { display: block; }
+.section-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 12px 0 8px; font-weight: 600; }
+
+/* 스타일 그리드 */
+.style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.style-card { border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 8px 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; background: #fff; transition: all 0.15s; }
+.style-card:hover { border-color: #93c5fd; }
+.style-card.sel { border: 2px solid #025a93; background: #eff6ff; }
+.style-card img { width: 56px; height: 56px; border-radius: 50%; background: #f1f5f9; }
+.style-name { font-size: 10px; color: #64748b; font-weight: 600; text-align: center; }
+
+/* 옵션 선택 */
+.opt-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.opt-img { width: 52px; height: 52px; border-radius: 10px; border: 1.5px solid #e2e8f0; background: #f8fafc; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.opt-img img { width: 100%; height: 100%; object-fit: cover; }
+.opt-img.sel { border: 2px solid #025a93; background: #eff6ff; }
+.opt-label { font-size: 10px; color: #94a3b8; font-weight: 500; }
+
+/* 컬러 */
+.color-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+.color-dot.sel { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #025a93; }
+
+/* 저장 */
+.save-btn { width: 100%; padding: 14px; background: #025a93; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
+.save-btn:hover { background: #0369a1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>🎨 アバターカスタマイズ</h2>
+
+  <!-- 프리뷰 -->
+  <div class="preview-area">
+    <div class="avatar-frame">
+      <img id="mainAvatar" src="" alt="avatar" onload="hideLoading()" onerror="showError()"/>
+      <div class="avatar-loading" id="loading">⏳</div>
+    </div>
+    <button class="random-btn" onclick="randomize()">🔀 ランダム生成</button>
+  </div>
+
+  <!-- 탭 -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('style',this)">스타일</div>
+    <div class="tab" onclick="switchTab('hair',this)">헤어</div>
+    <div class="tab" onclick="switchTab('face',this)">얼굴</div>
+    <div class="tab" onclick="switchTab('color',this)">색상</div>
+    <div class="tab" onclick="switchTab('acc',this)">악세사리</div>
+  </div>
+
+  <!-- 스타일 패널 -->
+  <div class="panel active" id="panel-style">
+    <div class="section-label">아바타 스타일</div>
+    <div class="style-grid" id="styleGrid"></div>
+  </div>
+
+  <!-- 헤어 패널 -->
+  <div class="panel" id="panel-hair">
+    <div class="section-label">헤어 스타일</div>
+    <div class="opt-grid" id="hairGrid"></div>
+  </div>
+
+  <!-- 얼굴 패널 -->
+  <div class="panel" id="panel-face">
+    <div class="section-label">눈 스타일</div>
+    <div class="opt-grid" id="eyeGrid"></div>
+    <div class="section-label">눈썹</div>
+    <div class="opt-grid" id="eyebrowGrid"></div>
+    <div class="section-label">입</div>
+    <div class="opt-grid" id="mouthGrid"></div>
+  </div>
+
+  <!-- 색상 패널 -->
+  <div class="panel" id="panel-color">
+    <div class="section-label">피부색</div>
+    <div class="color-grid" id="skinGrid"></div>
+    <div class="section-label">머리 색</div>
+    <div class="color-grid" id="hairColorGrid"></div>
+    <div class="section-label">배경색</div>
+    <div class="color-grid" id="bgGrid"></div>
+  </div>
+
+  <!-- 악세사리 패널 -->
+  <div class="panel" id="panel-acc">
+    <div class="section-label">악세사리</div>
+    <div class="opt-grid" id="accGrid"></div>
+    <div class="section-label">옷</div>
+    <div class="opt-grid" id="clothingGrid"></div>
+  </div>
+
+  <button class="save-btn" onclick="saveAvatar()">アバターを保存 / 아바타 저장</button>
+</div>
+
+<script>
+var BASE = 'https://api.dicebear.com/9.x/adventurer/svg';
+
+var state = {
+  style: 'adventurer',
+  hair: 'short01',
+  eyes: 'variant01',
+  eyebrows: 'variant01',
+  mouth: 'variant01',
+  skinColor: 'f2d3b1',
+  hairColor: '2c1b18',
+  backgroundColor: 'b6e3f4',
+  accessories: '',
+  clothing: 'shirt01'
+};
+
+var STYLES = [
+  {id:'adventurer', name:'Adventurer'},
+  {id:'avataaars', name:'Avataaars'},
+  {id:'big-smile', name:'Big Smile'},
+  {id:'lorelei', name:'Lorelei'},
+  {id:'micah', name:'Micah'},
+  {id:'notionists', name:'Notionists'},
+];
+
+var HAIR = ['short01','short02','short03','short04','short05','long01','long02','long03','long04','bun01','bun02','curly01','curly02','wavy01','wavy02','pixie01'];
+var EYES = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08'];
+var EYEBROWS = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08'];
+var MOUTHS = ['variant01','variant02','variant03','variant04','variant05','variant06','variant07','variant08','variant09','variant10'];
+var ACCESSORIES = ['','glasses01','glasses02','glasses03','glasses04','glasses05','earrings01','earrings02','earrings03','eyepatch'];
+var CLOTHING = ['shirt01','shirt02','shirt03','hoodie01','hoodie02','blazer01','blazer02','sweater01','sweater02'];
+
+var SKIN_COLORS = ['f2d3b1','edb98a','e8a87c','c68642','8d5524','4a2912','fddbb4','f1c27d','ffdbac','d4a574'];
+var HAIR_COLORS = ['2c1b18','1c0d05','6b3a2a','a0522d','d4af37','c0c0c0','f5f5f5','e8748a','4a90d9','7b2d8b'];
+var BG_COLORS = ['b6e3f4','c0aede','d1d4f9','ffd5dc','ffdfbf','f0fff4','e8f4ff','fff3e0','f3e5f5','e0f7fa','fce4ec','e8f5e9'];
+
+function buildUrl(overrides) {
+  var s = Object.assign({}, state, overrides || {});
+  var style = s.style;
+  var base = 'https://api.dicebear.com/9.x/' + style + '/svg';
+  var params = '?radius=50&size=120&backgroundColor=' + s.backgroundColor;
+
+  if (style === 'adventurer') {
+    params += '&skinColor=' + s.skinColor;
+    params += '&hair=' + s.hair;
+    params += '&hairColor=' + s.hairColor;
+    params += '&eyes=' + s.eyes;
+    params += '&eyebrows=' + s.eyebrows;
+    params += '&mouth=' + s.mouth;
+    if (s.accessories) params += '&accessories=' + s.accessories + '&accessoriesProbability=100';
+    params += '&clothing=' + s.clothing;
+  } else {
+    params += '&seed=' + Math.random().toString(36).substr(2,8);
+  }
+  return base + params;
+}
+
+function updateMain() {
+  var img = document.getElementById('mainAvatar');
+  document.getElementById('loading').style.display = 'flex';
+  img.src = buildUrl();
+}
+
+function hideLoading() { document.getElementById('loading').style.display = 'none'; }
+function showError() { document.getElementById('loading').textContent = '😐'; }
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+function makePreviewUrl(opts) {
+  var s = Object.assign({}, state, opts);
+  return 'https://api.dicebear.com/9.x/adventurer/svg?radius=50&size=60&backgroundColor=' + s.backgroundColor + '&skinColor=' + s.skinColor + '&hairColor=' + s.hairColor + '&hair=' + (opts.hair||s.hair) + '&eyes=' + (opts.eyes||s.eyes) + '&eyebrows=' + (opts.eyebrows||s.eyebrows) + '&mouth=' + (opts.mouth||s.mouth) + '&clothing=' + (opts.clothing||s.clothing) + (opts.accessories!==undefined?(opts.accessories?'&accessories='+opts.accessories+'&accessoriesProbability=100':''):(s.accessories?'&accessories='+s.accessories+'&accessoriesProbability=100':''));
+}
+
+function makeOptItem(label, previewUrl, isSelected, onClick) {
+  var div = document.createElement('div');
+  div.className = 'opt-item';
+  var imgDiv = document.createElement('div');
+  imgDiv.className = 'opt-img' + (isSelected?' sel':'');
+  var img = document.createElement('img');
+  img.src = previewUrl;
+  img.style.borderRadius = '8px';
+  imgDiv.appendChild(img);
+  var span = document.createElement('span');
+  span.className = 'opt-label';
+  span.textContent = label;
+  div.appendChild(imgDiv);
+  div.appendChild(span);
+  div.onclick = function() {
+    onClick(imgDiv);
+  };
+  return div;
+}
+
+function renderHair() {
+  var grid = document.getElementById('hairGrid');
+  grid.innerHTML = '';
+  HAIR.forEach(function(h) {
+    var item = makeOptItem(h.replace('0','').replace('0',''), makePreviewUrl({hair:h}), state.hair===h, function(imgDiv) {
+      state.hair = h;
+      grid.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+      imgDiv.classList.add('sel');
+      updateMain();
+    });
+    grid.appendChild(item);
+  });
+}
+
+function renderEyes() {
+  var grid = document.getElementById('eyeGrid');
+  grid.innerHTML = '';
+  EYES.forEach(function(e, i) {
+    var item = makeOptItem('눈 '+(i+1), makePreviewUrl({eyes:e}), state.eyes===e, function(imgDiv) {
+      state.eyes = e;
+      grid.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+      imgDiv.classList.add('sel');
+      updateMain();
+    });
+    grid.appendChild(item);
+  });
+}
+
+function renderEyebrows() {
+  var grid = document.getElementById('eyebrowGrid');
+  grid.innerHTML = '';
+  EYEBROWS.forEach(function(e, i) {
+    var item = makeOptItem('눈썹 '+(i+1), makePreviewUrl({eyebrows:e}), state.eyebrows===e, function(imgDiv) {
+      state.eyebrows = e;
+      grid.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+      imgDiv.classList.add('sel');
+      updateMain();
+    });
+    grid.appendChild(item);
+  });
+}
+
+function renderMouths() {
+  var grid = document.getElementById('mouthGrid');
+  grid.innerHTML = '';
+  MOUTHS.forEach(function(m, i) {
+    var item = makeOptItem('입 '+(i+1), makePreviewUrl({mouth:m}), state.mouth===m, function(imgDiv) {
+      state.mouth = m;
+      grid.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+      imgDiv.classList.add('sel');
+      updateMain();
+    });
+    grid.appendChild(item);
+  });
+}
+
+function renderColors() {
+  function makeColorGrid(gridId, colors, stateKey) {
+    var grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+    colors.forEach(function(c) {
+      var dot = document.createElement('div');
+      dot.className = 'color-dot' + (state[stateKey]===c?' sel':'');
+      dot.style.background = '#' + c;
+      dot.onclick = function() {
+        state[stateKey] = c;
+        grid.querySelectorAll('.color-dot').forEach(function(d){ d.classList.remove('sel'); });
+        dot.classList.add('sel');
+        updateMain();
+        if(stateKey==='hairColor') renderHair();
+        if(stateKey==='skinColor') { renderHair(); renderEyes(); renderEyebrows(); renderMouths(); renderAcc(); renderClothing(); }
+      };
+      grid.appendChild(dot);
+    });
+  }
+  makeColorGrid('skinGrid', SKIN_COLORS, 'skinColor');
+  makeColorGrid('hairColorGrid', HAIR_COLORS, 'hairColor');
+  makeColorGrid('bgGrid', BG_COLORS, 'backgroundColor');
+}
+
+function renderAcc() {
+  var grid = document.getElementById('accGrid');
+  grid.innerHTML = '';
+  ACCESSORIES.forEach(function(a, i) {
+    var label = a===''?'없음':a.replace('glasses0','안경').replace('earrings0','귀걸이').replace('eyepatch','안대').replace('1','①').replace('2','②').replace('3','③').replace('4','④').replace('5','⑤');
+    var item = makeOptItem(label, makePreviewUrl({accessories:a}), state.accessories===a, function(imgDiv) {
+      state.accessories = a;
+      grid.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+      imgDiv.classList.add('sel');
+      updateMain();
+    });
+    grid.appendChild(item);
+  });
+}
+
+function renderClothing() {
+  var grid = document.getElementById('clothingGrid');
+  grid.innerHTML = '';
+  CLOTHING.forEach(function(c, i) {
+    var label = c.replace('shirt0','셔츠').replace('hoodie0','후디').replace('blazer0','블레이저').replace('sweater0','스웨터').replace('1','①').replace('2','②').replace('3','③');
+    var item = makeOptItem(label, makePreviewUrl({clothing:c}), state.clothing===c, function(imgDiv) {
+      state.clothing = c;
+      grid.querySelectorAll('.opt-img').forEach(function(d){ d.classList.remove('sel'); });
+      imgDiv.classList.add('sel');
+      updateMain();
+    });
+    grid.appendChild(item);
+  });
+}
+
+function renderStyles() {
+  var grid = document.getElementById('styleGrid');
+  grid.innerHTML = '';
+  STYLES.forEach(function(s) {
+    var card = document.createElement('div');
+    card.className = 'style-card' + (state.style===s.id?' sel':'');
+    var img = document.createElement('img');
+    img.src = 'https://api.dicebear.com/9.x/'+s.id+'/svg?seed=Trader&radius=50&size=60';
+    img.alt = s.name;
+    var span = document.createElement('span');
+    span.className = 'style-name';
+    span.textContent = s.name;
+    card.appendChild(img);
+    card.appendChild(span);
+    card.onclick = function() {
+      state.style = s.id;
+      document.querySelectorAll('.style-card').forEach(function(c){ c.classList.remove('sel'); });
+      card.classList.add('sel');
+      updateMain();
+    };
+    grid.appendChild(card);
+  });
+}
+
+function randomize() {
+  state.hair = HAIR[Math.floor(Math.random()*HAIR.length)];
+  state.eyes = EYES[Math.floor(Math.random()*EYES.length)];
+  state.eyebrows = EYEBROWS[Math.floor(Math.random()*EYEBROWS.length)];
+  state.mouth = MOUTHS[Math.floor(Math.random()*MOUTHS.length)];
+  state.skinColor = SKIN_COLORS[Math.floor(Math.random()*SKIN_COLORS.length)];
+  state.hairColor = HAIR_COLORS[Math.floor(Math.random()*HAIR_COLORS.length)];
+  state.backgroundColor = BG_COLORS[Math.floor(Math.random()*BG_COLORS.length)];
+  state.accessories = ACCESSORIES[Math.floor(Math.random()*ACCESSORIES.length)];
+  state.clothing = CLOTHING[Math.floor(Math.random()*CLOTHING.length)];
+  renderAll();
+  updateMain();
+}
+
+function renderAll() {
+  renderStyles();
+  renderHair();
+  renderEyes();
+  renderEyebrows();
+  renderMouths();
+  renderColors();
+  renderAcc();
+  renderClothing();
+}
+
+function saveAvatar() {
+  var btn = document.querySelector('.save-btn');
+  btn.textContent = '✓ 保存しました！/ 저장됐어요!';
+  btn.style.background = '#16a34a';
+  setTimeout(function() {
+    btn.textContent = 'アバターを保存 / 아바타 저장';
+    btn.style.background = '#025a93';
+  }, 2000);
+}
+
+renderAll();
+updateMain();
+</script>
+</body>
+</html>
