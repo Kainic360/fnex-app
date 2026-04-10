@@ -93,6 +93,71 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
+  <!-- SNS 공유 바텀시트 -->
+  <div id="shareOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:none;align-items:flex-end;justify-content:center" onclick="handleShareOverlay(event)">
+    <div id="sharePanel" style="width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;transform:translateY(100%);transition:transform 0.35s ease">
+      <!-- 핸들 -->
+      <div style="padding:12px;display:flex;justify-content:center">
+        <div style="width:40px;height:4px;background:#e2e8f0;border-radius:999px"></div>
+      </div>
+      <!-- 제목 -->
+      <h3 style="font-size:18px;font-weight:700;color:#0f172a;text-align:center;margin-bottom:24px">Share with friends</h3>
+
+      <!-- SNS 아이콘 그리드 -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:0 24px;margin-bottom:28px">
+        <!-- Telegram -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer" onclick="shareToSNS('telegram')">
+          <div style="width:52px;height:52px;border-radius:50%;background:#0088cc;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.12.56-.46.7-.93.43l-2.56-1.88-1.24 1.19c-.14.13-.25.25-.51.25l.18-2.58 4.7-4.24c.2-.18-.05-.28-.32-.1L7.86 14.4l-2.51-.78c-.55-.17-.56-.55.11-.81l9.82-3.79c.45-.17.85.11.36.78z"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:500;color:#64748b">Telegram</span>
+        </div>
+        <!-- KakaoTalk -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer" onclick="shareToSNS('kakao')">
+          <div style="width:52px;height:52px;border-radius:50%;background:#fae100;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#3c1e1e"><path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.69 1.7 5.04 4.25 6.41L6.2 20.1c-.09.3.22.56.49.39l4.07-2.7c.41.04.82.06 1.24.06 4.97 0 9-3.36 9-7.5S16.97 3 12 3z"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:500;color:#64748b">KakaoTalk</span>
+        </div>
+        <!-- X (Twitter) -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer" onclick="shareToSNS('twitter')">
+          <div style="width:52px;height:52px;border-radius:50%;background:#000;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:500;color:#64748b">X</span>
+        </div>
+        <!-- Line -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer" onclick="shareToSNS('line')">
+          <div style="width:52px;height:52px;border-radius:50%;background:#06c755;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 5.92 2 10.72c0 3.04 1.6 5.72 4.04 7.37-.1.36-.64 2.34-.67 2.5-.04.19.07.38.25.38.08 0 .17-.03.24-.08l2.93-1.95c1.02.27 2.1.41 3.21.41 5.52 0 10-3.92 10-8.73C22 5.92 17.52 2 12 2zm-3.2 11.18H6.72V8.5h.8v4.68h1.28v.99zm1.6 0h-.8V8.5h.8v4.68zm3.96 0h-.8l-1.8-2.95v2.95h-.8V8.5h.8l1.8 2.95V8.5h.8v4.68zm2.96-.99h-1.28v-1.2h1.28v-.97h-1.28v-.97h1.28v-.99h-2.08v4.18h2.08v-1.05z"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:500;color:#64748b">Line</span>
+        </div>
+        <!-- WhatsApp -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer" onclick="shareToSNS('whatsapp')">
+          <div style="width:52px;height:52px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.37 5.07L2 22l5.08-1.34A9.93 9.93 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.12 13.88c-.22.62-1.28 1.18-1.77 1.22-.46.04-.89.21-3.01-.62-2.54-.99-4.17-3.57-4.3-3.73-.13-.17-1.05-1.4-1.05-2.67 0-1.27.66-1.9.9-2.16.24-.26.52-.32.7-.32l.5.01c.16 0 .38-.06.59.45.22.53.75 1.83.82 1.97.07.13.11.29.02.46-.09.17-.13.28-.26.43-.13.15-.27.33-.39.44-.13.12-.26.25-.11.5.15.24.67 1.1 1.44 1.78.98.88 1.82 1.15 2.07 1.28.25.13.4.11.55-.07.15-.18.63-.74.8-.99.17-.26.34-.21.57-.13.23.08 1.48.7 1.73.83.26.13.43.2.49.31.07.11.07.63-.15 1.25z"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:500;color:#64748b">WhatsApp</span>
+        </div>
+      </div>
+
+      <!-- URL 복사 -->
+      <div style="padding:0 24px;margin-bottom:20px">
+        <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Copy URL</p>
+        <div style="display:flex;align-items:center;gap:8px;background:#f1f5f9;border-radius:12px;border:1px solid #e2e8f0;padding:6px 6px 6px 14px">
+          <input id="shareUrl" type="text" readonly style="flex:1;border:none;background:transparent;font-size:13px;color:#475569;outline:none;font-family:'Inter',sans-serif;" value="https://kainic360.github.io/fnex-app/fnex.html"/>
+          <button onclick="copyShareUrl()" id="copyBtn" style="background:#025a93;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">Copy</button>
+        </div>
+      </div>
+
+      <!-- 닫기 버튼 -->
+      <div style="padding:0 24px">
+        <button onclick="closeShare()" style="width:100%;padding:16px;background:#f1f5f9;border:none;border-radius:14px;font-size:15px;font-weight:700;color:#1e293b;cursor:pointer;font-family:'Inter',sans-serif">Close</button>
+      </div>
+    </div>
+  </div>
+
 <!-- 브로커 선택 모달 -->
 <div class="broker-modal-overlay" id="brokerModal">
   <div class="broker-modal">
@@ -198,8 +263,8 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
     <div style="display:flex;gap:8px;padding:12px 16px;overflow-x:auto" class="no-scrollbar">
       <button class="cat-btn active" id="cat-all" onclick="filterNews('all')">すべて</button>
       <button class="cat-btn inactive" id="cat-breaking" onclick="filterNews('breaking')">⚡ 速報</button>
-      <button class="cat-btn inactive" id="cat-bull" onclick="filterNews('bull')">🐂 強気</button>
-      <button class="cat-btn inactive" id="cat-bear" onclick="filterNews('bear')">🐻 弱気</button>
+      <button class="cat-btn inactive" id="cat-bull" onclick="filterNews('bull')">📈 Bull</button>
+      <button class="cat-btn inactive" id="cat-bear" onclick="filterNews('bear')">📉 Bear</button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px 12px">
       <h3 style="font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px">
@@ -941,6 +1006,59 @@ document.getElementById('brokerModal').addEventListener('click',function(e){ if(
 
 
 
+
+// ===== SNS 공유 =====
+var currentShareUrl = '';
+var currentShareTitle = '';
+
+function openShare(url, title) {
+  currentShareUrl = url || window.location.href;
+  currentShareTitle = title || 'FNEX FXニュース';
+  document.getElementById('shareUrl').value = currentShareUrl;
+  document.getElementById('shareOverlay').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('sharePanel').style.transform = 'translateY(0)'; }, 10);
+}
+
+function closeShare() {
+  document.getElementById('sharePanel').style.transform = 'translateY(100%)';
+  setTimeout(function(){ document.getElementById('shareOverlay').style.display = 'none'; }, 350);
+}
+
+function handleShareOverlay(e) {
+  if(e.target === document.getElementById('shareOverlay')) closeShare();
+}
+
+function shareToSNS(platform) {
+  var url = encodeURIComponent(currentShareUrl);
+  var text = encodeURIComponent(currentShareTitle + ' | FNEX');
+  var links = {
+    telegram: 'https://t.me/share/url?url=' + url + '&text=' + text,
+    kakao: 'https://sharer.kakao.com/talk/friends/picker/link?url=' + url,
+    twitter: 'https://twitter.com/intent/tweet?url=' + url + '&text=' + text,
+    line: 'https://social-plugins.line.me/lineit/share?url=' + url,
+    whatsapp: 'https://wa.me/?text=' + text + '%20' + url,
+  };
+  if(links[platform]) window.open(links[platform], '_blank');
+}
+
+function copyShareUrl() {
+  var input = document.getElementById('shareUrl');
+  var btn = document.getElementById('copyBtn');
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(input.value).then(function(){
+      btn.textContent = '✓ Copied!';
+      btn.style.background = '#16a34a';
+      setTimeout(function(){ btn.textContent='Copy'; btn.style.background='#025a93'; }, 2000);
+    });
+  } else {
+    input.select();
+    document.execCommand('copy');
+    btn.textContent = '✓ Copied!';
+    btn.style.background = '#16a34a';
+    setTimeout(function(){ btn.textContent='Copy'; btn.style.background='#025a93'; }, 2000);
+  }
+}
+
 // ===== 프로모션 상세 =====
 function openPromo(brokerName, brokerColor, brokerIcon) {
   // 브로커 정보 업데이트
@@ -1298,6 +1416,59 @@ function searchGlossary(q) { renderGlossary(q); }
 
 
 
+
+
+// ===== SNS 공유 =====
+var currentShareUrl = '';
+var currentShareTitle = '';
+
+function openShare(url, title) {
+  currentShareUrl = url || window.location.href;
+  currentShareTitle = title || 'FNEX FXニュース';
+  document.getElementById('shareUrl').value = currentShareUrl;
+  document.getElementById('shareOverlay').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('sharePanel').style.transform = 'translateY(0)'; }, 10);
+}
+
+function closeShare() {
+  document.getElementById('sharePanel').style.transform = 'translateY(100%)';
+  setTimeout(function(){ document.getElementById('shareOverlay').style.display = 'none'; }, 350);
+}
+
+function handleShareOverlay(e) {
+  if(e.target === document.getElementById('shareOverlay')) closeShare();
+}
+
+function shareToSNS(platform) {
+  var url = encodeURIComponent(currentShareUrl);
+  var text = encodeURIComponent(currentShareTitle + ' | FNEX');
+  var links = {
+    telegram: 'https://t.me/share/url?url=' + url + '&text=' + text,
+    kakao: 'https://sharer.kakao.com/talk/friends/picker/link?url=' + url,
+    twitter: 'https://twitter.com/intent/tweet?url=' + url + '&text=' + text,
+    line: 'https://social-plugins.line.me/lineit/share?url=' + url,
+    whatsapp: 'https://wa.me/?text=' + text + '%20' + url,
+  };
+  if(links[platform]) window.open(links[platform], '_blank');
+}
+
+function copyShareUrl() {
+  var input = document.getElementById('shareUrl');
+  var btn = document.getElementById('copyBtn');
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(input.value).then(function(){
+      btn.textContent = '✓ Copied!';
+      btn.style.background = '#16a34a';
+      setTimeout(function(){ btn.textContent='Copy'; btn.style.background='#025a93'; }, 2000);
+    });
+  } else {
+    input.select();
+    document.execCommand('copy');
+    btn.textContent = '✓ Copied!';
+    btn.style.background = '#16a34a';
+    setTimeout(function(){ btn.textContent='Copy'; btn.style.background='#025a93'; }, 2000);
+  }
+}
 
 // ===== 프로모션 상세 =====
 function openPromo(brokerName, brokerColor, brokerIcon) {
@@ -1805,8 +1976,8 @@ function timeAgo(dateStr){
 }
 function getDir(text){
   if(!text) return 'neutral';
-  if(text.includes('強気')||text.includes('🐂')) return 'bull';
-  if(text.includes('弱気')||text.includes('🐻')) return 'bear';
+  if(text.includes('強気')||text.includes('Bull')) return 'bull';
+  if(text.includes('弱気')||text.includes('Bear')) return 'bear';
   return 'neutral';
 }
 function getSummary(text){
