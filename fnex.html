@@ -93,6 +93,39 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
+  <!-- 댓글 바텀시트 -->
+  <div id="commentOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:none;align-items:flex-end;justify-content:center" onclick="handleCommentOverlay(event)">
+    <div id="commentPanel" style="width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;max-height:90vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.35s ease;box-shadow:0 -4px 24px rgba(0,0,0,0.15)">
+      <!-- 핸들 -->
+      <div style="padding:12px;display:flex;justify-content:center;flex-shrink:0">
+        <div style="width:40px;height:4px;background:#e2e8f0;border-radius:999px"></div>
+      </div>
+      <!-- 헤더 -->
+      <div style="padding:0 20px 16px;position:relative;flex-shrink:0">
+        <button onclick="closeComment()" style="position:absolute;right:16px;top:-4px;background:none;border:none;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#94a3b8;font-size:22px">×</button>
+        <p style="font-size:11px;font-weight:700;color:#025a93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">コメントを残す</p>
+        <h3 id="commentNewsTitle" style="font-size:16px;font-weight:700;color:#0f172a;line-height:1.4;padding-right:32px"></h3>
+      </div>
+      <!-- 입력 영역 -->
+      <div style="padding:0 20px;flex:1;overflow-y:auto">
+        <textarea id="commentInput" placeholder="ご意見をお聞かせください..." style="width:100%;height:160px;padding:16px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:16px;font-size:15px;font-family:'Inter',sans-serif;color:#1e293b;outline:none;resize:none;line-height:1.6;transition:border-color 0.2s" onfocus="this.style.borderColor='#025a93';this.style.boxShadow='0 0 0 3px rgba(2,90,147,0.1)'" onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'" oninput="updateCommentCount(this)"></textarea>
+        <!-- 글자수 -->
+        <div style="display:flex;justify-content:flex-end;margin-top:6px">
+          <span id="commentCount" style="font-size:11px;color:#94a3b8">0 / 300</span>
+        </div>
+        <!-- 포인트 안내 -->
+        <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;background:rgba(2,90,147,0.06);border-radius:10px">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">⭐</div>
+          <p style="font-size:13px;color:#475569">コメント投稿で <strong style="color:#025a93">+5ポイント</strong> 獲得！</p>
+        </div>
+      </div>
+      <!-- 제출 버튼 -->
+      <div style="padding:20px;flex-shrink:0">
+        <button id="commentSubmitBtn" onclick="submitComment()" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:14px;border:none;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 12px rgba(2,90,147,0.3);letter-spacing:0.3px">投稿する</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SNS 공유 바텀시트 -->
   <div id="shareOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:none;align-items:flex-end;justify-content:center" onclick="handleShareOverlay(event)">
     <div id="sharePanel" style="width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;transform:translateY(100%);transition:transform 0.35s ease">
@@ -287,7 +320,7 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
     </div>
     <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,255,255,0.97);border-top:1px solid #f1f5f9;padding:8px 16px 20px;display:flex;justify-content:space-around;z-index:50">
       <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#025a93;text-decoration:none"><span style="font-size:24px">📰</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">News</span></a>
-      <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none"><span style="font-size:24px">📊</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Market</span></a>
+      <button onclick="pageHistory=['main'];showPage('market',false)" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">📊</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Market</span></button>
       <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none"><span style="font-size:24px">📅</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Calendar</span></a>
       <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;text-decoration:none"><span style="font-size:24px">🏦</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Broker</span></a>
     </div>
@@ -807,6 +840,63 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
     </div>
   </div>
 
+  <!-- ===== 마켓 페이지 ===== -->
+  <div class="page slide-up" id="page-market">
+    <!-- 헤더 -->
+    <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px">
+        <button onclick="openSidebar()" style="background:none;border:none;cursor:pointer;font-size:24px;color:#1e293b;width:36px;height:36px;display:flex;align-items:center;justify-content:center">☰</button>
+        <span style="font-size:20px;font-weight:900;color:#025a93;letter-spacing:2px">FNEX</span>
+        <button style="background:none;border:none;cursor:pointer;font-size:20px;color:#1e293b;width:36px;height:36px;display:flex;align-items:center;justify-content:center">🔍</button>
+      </div>
+      <!-- 탭 -->
+      <div style="display:flex;padding:0 16px;border-bottom:1px solid #f1f5f9;gap:24px">
+        <button onclick="switchMarketTab('pairs',this)" id="market-tab-pairs" style="padding:12px 0;font-size:14px;font-weight:700;color:#025a93;border:none;background:none;cursor:pointer;border-bottom:2px solid #025a93;font-family:'Inter',sans-serif">通貨ペア</button>
+        <button onclick="switchMarketTab('alert',this)" id="market-tab-alert" style="padding:12px 0;font-size:14px;font-weight:500;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;font-family:'Inter',sans-serif">アラート</button>
+      </div>
+    </div>
+
+    <!-- 通貨ペア 탭 -->
+    <div id="market-pairs" style="padding:16px;padding-bottom:100px">
+      <div id="pairCardList" style="display:flex;flex-direction:column;gap:12px"></div>
+      <!-- 페어 추가 버튼 -->
+      <button onclick="openPairModal()" style="width:100%;padding:20px;border:2px dashed #e2e8f0;border-radius:14px;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#94a3b8;font-family:'Inter',sans-serif;margin-top:4px;transition:all 0.2s" onmouseover="this.style.borderColor='#025a93';this.style.color='#025a93'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#94a3b8'">
+        <span style="font-size:28px">＋</span>
+        <span style="font-size:13px;font-weight:600">ペアを追加</span>
+      </button>
+    </div>
+
+    <!-- アラート 탭 -->
+    <div id="market-alert" style="display:none;padding:16px;padding-bottom:100px">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">🔔</div>
+        <h3 style="font-size:16px;font-weight:700;color:#1e293b;margin-bottom:8px">価格アラート</h3>
+        <p style="font-size:14px;color:#94a3b8;line-height:1.6">ペアを選択してアラートを設定すると<br/>通知でお知らせします</p>
+      </div>
+    </div>
+
+    <!-- 하단 네비 -->
+    <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,255,255,0.97);border-top:1px solid #f1f5f9;padding:8px 16px 20px;display:flex;justify-content:space-around;z-index:50">
+      <button onclick="showPage('main',false);pageHistory=[]" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">📰</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">News</span></button>
+      <button style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#025a93;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">📊</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Market</span></button>
+      <button style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">📅</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Calendar</span></button>
+      <button style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">🏦</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Broker</span></button>
+    </div>
+  </div>
+
+  <!-- 삭제 확인 팝업 -->
+  <div id="deleteConfirmOverlay" style="position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:600;display:none;align-items:center;justify-content:center;padding:24px">
+    <div style="background:#fff;border-radius:16px;width:100%;max-width:320px;padding:28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+      <div style="width:64px;height:64px;background:#fff0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px">🗑️</div>
+      <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:8px">ペアを削除しますか？</h3>
+      <p style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:24px">このペアを削除します。<br/>この操作は取り消せません。</p>
+      <div style="display:flex;gap:10px">
+        <button onclick="closeDeleteConfirm()" style="flex:1;padding:12px;border-radius:10px;background:#f1f5f9;border:none;cursor:pointer;font-size:14px;font-weight:700;color:#475569;font-family:'Inter',sans-serif">キャンセル</button>
+        <button onclick="confirmDeletePair()" style="flex:1;padding:12px;border-radius:10px;background:#ef4444;border:none;cursor:pointer;font-size:14px;font-weight:700;color:#fff;font-family:'Inter',sans-serif;box-shadow:0 4px 12px rgba(239,68,68,0.3)">削除</button>
+      </div>
+    </div>
+  </div>
+
 
 </div>
 
@@ -927,7 +1017,6 @@ function renderPairs(query) {
 
 function savePairs() {
   var container = document.getElementById('pairsContainer');
-  var addBtn = container.querySelector('.add-pair-btn');
   container.innerHTML = '';
   selectedPairs.forEach(function(p) {
     var tag = document.createElement('div');
@@ -940,6 +1029,9 @@ function savePairs() {
   newAddBtn.onclick = openPairModal;
   newAddBtn.textContent = '＋ ペアを追加';
   container.appendChild(newAddBtn);
+  // 마켓 페이지도 업데이트
+  marketPairs = selectedPairs.slice();
+  renderPairCards();
   closePairModal();
 }
 
@@ -1006,6 +1098,199 @@ document.getElementById('brokerModal').addEventListener('click',function(e){ if(
 
 
 
+
+
+
+// ===== 마켓 페이지 =====
+var marketPairs = ['EUR/USD','USD/JPY'];
+var deletingPair = null;
+
+// 통화페어 데이터 (시세는 하드코딩, 나중에 API 연동 가능)
+var PAIR_DATA = {
+  'EUR/USD': {name:'Euro / US Dollar', price:'1.0845', change:'+0.12%', up:true, flag1:'🇪🇺', flag2:'🇺🇸', sparkColor:'#10b981', sparkPath:'M0 35 Q 10 28, 20 30 T 40 18 T 60 22 T 80 8 T 100 12'},
+  'GBP/USD': {name:'Pound / US Dollar', price:'1.2642', change:'+0.08%', up:true, flag1:'🇬🇧', flag2:'🇺🇸', sparkColor:'#10b981', sparkPath:'M0 38 L 20 30 L 40 35 L 60 20 L 80 25 L 100 5'},
+  'USD/JPY': {name:'US Dollar / Japanese Yen', price:'151.32', change:'-0.45%', up:false, flag1:'🇺🇸', flag2:'🇯🇵', sparkColor:'#f43f5e', sparkPath:'M0 5 Q 15 10, 30 5 T 50 25 T 70 20 T 90 35 T 100 38'},
+  'AUD/USD': {name:'Australian Dollar / US Dollar', price:'0.6521', change:'+0.05%', up:true, flag1:'🇦🇺', flag2:'🇺🇸', sparkColor:'#10b981', sparkPath:'M0 30 L 25 25 L 50 28 L 75 15 L 100 10'},
+  'USD/CHF': {name:'US Dollar / Swiss Franc', price:'0.8932', change:'-0.11%', up:false, flag1:'🇺🇸', flag2:'🇨🇭', sparkColor:'#f43f5e', sparkPath:'M0 10 L 25 15 L 50 12 L 75 25 L 100 35'},
+  'USD/CAD': {name:'US Dollar / Canadian Dollar', price:'1.3641', change:'+0.03%', up:true, flag1:'🇺🇸', flag2:'🇨🇦', sparkColor:'#10b981', sparkPath:'M0 32 L 30 28 L 60 30 L 80 20 L 100 15'},
+  'NZD/USD': {name:'NZ Dollar / US Dollar', price:'0.5987', change:'-0.07%', up:false, flag1:'🇳🇿', flag2:'🇺🇸', sparkColor:'#f43f5e', sparkPath:'M0 8 L 30 12 L 60 18 L 80 28 L 100 35'},
+  'EUR/JPY': {name:'Euro / Japanese Yen', price:'163.84', change:'+0.21%', up:true, flag1:'🇪🇺', flag2:'🇯🇵', sparkColor:'#10b981', sparkPath:'M0 35 L 25 28 L 50 22 L 75 15 L 100 8'},
+  'GBP/JPY': {name:'Pound / Japanese Yen', price:'191.24', change:'+0.15%', up:true, flag1:'🇬🇧', flag2:'🇯🇵', sparkColor:'#10b981', sparkPath:'M0 38 L 30 30 L 60 25 L 80 18 L 100 10'},
+  'EUR/GBP': {name:'Euro / Pound', price:'0.8578', change:'-0.03%', up:false, flag1:'🇪🇺', flag2:'🇬🇧', sparkColor:'#f43f5e', sparkPath:'M0 10 L 40 14 L 70 20 L 90 28 L 100 32'},
+  'BTC/USDT': {name:'Bitcoin / Tether', price:'67,432', change:'+1.24%', up:true, flag1:'₿', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 38 L 20 32 L 40 28 L 60 18 L 80 12 L 100 5'},
+  'ETH/USDT': {name:'Ethereum / Tether', price:'3,521', change:'+0.87%', up:true, flag1:'Ξ', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 35 L 25 28 L 50 22 L 75 12 L 100 8'},
+  'XRP/USDT': {name:'Ripple / Tether', price:'0.5234', change:'-0.32%', up:false, flag1:'✕', flag2:'💲', sparkColor:'#f43f5e', sparkPath:'M0 8 L 30 12 L 60 20 L 80 28 L 100 35'},
+  'SOL/USDT': {name:'Solana / Tether', price:'142.50', change:'+2.15%', up:true, flag1:'◎', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 38 L 20 30 L 40 22 L 65 12 L 100 5'},
+  'BNB/USDT': {name:'BNB / Tether', price:'412.30', change:'+0.55%', up:true, flag1:'B', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 35 L 30 28 L 60 20 L 80 14 L 100 8'},
+  'GOLD/USD': {name:'Gold Spot / US Dollar', price:'2,318', change:'+0.43%', up:true, flag1:'🥇', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 32 L 25 26 L 50 20 L 75 14 L 100 8'},
+  'SILVER/USD': {name:'Silver / US Dollar', price:'27.42', change:'-0.18%', up:false, flag1:'🥈', flag2:'💲', sparkColor:'#f43f5e', sparkPath:'M0 10 L 30 14 L 60 20 L 80 28 L 100 34'},
+  'OIL/USD': {name:'Crude Oil / US Dollar', price:'82.15', change:'+0.62%', up:true, flag1:'🛢️', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 35 L 25 28 L 55 22 L 80 14 L 100 8'},
+  'NATGAS/USD': {name:'Natural Gas / US Dollar', price:'2.156', change:'-1.02%', up:false, flag1:'🔥', flag2:'💲', sparkColor:'#f43f5e', sparkPath:'M0 5 L 30 10 L 55 18 L 80 28 L 100 38'},
+};
+
+function renderPairCards() {
+  var container = document.getElementById('pairCardList');
+  if(!container) return;
+
+  // 프로필 페이지 selectedPairs와 동기화
+  var pairs = selectedPairs && selectedPairs.length > 0 ? selectedPairs : marketPairs;
+
+  container.innerHTML = pairs.map(function(pair) {
+    var d = PAIR_DATA[pair];
+    if(!d) return '';
+    var isFlag = d.flag1.length <= 2;
+    var upColor = d.up ? '#10b981' : '#f43f5e';
+    var bgColor = d.up ? '#f0fdf4' : '#fff5f5';
+
+    return '<div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);border:1px solid #f1f5f9">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div style="display:flex">' +
+            '<div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 1px 4px rgba(0,0,0,0.1)">'+d.flag1+'</div>' +
+            '<div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:16px;margin-left:-8px;box-shadow:0 1px 4px rgba(0,0,0,0.1)">'+d.flag2+'</div>' +
+          '</div>' +
+          '<div>' +
+            '<h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0">'+pair+'</h3>' +
+            '<p style="font-size:11px;color:#94a3b8;margin:2px 0 0">'+d.name+'</p>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:4px">' +
+          '<button style="width:32px;height:32px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#025a93">🔔</button>' +
+          '<button onclick="openDeleteConfirm(\''+pair+'\')" style="width:32px;height:32px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#94a3b8">🗑️</button>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:flex-end;justify-content:space-between">' +
+        '<div>' +
+          '<div style="font-size:26px;font-weight:900;color:#0f172a;letter-spacing:-0.5px">'+d.price+'</div>' +
+          '<div style="font-size:13px;font-weight:600;color:'+upColor+';display:flex;align-items:center;gap:3px;margin-top:3px">' +
+            (d.up?'📈':'📉')+' '+d.change +
+          '</div>' +
+        '</div>' +
+        '<svg width="120" height="48" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">' +
+          '<defs><linearGradient id="grad-'+pair.replace('/','_')+'" x1="0%" y1="0%" x2="0%" y2="100%">' +
+            '<stop offset="0%" stop-color="'+d.sparkColor+'" stop-opacity="0.3"/>' +
+            '<stop offset="100%" stop-color="'+d.sparkColor+'" stop-opacity="0"/>' +
+          '</linearGradient></defs>' +
+          '<path d="'+d.sparkPath+'" fill="none" stroke="'+d.sparkColor+'" stroke-width="2" stroke-linecap="round"/>' +
+        '</svg>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function switchMarketTab(tab, el) {
+  document.querySelectorAll('[id^="market-tab-"]').forEach(function(t){
+    t.style.color = '#94a3b8';
+    t.style.borderBottom = '2px solid transparent';
+    t.style.fontWeight = '500';
+  });
+  el.style.color = '#025a93';
+  el.style.borderBottom = '2px solid #025a93';
+  el.style.fontWeight = '700';
+
+  document.getElementById('market-pairs').style.display = tab === 'pairs' ? 'block' : 'none';
+  document.getElementById('market-alert').style.display = tab === 'alert' ? 'block' : 'none';
+}
+
+function openDeleteConfirm(pair) {
+  deletingPair = pair;
+  document.getElementById('deleteConfirmOverlay').style.display = 'flex';
+}
+
+function closeDeleteConfirm() {
+  deletingPair = null;
+  document.getElementById('deleteConfirmOverlay').style.display = 'none';
+}
+
+function confirmDeletePair() {
+  if(deletingPair) {
+    // selectedPairs에서 제거
+    var idx = selectedPairs.indexOf(deletingPair);
+    if(idx !== -1) selectedPairs.splice(idx, 1);
+    // marketPairs에서도 제거
+    var idx2 = marketPairs.indexOf(deletingPair);
+    if(idx2 !== -1) marketPairs.splice(idx2, 1);
+    renderPairCards();
+    // 프로필 페이지 태그도 업데이트
+    savePairsFromMarket();
+  }
+  closeDeleteConfirm();
+}
+
+function savePairsFromMarket() {
+  var container = document.getElementById('pairsContainer');
+  if(!container) return;
+  var addBtn = container.querySelector('.add-pair-btn');
+  container.innerHTML = '';
+  selectedPairs.forEach(function(p) {
+    var tag = document.createElement('div');
+    tag.className = 'pair-tag';
+    tag.innerHTML = p + ' <button onclick="removePair(this)">×</button>';
+    container.appendChild(tag);
+  });
+  if(addBtn) container.appendChild(addBtn);
+  else {
+    var newBtn = document.createElement('button');
+    newBtn.className = 'add-pair-btn';
+    newBtn.onclick = openPairModal;
+    newBtn.textContent = '＋ ペアを追加';
+    container.appendChild(newBtn);
+  }
+}
+
+// ===== 댓글 바텀시트 =====
+var currentCommentTitle = '';
+
+function openComment(title) {
+  currentCommentTitle = title || '';
+  document.getElementById('commentNewsTitle').textContent = currentCommentTitle;
+  document.getElementById('commentInput').value = '';
+  document.getElementById('commentCount').textContent = '0 / 300';
+  document.getElementById('commentOverlay').style.display = 'flex';
+  setTimeout(function(){
+    document.getElementById('commentPanel').style.transform = 'translateY(0)';
+    // 약간 딜레이 후 포커스
+    setTimeout(function(){ document.getElementById('commentInput').focus(); }, 400);
+  }, 10);
+}
+
+function closeComment() {
+  document.getElementById('commentPanel').style.transform = 'translateY(100%)';
+  setTimeout(function(){ document.getElementById('commentOverlay').style.display = 'none'; }, 350);
+}
+
+function handleCommentOverlay(e) {
+  if(e.target === document.getElementById('commentOverlay')) closeComment();
+}
+
+function updateCommentCount(el) {
+  var count = el.value.length;
+  var counter = document.getElementById('commentCount');
+  if(count > 300) { el.value = el.value.substring(0, 300); count = 300; }
+  counter.textContent = count + ' / 300';
+  counter.style.color = count > 250 ? '#ef4444' : '#94a3b8';
+}
+
+function submitComment() {
+  var text = document.getElementById('commentInput').value.trim();
+  if(!text) {
+    document.getElementById('commentInput').style.borderColor = '#ef4444';
+    setTimeout(function(){ document.getElementById('commentInput').style.borderColor = '#e2e8f0'; }, 1500);
+    return;
+  }
+  var btn = document.getElementById('commentSubmitBtn');
+  btn.textContent = '✓ 投稿しました！+5P';
+  btn.style.background = '#16a34a';
+  btn.disabled = true;
+  setTimeout(function(){
+    closeComment();
+    setTimeout(function(){
+      btn.textContent = '投稿する';
+      btn.style.background = '#025a93';
+      btn.disabled = false;
+    }, 400);
+  }, 1800);
+}
 
 // ===== SNS 공유 =====
 var currentShareUrl = '';
@@ -1417,6 +1702,199 @@ function searchGlossary(q) { renderGlossary(q); }
 
 
 
+
+
+
+// ===== 마켓 페이지 =====
+var marketPairs = ['EUR/USD','USD/JPY'];
+var deletingPair = null;
+
+// 통화페어 데이터 (시세는 하드코딩, 나중에 API 연동 가능)
+var PAIR_DATA = {
+  'EUR/USD': {name:'Euro / US Dollar', price:'1.0845', change:'+0.12%', up:true, flag1:'🇪🇺', flag2:'🇺🇸', sparkColor:'#10b981', sparkPath:'M0 35 Q 10 28, 20 30 T 40 18 T 60 22 T 80 8 T 100 12'},
+  'GBP/USD': {name:'Pound / US Dollar', price:'1.2642', change:'+0.08%', up:true, flag1:'🇬🇧', flag2:'🇺🇸', sparkColor:'#10b981', sparkPath:'M0 38 L 20 30 L 40 35 L 60 20 L 80 25 L 100 5'},
+  'USD/JPY': {name:'US Dollar / Japanese Yen', price:'151.32', change:'-0.45%', up:false, flag1:'🇺🇸', flag2:'🇯🇵', sparkColor:'#f43f5e', sparkPath:'M0 5 Q 15 10, 30 5 T 50 25 T 70 20 T 90 35 T 100 38'},
+  'AUD/USD': {name:'Australian Dollar / US Dollar', price:'0.6521', change:'+0.05%', up:true, flag1:'🇦🇺', flag2:'🇺🇸', sparkColor:'#10b981', sparkPath:'M0 30 L 25 25 L 50 28 L 75 15 L 100 10'},
+  'USD/CHF': {name:'US Dollar / Swiss Franc', price:'0.8932', change:'-0.11%', up:false, flag1:'🇺🇸', flag2:'🇨🇭', sparkColor:'#f43f5e', sparkPath:'M0 10 L 25 15 L 50 12 L 75 25 L 100 35'},
+  'USD/CAD': {name:'US Dollar / Canadian Dollar', price:'1.3641', change:'+0.03%', up:true, flag1:'🇺🇸', flag2:'🇨🇦', sparkColor:'#10b981', sparkPath:'M0 32 L 30 28 L 60 30 L 80 20 L 100 15'},
+  'NZD/USD': {name:'NZ Dollar / US Dollar', price:'0.5987', change:'-0.07%', up:false, flag1:'🇳🇿', flag2:'🇺🇸', sparkColor:'#f43f5e', sparkPath:'M0 8 L 30 12 L 60 18 L 80 28 L 100 35'},
+  'EUR/JPY': {name:'Euro / Japanese Yen', price:'163.84', change:'+0.21%', up:true, flag1:'🇪🇺', flag2:'🇯🇵', sparkColor:'#10b981', sparkPath:'M0 35 L 25 28 L 50 22 L 75 15 L 100 8'},
+  'GBP/JPY': {name:'Pound / Japanese Yen', price:'191.24', change:'+0.15%', up:true, flag1:'🇬🇧', flag2:'🇯🇵', sparkColor:'#10b981', sparkPath:'M0 38 L 30 30 L 60 25 L 80 18 L 100 10'},
+  'EUR/GBP': {name:'Euro / Pound', price:'0.8578', change:'-0.03%', up:false, flag1:'🇪🇺', flag2:'🇬🇧', sparkColor:'#f43f5e', sparkPath:'M0 10 L 40 14 L 70 20 L 90 28 L 100 32'},
+  'BTC/USDT': {name:'Bitcoin / Tether', price:'67,432', change:'+1.24%', up:true, flag1:'₿', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 38 L 20 32 L 40 28 L 60 18 L 80 12 L 100 5'},
+  'ETH/USDT': {name:'Ethereum / Tether', price:'3,521', change:'+0.87%', up:true, flag1:'Ξ', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 35 L 25 28 L 50 22 L 75 12 L 100 8'},
+  'XRP/USDT': {name:'Ripple / Tether', price:'0.5234', change:'-0.32%', up:false, flag1:'✕', flag2:'💲', sparkColor:'#f43f5e', sparkPath:'M0 8 L 30 12 L 60 20 L 80 28 L 100 35'},
+  'SOL/USDT': {name:'Solana / Tether', price:'142.50', change:'+2.15%', up:true, flag1:'◎', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 38 L 20 30 L 40 22 L 65 12 L 100 5'},
+  'BNB/USDT': {name:'BNB / Tether', price:'412.30', change:'+0.55%', up:true, flag1:'B', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 35 L 30 28 L 60 20 L 80 14 L 100 8'},
+  'GOLD/USD': {name:'Gold Spot / US Dollar', price:'2,318', change:'+0.43%', up:true, flag1:'🥇', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 32 L 25 26 L 50 20 L 75 14 L 100 8'},
+  'SILVER/USD': {name:'Silver / US Dollar', price:'27.42', change:'-0.18%', up:false, flag1:'🥈', flag2:'💲', sparkColor:'#f43f5e', sparkPath:'M0 10 L 30 14 L 60 20 L 80 28 L 100 34'},
+  'OIL/USD': {name:'Crude Oil / US Dollar', price:'82.15', change:'+0.62%', up:true, flag1:'🛢️', flag2:'💲', sparkColor:'#10b981', sparkPath:'M0 35 L 25 28 L 55 22 L 80 14 L 100 8'},
+  'NATGAS/USD': {name:'Natural Gas / US Dollar', price:'2.156', change:'-1.02%', up:false, flag1:'🔥', flag2:'💲', sparkColor:'#f43f5e', sparkPath:'M0 5 L 30 10 L 55 18 L 80 28 L 100 38'},
+};
+
+function renderPairCards() {
+  var container = document.getElementById('pairCardList');
+  if(!container) return;
+
+  // 프로필 페이지 selectedPairs와 동기화
+  var pairs = selectedPairs && selectedPairs.length > 0 ? selectedPairs : marketPairs;
+
+  container.innerHTML = pairs.map(function(pair) {
+    var d = PAIR_DATA[pair];
+    if(!d) return '';
+    var isFlag = d.flag1.length <= 2;
+    var upColor = d.up ? '#10b981' : '#f43f5e';
+    var bgColor = d.up ? '#f0fdf4' : '#fff5f5';
+
+    return '<div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);border:1px solid #f1f5f9">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div style="display:flex">' +
+            '<div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 1px 4px rgba(0,0,0,0.1)">'+d.flag1+'</div>' +
+            '<div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:16px;margin-left:-8px;box-shadow:0 1px 4px rgba(0,0,0,0.1)">'+d.flag2+'</div>' +
+          '</div>' +
+          '<div>' +
+            '<h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0">'+pair+'</h3>' +
+            '<p style="font-size:11px;color:#94a3b8;margin:2px 0 0">'+d.name+'</p>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:4px">' +
+          '<button style="width:32px;height:32px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#025a93">🔔</button>' +
+          '<button onclick="openDeleteConfirm(\''+pair+'\')" style="width:32px;height:32px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#94a3b8">🗑️</button>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:flex-end;justify-content:space-between">' +
+        '<div>' +
+          '<div style="font-size:26px;font-weight:900;color:#0f172a;letter-spacing:-0.5px">'+d.price+'</div>' +
+          '<div style="font-size:13px;font-weight:600;color:'+upColor+';display:flex;align-items:center;gap:3px;margin-top:3px">' +
+            (d.up?'📈':'📉')+' '+d.change +
+          '</div>' +
+        '</div>' +
+        '<svg width="120" height="48" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">' +
+          '<defs><linearGradient id="grad-'+pair.replace('/','_')+'" x1="0%" y1="0%" x2="0%" y2="100%">' +
+            '<stop offset="0%" stop-color="'+d.sparkColor+'" stop-opacity="0.3"/>' +
+            '<stop offset="100%" stop-color="'+d.sparkColor+'" stop-opacity="0"/>' +
+          '</linearGradient></defs>' +
+          '<path d="'+d.sparkPath+'" fill="none" stroke="'+d.sparkColor+'" stroke-width="2" stroke-linecap="round"/>' +
+        '</svg>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function switchMarketTab(tab, el) {
+  document.querySelectorAll('[id^="market-tab-"]').forEach(function(t){
+    t.style.color = '#94a3b8';
+    t.style.borderBottom = '2px solid transparent';
+    t.style.fontWeight = '500';
+  });
+  el.style.color = '#025a93';
+  el.style.borderBottom = '2px solid #025a93';
+  el.style.fontWeight = '700';
+
+  document.getElementById('market-pairs').style.display = tab === 'pairs' ? 'block' : 'none';
+  document.getElementById('market-alert').style.display = tab === 'alert' ? 'block' : 'none';
+}
+
+function openDeleteConfirm(pair) {
+  deletingPair = pair;
+  document.getElementById('deleteConfirmOverlay').style.display = 'flex';
+}
+
+function closeDeleteConfirm() {
+  deletingPair = null;
+  document.getElementById('deleteConfirmOverlay').style.display = 'none';
+}
+
+function confirmDeletePair() {
+  if(deletingPair) {
+    // selectedPairs에서 제거
+    var idx = selectedPairs.indexOf(deletingPair);
+    if(idx !== -1) selectedPairs.splice(idx, 1);
+    // marketPairs에서도 제거
+    var idx2 = marketPairs.indexOf(deletingPair);
+    if(idx2 !== -1) marketPairs.splice(idx2, 1);
+    renderPairCards();
+    // 프로필 페이지 태그도 업데이트
+    savePairsFromMarket();
+  }
+  closeDeleteConfirm();
+}
+
+function savePairsFromMarket() {
+  var container = document.getElementById('pairsContainer');
+  if(!container) return;
+  var addBtn = container.querySelector('.add-pair-btn');
+  container.innerHTML = '';
+  selectedPairs.forEach(function(p) {
+    var tag = document.createElement('div');
+    tag.className = 'pair-tag';
+    tag.innerHTML = p + ' <button onclick="removePair(this)">×</button>';
+    container.appendChild(tag);
+  });
+  if(addBtn) container.appendChild(addBtn);
+  else {
+    var newBtn = document.createElement('button');
+    newBtn.className = 'add-pair-btn';
+    newBtn.onclick = openPairModal;
+    newBtn.textContent = '＋ ペアを追加';
+    container.appendChild(newBtn);
+  }
+}
+
+// ===== 댓글 바텀시트 =====
+var currentCommentTitle = '';
+
+function openComment(title) {
+  currentCommentTitle = title || '';
+  document.getElementById('commentNewsTitle').textContent = currentCommentTitle;
+  document.getElementById('commentInput').value = '';
+  document.getElementById('commentCount').textContent = '0 / 300';
+  document.getElementById('commentOverlay').style.display = 'flex';
+  setTimeout(function(){
+    document.getElementById('commentPanel').style.transform = 'translateY(0)';
+    // 약간 딜레이 후 포커스
+    setTimeout(function(){ document.getElementById('commentInput').focus(); }, 400);
+  }, 10);
+}
+
+function closeComment() {
+  document.getElementById('commentPanel').style.transform = 'translateY(100%)';
+  setTimeout(function(){ document.getElementById('commentOverlay').style.display = 'none'; }, 350);
+}
+
+function handleCommentOverlay(e) {
+  if(e.target === document.getElementById('commentOverlay')) closeComment();
+}
+
+function updateCommentCount(el) {
+  var count = el.value.length;
+  var counter = document.getElementById('commentCount');
+  if(count > 300) { el.value = el.value.substring(0, 300); count = 300; }
+  counter.textContent = count + ' / 300';
+  counter.style.color = count > 250 ? '#ef4444' : '#94a3b8';
+}
+
+function submitComment() {
+  var text = document.getElementById('commentInput').value.trim();
+  if(!text) {
+    document.getElementById('commentInput').style.borderColor = '#ef4444';
+    setTimeout(function(){ document.getElementById('commentInput').style.borderColor = '#e2e8f0'; }, 1500);
+    return;
+  }
+  var btn = document.getElementById('commentSubmitBtn');
+  btn.textContent = '✓ 投稿しました！+5P';
+  btn.style.background = '#16a34a';
+  btn.disabled = true;
+  setTimeout(function(){
+    closeComment();
+    setTimeout(function(){
+      btn.textContent = '投稿する';
+      btn.style.background = '#025a93';
+      btn.disabled = false;
+    }, 400);
+  }, 1800);
+}
 
 // ===== SNS 공유 =====
 var currentShareUrl = '';
@@ -1928,6 +2406,7 @@ function showPage(name, addHistory) {
     document.getElementById('glossarySearch').value='';
     renderGlossary('');
   }
+  if(name==='market'){ renderPairCards(); }
 }
 
 function goBack() {
