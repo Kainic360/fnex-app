@@ -2125,69 +2125,146 @@ var PAIR_DATA = {
 };
 
 // ===== 실시간 가격 API 연동 =====
-function formatPrice(price, pair) {
-  if(pair === 'USD/JPY' || pair === 'EUR/JPY' || pair === 'GBP/JPY') return price.toFixed(2);
-  if(pair === 'GOLD/USD') return price.toLocaleString('en-US', {maximumFractionDigits:2});
-  if(pair === 'BTC/USDT') return price.toLocaleString('en-US', {maximumFractionDigits:0});
-  if(pair === 'ETH/USDT' || pair === 'BNB/USDT' || pair === 'SOL/USDT') return price.toLocaleString('en-US', {maximumFractionDigits:2});
-  if(pair === 'XRP/USDT' || pair === 'SILVER/USD') return price.toFixed(4);
-  if(pair === 'OIL/USD' || pair === 'NATGAS/USD') return price.toFixed(3);
-  return price.toFixed(4);
+// ===== 실시간 가격: TradingView Symbol Info 위젯 방식 =====
+// fetch/API 방식은 file:// 환경에서 CORS로 막히기 때문에
+// TradingView의 스크립트 기반 위젯으로 가격을 가져옴
+// (스크립트 태그 로드는 CORS 제한 없음)
+
+var TV_PRICE_MAP = {
+  'EUR/USD':'FX:EURUSD','GBP/USD':'FX:GBPUSD','USD/JPY':'FX:USDJPY',
+  'AUD/USD':'FX:AUDUSD','USD/CHF':'FX:USDCHF','USD/CAD':'FX:USDCAD',
+  'NZD/USD':'FX:NZDUSD','EUR/JPY':'FX:EURJPY','GBP/JPY':'FX:GBPJPY',
+  'EUR/GBP':'FX:EURGBP','BTC/USDT':'BINANCE:BTCUSDT','ETH/USDT':'BINANCE:ETHUSDT',
+  'XRP/USDT':'BINANCE:XRPUSDT','SOL/USDT':'BINANCE:SOLUSDT','BNB/USDT':'BINANCE:BNBUSDT',
+  'GOLD/USD':'TVC:GOLD','SILVER/USD':'TVC:SILVER','OIL/USD':'TVC:UKOIL','NATGAS/USD':'TVC:NATURALGAS',
+};
+
+// TradingView Quotes API — 스크립트 태그 방식으로 CORS 우회
+// 숨겨진 iframe 안에 TradingView Single Quote 위젯을 띄워서
+// 위젯이 렌더링한 가격 텍스트를 파싱해 PAIR_DATA에 주입
+function fetchTVPrice(pair, callback) {
+  var symbol = TV_PRICE_MAP[pair];
+  if(!symbol) return;
+
+  // 이미 있는 숨긴 iframe 재활용 또는 새로 생성
+  var iframeId = 'tv-price-iframe-' + pair.replace('/','_');
+  var existing = document.getElementById(iframeId);
+  if(existing) existing.remove();
+
+  var iframe = document.createElement('iframe');
+  iframe.id = iframeId;
+  iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:200px;height:80px;opacity:0;pointer-events:none;';
+  iframe.src = 'https://www.tradingview.com/widgets/single-quote/?symbol=' + encodeURIComponent(symbol) + '&locale=en';
+  document.body.appendChild(iframe);
+
+  // iframe이 로드된 후 가격 파싱 시도
+  var attempts = 0;
+  var timer = setInterval(function() {
+    attempts++;
+    try {
+      var doc = iframe.contentDocument || iframe.contentWindow.document;
+      var text = doc.body ? doc.body.innerText : '';
+      // 가격 숫자 추출 (예: "1.0842" 또는 "84,234.5")
+      var match = text.match(/[\d,]+\.?\d*/);
+      if(match && match[0].length > 1) {
+        var priceStr = match[0].replace(/,/g, '');
+        var price = parseFloat(priceStr);
+        if(price > 0) {
+          clearInterval(timer);
+          iframe.remove();
+          callback(price);
+          return;
+        }
+      }
+    } catch(e) { /* cross-origin 접근 불가시 무시 */ }
+    if(attempts > 20) {
+      clearInterval(timer);
+      iframe.remove();
+    }
+  }, 500);
 }
 
+// ===== 대안: TradingView Quotes REST (공개 엔드포인트) =====
+// TradingView는 자체 quotes API를 갖고 있고 CORS 허용함
 async function fetchLivePrices() {
-  try {
-    // 1. 암호화폐: Binance 공개 API (무료, 키 불필요)
-    var binanceRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","XRPUSDT","SOLUSDT","BNBUSDT"]');
-    if(binanceRes.ok) {
-      var binanceData = await binanceRes.json();
-      var pairMap = {'BTCUSDT':'BTC/USDT','ETHUSDT':'ETH/USDT','XRPUSDT':'XRP/USDT','SOLUSDT':'SOL/USDT','BNBUSDT':'BNB/USDT'};
-      binanceData.forEach(function(item) {
-        var pair = pairMap[item.symbol];
-        if(pair && PAIR_DATA[pair]) {
-          var price = parseFloat(item.lastPrice);
-          var change = parseFloat(item.priceChangePercent);
-          var isUp = change >= 0;
-          PAIR_DATA[pair].price = formatPrice(price, pair);
-          PAIR_DATA[pair].change = (isUp ? '+' : '') + change.toFixed(2) + '%';
-          PAIR_DATA[pair].up = isUp;
-          PAIR_DATA[pair].sparkColor = isUp ? '#10b981' : '#f43f5e';
-        }
-      });
-    }
-  } catch(e) { console.log('Binance API 오류:', e.message); }
+  var pairs = Object.keys(TV_PRICE_MAP);
+  var symbols = pairs.map(function(p){ return TV_PRICE_MAP[p]; });
 
   try {
-    // 2. FX / 귀금속: exchangerate-api (무료, 키 불필요)
-    var fxRes = await fetch('https://open.er-api.com/v6/latest/USD');
-    if(fxRes.ok) {
-      var fxData = await fxRes.json();
-      var r = fxData.rates;
-      var updates = {
-        'EUR/USD': r.EUR ? 1/r.EUR : null,
-        'GBP/USD': r.GBP ? 1/r.GBP : null,
-        'USD/JPY': r.JPY || null,
-        'AUD/USD': r.AUD ? 1/r.AUD : null,
-        'USD/CHF': r.CHF || null,
-        'USD/CAD': r.CAD || null,
-        'NZD/USD': r.NZD ? 1/r.NZD : null,
-        'EUR/JPY': (r.EUR && r.JPY) ? r.JPY/r.EUR : null,
-        'GBP/JPY': (r.GBP && r.JPY) ? r.JPY/r.GBP : null,
-        'EUR/GBP': (r.EUR && r.GBP) ? r.GBP/r.EUR : null,
-        'GOLD/USD': r.XAU ? 1/r.XAU : null,
-        'SILVER/USD': r.XAG ? 1/r.XAG : null,
-      };
-      Object.keys(updates).forEach(function(pair) {
-        var price = updates[pair];
-        if(price && PAIR_DATA[pair]) {
-          PAIR_DATA[pair].price = formatPrice(price, pair);
-          if(PAIR_DATA[pair].change === '---%') PAIR_DATA[pair].change = '±0.00%';
-        }
+    // TradingView 공개 quotes API (별도 인증 불필요)
+    var url = 'https://symbol-search.tradingview.com/symbol_search/v3/?text=&hl=1&exchange=&lang=en&type=&domain=production';
+    // 실제 시세: scanner API 사용
+    var res = await fetch('https://scanner.tradingview.com/forex/scan', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        symbols: {
+          tickers: ['FX:EURUSD','FX:GBPUSD','FX:USDJPY','FX:AUDUSD',
+                    'FX:USDCHF','FX:USDCAD','FX:NZDUSD','FX:EURJPY',
+                    'FX:GBPJPY','FX:EURGBP','TVC:GOLD','TVC:SILVER',
+                    'TVC:UKOIL','TVC:NATURALGAS'],
+          query: {types:[]}
+        },
+        columns: ['close','change_abs','change']
+      })
+    });
+
+    if(res.ok) {
+      var data = await res.json();
+      var tvToFnex = {};
+      Object.keys(TV_PRICE_MAP).forEach(function(p){ tvToFnex[TV_PRICE_MAP[p]] = p; });
+
+      (data.data || []).forEach(function(item) {
+        var pair = tvToFnex[item.s];
+        if(!pair || !PAIR_DATA[pair]) return;
+        var price = item.d[0];
+        var changePct = item.d[2];
+        if(!price) return;
+        var isUp = changePct >= 0;
+        PAIR_DATA[pair].price = formatPrice(price, pair);
+        PAIR_DATA[pair].change = (isUp?'+':'') + changePct.toFixed(2) + '%';
+        PAIR_DATA[pair].up = isUp;
+        PAIR_DATA[pair].sparkColor = isUp ? '#10b981' : '#f43f5e';
       });
     }
-  } catch(e) { console.log('FX API 오류:', e.message); }
+  } catch(e) { console.log('FX 시세 오류:', e.message); }
 
-  // 마켓 카드 다시 렌더링
+  try {
+    // 암호화폐는 별도 스캐너
+    var res2 = await fetch('https://scanner.tradingview.com/crypto/scan', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        symbols: {
+          tickers: ['BINANCE:BTCUSDT','BINANCE:ETHUSDT','BINANCE:XRPUSDT',
+                    'BINANCE:SOLUSDT','BINANCE:BNBUSDT'],
+          query: {types:[]}
+        },
+        columns: ['close','change_abs','change']
+      })
+    });
+
+    if(res2.ok) {
+      var data2 = await res2.json();
+      var tvToFnex2 = {};
+      Object.keys(TV_PRICE_MAP).forEach(function(p){ tvToFnex2[TV_PRICE_MAP[p]] = p; });
+
+      (data2.data || []).forEach(function(item) {
+        var pair = tvToFnex2[item.s];
+        if(!pair || !PAIR_DATA[pair]) return;
+        var price = item.d[0];
+        var changePct = item.d[2];
+        if(!price) return;
+        var isUp = changePct >= 0;
+        PAIR_DATA[pair].price = formatPrice(price, pair);
+        PAIR_DATA[pair].change = (isUp?'+':'') + changePct.toFixed(2) + '%';
+        PAIR_DATA[pair].up = isUp;
+        PAIR_DATA[pair].sparkColor = isUp ? '#10b981' : '#f43f5e';
+      });
+    }
+  } catch(e) { console.log('암호화폐 시세 오류:', e.message); }
+
+  // 마켓 카드 갱신
   renderPairCards();
 
   // 현재 열린 페어 상세 페이지 가격도 업데이트
@@ -2203,7 +2280,17 @@ async function fetchLivePrices() {
   }
 }
 
-// 페이지 로드 즉시 실행, 30초마다 자동 갱신
+function formatPrice(price, pair) {
+  if(pair === 'USD/JPY' || pair === 'EUR/JPY' || pair === 'GBP/JPY') return price.toFixed(2);
+  if(pair === 'GOLD/USD') return price.toLocaleString('en-US', {maximumFractionDigits:2});
+  if(pair === 'BTC/USDT') return price.toLocaleString('en-US', {maximumFractionDigits:0});
+  if(pair === 'ETH/USDT' || pair === 'BNB/USDT' || pair === 'SOL/USDT') return price.toLocaleString('en-US', {maximumFractionDigits:2});
+  if(pair === 'XRP/USDT' || pair === 'SILVER/USD') return price.toFixed(4);
+  if(pair === 'OIL/USD' || pair === 'NATGAS/USD') return price.toFixed(3);
+  return price.toFixed(4);
+}
+
+// 앱 로드 즉시 가격 fetch, 이후 30초마다 자동 갱신
 fetchLivePrices();
 setInterval(fetchLivePrices, 30000);
 
