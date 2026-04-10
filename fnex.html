@@ -900,10 +900,11 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
 
     <!-- アラート 탭 -->
     <div id="market-alert" style="display:none;padding:16px;padding-bottom:100px">
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center">
         <div style="font-size:48px;margin-bottom:16px">🔔</div>
         <h3 style="font-size:16px;font-weight:700;color:#1e293b;margin-bottom:8px">価格アラート</h3>
-        <p style="font-size:14px;color:#94a3b8;line-height:1.6">ペアを選択してアラートを設定すると<br/>通知でお知らせします</p>
+        <p style="font-size:14px;color:#94a3b8;line-height:1.6;margin-bottom:20px">ペアを選択してアラートを設定すると<br/>通知でお知らせします</p>
+        <div style="display:flex;flex-direction:column;gap:8px;width:100%"><button onclick="openAlert('EUR/USD')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">EUR/USD アラートを設定</button><button onclick="openAlert('USD/JPY')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">USD/JPY アラートを設定</button><button onclick="openAlert('GBP/USD')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">GBP/USD アラートを設定</button><button onclick="openAlert('BTC/USDT')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">BTC/USDT アラートを設定</button><button onclick="openAlert('GOLD/USD')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">GOLD/USD アラートを設定</button></div>
       </div>
     </div>
 
@@ -1011,17 +1012,17 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
       <div style="padding:20px 16px;background:#fff;margin-top:8px;border-top:8px solid #f8fafc">
         <h3 style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:14px">🔔 アラート設定</h3>
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #f1f5f9;cursor:pointer" onclick="alert('価格アラート設定 - 近日公開！')">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #f1f5f9;cursor:pointer" onclick="openAlert(currentPairSymbol)">
             <div style="display:flex;align-items:center;gap:10px">
               <span style="font-size:20px">🔔</span>
               <span style="font-size:14px;font-weight:600;color:#0f172a">価格アラート</span>
             </div>
             <span style="color:#94a3b8;font-size:18px">›</span>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #f1f5f9;cursor:pointer" onclick="alert('価格変動アラート - 近日公開！')">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #f1f5f9;cursor:pointer" onclick="openAlert(currentPairSymbol)">
             <div style="display:flex;align-items:center;gap:10px">
               <span style="font-size:20px">📈</span>
-              <span style="font-size:14px;font-weight:600;color:#0f172a">価格変動アラート</span>
+              <span style="font-size:14px;font-weight:600;color:#0f172a">急騰落アラート</span>
             </div>
             <span style="color:#94a3b8;font-size:18px">›</span>
           </div>
@@ -1031,6 +1032,235 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
     </div>
   </div>
 
+  <!-- ===== 가격 알람 페이지 ===== -->
+  <div class="page slide-up" id="page-alert">
+    <!-- 헤더 -->
+    <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;padding:14px 16px">
+      <button onclick="goBack()" style="background:none;border:none;cursor:pointer;color:#025a93;font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center">←</button>
+      <span id="alertPageTitle" style="font-size:17px;font-weight:700;color:#0f172a;margin-left:12px">EUR/USD Price Alert</span>
+    </div>
+
+    <div style="padding-bottom:100px;overflow-y:auto">
+
+      <!-- 프로모션 카드 -->
+      <div style="margin:16px;border-radius:16px;background:linear-gradient(135deg,#025a93,#137fec);overflow:hidden;position:relative;min-height:120px;display:flex;align-items:center">
+        <div style="padding:20px;width:60%;z-index:1">
+          <p style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Promotion</p>
+          <h2 style="font-size:18px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:12px">FNEXで<br/>FX-MBTIチェック！</h2>
+          <button onclick="openPromo('Exness Global','#025a93','E')" style="background:#fff;color:#025a93;font-size:12px;font-weight:700;padding:8px 18px;border-radius:999px;border:none;cursor:pointer;font-family:'Inter',sans-serif">Start Now</button>
+        </div>
+        <div style="position:absolute;right:0;top:0;bottom:0;width:42%;display:flex;align-items:center;justify-content:center;font-size:72px">🧑‍💼</div>
+      </div>
+
+      <!-- 현재 가격 카드 -->
+      <div style="margin:0 16px 16px;background:#fff;border-radius:16px;padding:24px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);border:1px solid #f1f5f9">
+        <p style="font-size:13px;color:#94a3b8;font-weight:500;margin-bottom:6px">現在の市場価格</p>
+        <div id="alertCurrentPrice" style="font-size:40px;font-weight:900;color:#0f172a;letter-spacing:-1px">1.0845</div>
+        <div id="alertPriceChange" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:4px;color:#10b981;font-size:14px;font-weight:600">
+          <span>📈</span><span>+0.0021 (0.19%)</span>
+        </div>
+      </div>
+
+      <!-- 알람 설정 폼 -->
+      <div style="padding:0 16px;display:flex;flex-direction:column;gap:20px">
+
+        <!-- 목표 가격 -->
+        <div>
+          <label style="display:block;font-size:14px;font-weight:700;color:#1e293b;margin-bottom:10px">目標価格</label>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button onclick="adjustPrice(-1)" style="width:48px;height:48px;border-radius:12px;background:#f1f5f9;border:none;cursor:pointer;font-size:22px;font-weight:700;color:#475569;display:flex;align-items:center;justify-content:center;flex-shrink:0">−</button>
+            <input id="alertTargetPrice" type="number" step="0.0001" value="1.0850" style="flex:1;height:48px;border:1.5px solid #e2e8f0;border-radius:12px;text-align:center;font-size:20px;font-weight:700;color:#0f172a;outline:none;font-family:'Inter',sans-serif;" onfocus="this.style.borderColor='#025a93'" onblur="this.style.borderColor='#e2e8f0'"/>
+            <button onclick="adjustPrice(1)" style="width:48px;height:48px;border-radius:12px;background:#f1f5f9;border:none;cursor:pointer;font-size:22px;font-weight:700;color:#475569;display:flex;align-items:center;justify-content:center;flex-shrink:0">＋</button>
+          </div>
+          <p style="font-size:12px;color:#94a3b8;text-align:center;margin-top:6px">ステップ: 5 pips</p>
+        </div>
+
+        <!-- 알람 조건 -->
+        <div>
+          <label style="display:block;font-size:14px;font-weight:700;color:#1e293b;margin-bottom:10px">アラート条件</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button onclick="selectAlertCondition('above',this)" id="cond-above" style="height:48px;border-radius:12px;border:1.5px solid #025a93;background:#025a93;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">📈 以上</button>
+            <button onclick="selectAlertCondition('below',this)" id="cond-below" style="height:48px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">📉 以下</button>
+          </div>
+        </div>
+
+        <!-- 알람 빈도 -->
+        <div>
+          <label style="display:block;font-size:14px;font-weight:700;color:#1e293b;margin-bottom:10px">アラート頻度</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button onclick="selectFreq('once',this)" id="freq-once" style="height:48px;border-radius:12px;border:1.5px solid #025a93;background:#025a93;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">1回のみ</button>
+            <button onclick="selectFreq('always',this)" id="freq-always" style="height:48px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">毎回</button>
+          </div>
+        </div>
+
+        <!-- 알림 설정 -->
+        <div>
+          <label style="display:block;font-size:14px;font-weight:700;color:#1e293b;margin-bottom:10px">通知設定</label>
+          <div style="background:#fff;border-radius:16px;border:1px solid #f1f5f9;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+
+            <!-- 알림음 -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #f8fafc;cursor:pointer" onclick="selectSound()">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:36px;height:36px;border-radius:10px;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;font-size:18px">🔔</div>
+                <span id="alertSoundLabel" style="font-size:14px;font-weight:500;color:#1e293b">チャイム（標準）</span>
+              </div>
+              <span style="color:#94a3b8;font-size:18px">›</span>
+            </div>
+
+            <!-- 푸시 알림 토글 -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:36px;height:36px;border-radius:10px;background:#f8fafc;display:flex;align-items:center;justify-content:center;font-size:18px">📲</div>
+                <span style="font-size:14px;font-weight:500;color:#1e293b">プッシュ通知</span>
+              </div>
+              <div id="pushToggle" onclick="togglePush()" style="width:48px;height:26px;border-radius:999px;background:#025a93;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0">
+                <div id="pushThumb" style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:right 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+        <!-- 알림 목록 -->
+        <div id="activeAlertsList" style="display:none">
+          <label style="display:block;font-size:14px;font-weight:700;color:#1e293b;margin-bottom:10px">⚡ 設定中のアラート</label>
+          <div id="activeAlertsContainer" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+        <!-- 저장 버튼 -->
+        <div style="padding:0 0 40px">
+          <button onclick="saveAlert()" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:14px;border:none;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 12px rgba(2,90,147,0.3)">価格アラートを設定</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 알림음 선택 바텀시트 -->
+  <div id="soundOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:none;align-items:flex-end;justify-content:center" onclick="closeSoundSheet()">
+    <div id="soundPanel" style="width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;transform:translateY(100%);transition:transform 0.35s ease" onclick="event.stopPropagation()">
+      <div style="padding:12px;display:flex;justify-content:center"><div style="width:40px;height:4px;background:#e2e8f0;border-radius:999px"></div></div>
+      <h3 style="font-size:17px;font-weight:700;color:#0f172a;text-align:center;margin-bottom:16px">通知音を選択</h3>
+      <div style="display:flex;flex-direction:column;gap:2px;padding:0 16px">
+        <button onclick="selectSoundOption('チャイム（標準）')" style="display:flex;align-items:center;gap:12px;padding:14px;border:none;background:none;cursor:pointer;border-radius:12px;font-family:'Inter',sans-serif;width:100%;text-align:left" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'"><span style="font-size:20px">🔔</span><span style="font-size:14px;color:#1e293b;font-weight:500">チャイム（標準）</span></button>
+        <button onclick="selectSoundOption('ビープ音')" style="display:flex;align-items:center;gap:12px;padding:14px;border:none;background:none;cursor:pointer;border-radius:12px;font-family:'Inter',sans-serif;width:100%;text-align:left" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'"><span style="font-size:20px">📣</span><span style="font-size:14px;color:#1e293b;font-weight:500">ビープ音</span></button>
+        <button onclick="selectSoundOption('サイレント')" style="display:flex;align-items:center;gap:12px;padding:14px;border:none;background:none;cursor:pointer;border-radius:12px;font-family:'Inter',sans-serif;width:100%;text-align:left" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'"><span style="font-size:20px">🔇</span><span style="font-size:14px;color:#1e293b;font-weight:500">サイレント</span></button>
+        <button onclick="selectSoundOption('クラシック')" style="display:flex;align-items:center;gap:12px;padding:14px;border:none;background:none;cursor:pointer;border-radius:12px;font-family:'Inter',sans-serif;width:100%;text-align:left" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'"><span style="font-size:20px">🎵</span><span style="font-size:14px;color:#1e293b;font-weight:500">クラシック</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 급등락 알람 페이지 ===== -->
+  <div class="page slide-up" id="page-change-alert">
+    <div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px">
+      <button onclick="goBack()" style="background:none;border:none;cursor:pointer;color:#025a93;font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center">←</button>
+      <span id="changeAlertTitle" style="font-size:17px;font-weight:700;color:#0f172a">EUR/USD 急騰落アラート</span>
+      <div style="width:36px"></div>
+    </div>
+
+    <div style="background:#f8fafc;min-height:100vh">
+
+      <!-- 프로모션 카드 -->
+      <div style="padding:16px">
+        <div style="border-radius:16px;background:rgba(2,90,147,0.08);border:1px solid rgba(2,90,147,0.15);padding:20px;display:flex;align-items:center;justify-content:space-between">
+          <div style="flex:1;padding-right:16px">
+            <h2 style="font-size:15px;font-weight:700;color:#025a93;line-height:1.4;margin-bottom:4px">Dexia - FX-MBTIを<br/>チェックしよう</h2>
+            <p style="font-size:12px;color:#64748b;margin-bottom:12px">あなたのトレード性格を発見</p>
+            <button onclick="openPromo('Exness Global','#025a93','E')" style="background:#025a93;color:#fff;font-size:12px;font-weight:700;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif">Check Now</button>
+          </div>
+          <div style="width:72px;height:72px;border-radius:10px;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;font-size:44px;flex-shrink:0">👩‍💼</div>
+        </div>
+      </div>
+
+      <!-- 현재 가격 -->
+      <div style="margin:0 16px 16px;background:#fff;border-radius:16px;padding:16px 20px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">Current Price</p>
+            <p id="changeAlertPrice" style="font-size:30px;font-weight:900;color:#0f172a;letter-spacing:-0.5px">1.0845</p>
+          </div>
+          <div id="changeAlertBadge" style="display:flex;align-items:center;gap:4px;background:#f0fdf4;color:#16a34a;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600">
+            <span>📈</span><span>+0.02%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 설정 섹션 -->
+      <div style="padding:0 16px">
+        <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px">Alert Settings</p>
+
+        <!-- 변동폭 % -->
+        <div style="background:#fff;border-radius:16px;padding:20px;border:1px solid #e8ecf0;margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <span style="font-size:15px;font-weight:600;color:#1e293b">Percentage Change</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <input id="changePercent" type="number" step="0.1" min="0.1" max="10" value="0.5"
+                style="width:68px;height:38px;border:1.5px solid #025a93;border-radius:8px;text-align:center;font-size:18px;font-weight:700;color:#025a93;outline:none;font-family:'Inter',sans-serif;background:#f0f7ff;"
+                oninput="syncSlider(this.value)"/>
+              <span style="font-size:15px;font-weight:700;color:#64748b">%</span>
+            </div>
+          </div>
+          <input id="changeSlider" type="range" min="0.1" max="10" step="0.1" value="0.5"
+            style="width:100%;height:4px;border-radius:999px;outline:none;cursor:pointer;accent-color:#025a93;margin-bottom:8px"
+            oninput="syncPercent(this.value)"/>
+          <div style="display:flex;justify-content:space-between">
+            <span style="font-size:11px;color:#94a3b8;font-weight:600">0.1%</span>
+            <span style="font-size:11px;color:#94a3b8;font-weight:600">5.0%</span>
+            <span style="font-size:11px;color:#94a3b8;font-weight:600">10%</span>
+          </div>
+        </div>
+
+        <!-- 방향 -->
+        <div style="background:#fff;border-radius:16px;padding:16px 20px;border:1px solid #e8ecf0;margin-bottom:12px">
+          <p style="font-size:13px;font-weight:500;color:#94a3b8;margin-bottom:10px">Direction</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;background:#f1f5f9;border-radius:12px;padding:4px">
+            <button onclick="selectChangeDir('up',this)" id="dir-up" style="padding:10px;border-radius:8px;border:none;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);cursor:pointer;font-size:13px;font-weight:700;color:#025a93;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:3px">↑ Up</button>
+            <button onclick="selectChangeDir('down',this)" id="dir-down" style="padding:10px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:#64748b;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:3px">↓ Down</button>
+            <button onclick="selectChangeDir('both',this)" id="dir-both" style="padding:10px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:#64748b;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:3px">⇄ Both</button>
+          </div>
+        </div>
+
+        <!-- 예상 알람 가격 -->
+        <div style="background:rgba(2,90,147,0.06);border:1px solid rgba(2,90,147,0.15);border-radius:14px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:13px;font-weight:500;color:#64748b">Estimated Alert Price</span>
+          <span id="changeEstimatedPrice" style="font-size:20px;font-weight:700;color:#025a93">1.0899</span>
+        </div>
+
+        <!-- 타임프레임 -->
+        <div style="background:#fff;border-radius:16px;padding:16px 20px;border:1px solid #e8ecf0;margin-bottom:12px">
+          <p style="font-size:13px;font-weight:500;color:#94a3b8;margin-bottom:8px">Timeframe</p>
+          <div style="position:relative">
+            <select id="changeTimeframe" style="width:100%;padding:12px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;font-weight:600;color:#1e293b;background:#fff;outline:none;appearance:none;font-family:'Inter',sans-serif;cursor:pointer">
+              <option value="1h">1 Hour (1h)</option>
+              <option value="4h" selected>4 Hours (4h)</option>
+              <option value="1d">1 Day (1d)</option>
+              <option value="1w">1 Week (1w)</option>
+            </select>
+            <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none">▾</span>
+          </div>
+        </div>
+
+        <!-- 알람 빈도 -->
+        <div style="background:#fff;border-radius:16px;padding:16px 20px;border:1px solid #e8ecf0;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <p style="font-size:15px;font-weight:600;color:#1e293b;margin-bottom:2px">Alert Frequency</p>
+            <p style="font-size:12px;color:#94a3b8">Only alert once per timeframe</p>
+          </div>
+          <div id="changeFreqToggle" onclick="toggleChangeFreq()" style="width:48px;height:26px;border-radius:999px;background:#025a93;cursor:pointer;position:relative;flex-shrink:0">
+            <div id="changeFreqThumb" style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>
+          </div>
+        </div>
+
+        <!-- 저장 버튼 -->
+        <div style="padding-bottom:60px">
+          <button onclick="saveChangeAlert()" id="changeAlertSaveBtn" style="width:100%;background:#025a93;color:#fff;font-weight:700;font-size:16px;padding:16px;border-radius:14px;border:none;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 12px rgba(2,90,147,0.3);display:flex;align-items:center;justify-content:center;gap:8px">
+            🔔 急騰落アラートを設定
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -1236,6 +1466,236 @@ document.getElementById('brokerModal').addEventListener('click',function(e){ if(
 
 
 
+
+
+
+// ===== 급등락 알람 =====
+var changeDirection = 'up';
+var changeFreqOnce = true;
+var changeAlertPair = 'EUR/USD';
+
+function openChangeAlert(pairName) {
+  changeAlertPair = pairName || 'EUR/USD';
+  var d = PAIR_DATA[pairName];
+  document.getElementById('changeAlertTitle').textContent = changeAlertPair + ' 急騰落アラート';
+  if(d) {
+    document.getElementById('changeAlertPrice').textContent = d.price;
+    var badge = document.getElementById('changeAlertBadge');
+    badge.innerHTML = (d.up?'<span>📈</span>':'<span>📉</span>') + '<span>' + d.change + '</span>';
+    badge.style.background = d.up ? '#f0fdf4' : '#fff5f5';
+    badge.style.color = d.up ? '#16a34a' : '#dc2626';
+  }
+  document.getElementById('changePercent').value = '0.5';
+  document.getElementById('changeSlider').value = '0.5';
+  selectChangeDir('up', document.getElementById('dir-up'));
+  calcEstimated();
+  pageHistory.push('pair-detail');
+  showPage('change-alert', false);
+}
+function syncSlider(val){ document.getElementById('changeSlider').value=val; calcEstimated(); }
+function syncPercent(val){ document.getElementById('changePercent').value=parseFloat(val).toFixed(1); calcEstimated(); }
+function calcEstimated(){
+  var d=PAIR_DATA[changeAlertPair]; if(!d) return;
+  var pct=parseFloat(document.getElementById('changePercent').value)||0.5;
+  var price=parseFloat(d.price.replace(',',''));
+  var est = changeDirection==='down' ? price*(1-pct/100) : price*(1+pct/100);
+  var dec = d.price.includes('.') ? d.price.split('.')[1].length : 2;
+  document.getElementById('changeEstimatedPrice').textContent = est.toFixed(dec);
+}
+function selectChangeDir(dir,el){
+  changeDirection=dir;
+  ['up','down','both'].forEach(function(d){
+    var b=document.getElementById('dir-'+d); if(!b) return;
+    if(d===dir){ b.style.background='#fff'; b.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)'; b.style.color='#025a93'; b.style.fontWeight='700'; }
+    else{ b.style.background='transparent'; b.style.boxShadow='none'; b.style.color='#64748b'; b.style.fontWeight='600'; }
+  });
+  calcEstimated();
+}
+function toggleChangeFreq(){
+  changeFreqOnce=!changeFreqOnce;
+  var t=document.getElementById('changeFreqToggle');
+  var th=document.getElementById('changeFreqThumb');
+  t.style.background=changeFreqOnce?'#025a93':'#e2e8f0';
+  if(changeFreqOnce){th.style.right='3px';th.style.left='auto';}
+  else{th.style.left='3px';th.style.right='auto';}
+}
+function saveChangeAlert(){
+  var btn=document.getElementById('changeAlertSaveBtn');
+  if(btn){ btn.innerHTML='✓ 設定完了！'; btn.style.background='#16a34a';
+    setTimeout(function(){ btn.innerHTML='🔔 急騰落アラートを設定'; btn.style.background='#025a93'; },2000); }
+}
+
+// ===== 가격 알람 =====
+var alertCondition = 'above';
+var alertFreq = 'once';
+var pushEnabled = true;
+var emailEnabled = false;
+var activeAlerts = [];
+var currentAlertPair = 'EUR/USD';
+var alertPipSize = {'EUR/USD':0.0001,'GBP/USD':0.0001,'USD/JPY':0.01,'AUD/USD':0.0001,'BTC/USDT':1,'ETH/USDT':0.1,'GOLD/USD':0.1,'OIL/USD':0.01};
+
+function openAlert(pairName) {
+  currentAlertPair = pairName || 'EUR/USD';
+  var d = PAIR_DATA[pairName];
+
+  document.getElementById('alertPageTitle').textContent = currentAlertPair + ' Price Alert';
+
+  if(d) {
+    document.getElementById('alertCurrentPrice').textContent = d.price;
+    var changeEl = document.getElementById('alertPriceChange');
+    changeEl.innerHTML = (d.up ? '<span>📈</span>' : '<span>📉</span>') + '<span>' + d.change + '</span>';
+    changeEl.style.color = d.up ? '#10b981' : '#ef4444';
+
+    // 목표가격 초기값
+    var pip = alertPipSize[pairName] || 0.0001;
+    var currentNum = parseFloat(d.price.replace(',',''));
+    document.getElementById('alertTargetPrice').value = (currentNum + pip * 5).toFixed(
+      d.price.includes('.') ? d.price.split('.')[1].length : 2
+    );
+    document.getElementById('alertTargetPrice').step = pip;
+  }
+
+  // 초기화
+  selectAlertCondition('above', document.getElementById('cond-above'));
+  selectFreq('once', document.getElementById('freq-once'));
+  renderActiveAlerts();
+
+  pageHistory.push('pair-detail');
+  showPage('alert', false);
+}
+
+function adjustPrice(dir) {
+  var input = document.getElementById('alertTargetPrice');
+  var pip = alertPipSize[currentAlertPair] || 0.0001;
+  var val = parseFloat(input.value) + dir * pip * 5;
+  var decimals = pip < 0.01 ? 4 : pip < 1 ? 2 : 0;
+  input.value = val.toFixed(decimals);
+}
+
+function selectAlertCondition(type, el) {
+  alertCondition = type;
+  ['above','below'].forEach(function(t) {
+    var btn = document.getElementById('cond-'+t);
+    if(!btn) return;
+    if(t === type) {
+      btn.style.background = '#025a93';
+      btn.style.borderColor = '#025a93';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.background = '#fff';
+      btn.style.borderColor = '#e2e8f0';
+      btn.style.color = '#64748b';
+    }
+  });
+}
+
+function selectFreq(type, el) {
+  alertFreq = type;
+  ['once','always'].forEach(function(t) {
+    var btn = document.getElementById('freq-'+t);
+    if(!btn) return;
+    if(t === type) {
+      btn.style.background = '#025a93';
+      btn.style.borderColor = '#025a93';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.background = '#fff';
+      btn.style.borderColor = '#e2e8f0';
+      btn.style.color = '#64748b';
+    }
+  });
+}
+
+function togglePush() {
+  pushEnabled = !pushEnabled;
+  var toggle = document.getElementById('pushToggle');
+  var thumb = document.getElementById('pushThumb');
+  toggle.style.background = pushEnabled ? '#025a93' : '#e2e8f0';
+  thumb.style.right = pushEnabled ? '3px' : 'auto';
+  thumb.style.left = pushEnabled ? 'auto' : '3px';
+}
+
+function toggleEmail() {
+  emailEnabled = !emailEnabled;
+  var toggle = document.getElementById('emailToggle');
+  var thumb = document.getElementById('emailThumb');
+  toggle.style.background = emailEnabled ? '#025a93' : '#e2e8f0';
+  thumb.style.left = emailEnabled ? 'auto' : '3px';
+  thumb.style.right = emailEnabled ? '3px' : 'auto';
+}
+
+function selectSound() {
+  document.getElementById('soundOverlay').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('soundPanel').style.transform = 'translateY(0)'; }, 10);
+}
+
+function closeSoundSheet() {
+  document.getElementById('soundPanel').style.transform = 'translateY(100%)';
+  setTimeout(function(){ document.getElementById('soundOverlay').style.display = 'none'; }, 350);
+}
+
+function selectSoundOption(name) {
+  document.getElementById('alertSoundLabel').textContent = name;
+  closeSoundSheet();
+}
+
+function saveAlert() {
+  var targetPrice = document.getElementById('alertTargetPrice').value;
+  if(!targetPrice) { alert('目標価格を入力してください'); return; }
+
+  // 알람 저장
+  activeAlerts.push({
+    pair: currentAlertPair,
+    price: targetPrice,
+    condition: alertCondition,
+    freq: alertFreq,
+    time: new Date().toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'})
+  });
+
+  var btn = document.querySelector('#page-alert button[onclick="saveAlert()"]');
+  if(btn) {
+    btn.textContent = '✓ アラートを設定しました！';
+    btn.style.background = '#16a34a';
+    setTimeout(function(){
+      btn.textContent = '価格アラートを設定';
+      btn.style.background = '#025a93';
+    }, 2000);
+  }
+
+  renderActiveAlerts();
+}
+
+function renderActiveAlerts() {
+  var myAlerts = activeAlerts.filter(function(a){ return a.pair === currentAlertPair; });
+  var listEl = document.getElementById('activeAlertsList');
+  var container = document.getElementById('activeAlertsContainer');
+  if(!listEl || !container) return;
+
+  if(myAlerts.length === 0) {
+    listEl.style.display = 'none';
+    return;
+  }
+  listEl.style.display = 'block';
+  container.innerHTML = myAlerts.map(function(a, i) {
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-radius:12px;border:1px solid #f1f5f9">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<span style="font-size:18px">'+(a.condition==='above'?'📈':'📉')+'</span>' +
+        '<div>' +
+          '<p style="font-size:13px;font-weight:700;color:#0f172a">'+(a.condition==='above'?'以上':'以下')+' '+a.price+'</p>' +
+          '<p style="font-size:11px;color:#94a3b8">'+(a.freq==='once'?'1回のみ':'毎回')+' · '+a.time+'</p>' +
+        '</div>' +
+      '</div>' +
+      '<button onclick="removeAlert('+i+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:18px">×</button>' +
+    '</div>';
+  }).join('');
+}
+
+function removeAlert(idx) {
+  var myAlerts = activeAlerts.filter(function(a){ return a.pair === currentAlertPair; });
+  var globalIdx = activeAlerts.indexOf(myAlerts[idx]);
+  if(globalIdx !== -1) activeAlerts.splice(globalIdx, 1);
+  renderActiveAlerts();
+}
 
 // ===== 트레이드 브로커 연결 =====
 var BROKER_TRADE_URL = {
@@ -2100,6 +2560,269 @@ function searchGlossary(q) { renderGlossary(q); }
 
 
 
+
+
+
+// ===== 가격변동 알람 =====
+var changeDirection = 'up';
+var freqOnce = true;
+var changeAlertPair = 'EUR/USD';
+
+function openChangeAlert(pairName) {
+  changeAlertPair = pairName || 'EUR/USD';
+  var d = PAIR_DATA[pairName];
+
+  document.getElementById('changeAlertTitle').textContent = changeAlertPair + ' 急騰落アラート';
+
+  if(d) {
+    document.getElementById('changeAlertPrice').textContent = d.price;
+    var badge = document.getElementById('changeAlertBadge');
+    badge.innerHTML = (d.up ? '<span>📈</span>' : '<span>📉</span>') + '<span>' + d.change + '</span>';
+    badge.style.background = d.up ? '#f0fdf4' : '#fff5f5';
+    badge.style.color = d.up ? '#16a34a' : '#dc2626';
+  }
+
+  // 초기화
+  document.getElementById('changePercent').value = '0.5';
+  document.getElementById('changeSlider').value = '0.5';
+  selectDirection('up', document.getElementById('dir-up'));
+  updateEstimatedPrice();
+
+  pageHistory.push('pair-detail');
+  showPage('change-alert', false);
+}
+
+function updateEstimatedPrice() {
+  var d = PAIR_DATA[changeAlertPair];
+  if(!d) return;
+  var pct = parseFloat(document.getElementById('changePercent').value) || 0.5;
+  var price = parseFloat(d.price.replace(',',''));
+  var estimated = price * (1 + pct/100);
+  var decimals = d.price.includes('.') ? d.price.split('.')[1].length : 2;
+  document.getElementById('estimatedPrice').textContent = estimated.toFixed(decimals);
+  // 슬라이더 동기화
+  document.getElementById('changeSlider').value = pct;
+}
+
+function selectDirection(dir, el) {
+  changeDirection = dir;
+  ['up','down','both'].forEach(function(d) {
+    var btn = document.getElementById('dir-'+d);
+    if(!btn) return;
+    if(d === dir) {
+      btn.style.background = '#fff';
+      btn.style.boxShadow = '0 1px 4px rgba(0,0,0,0.1)';
+      btn.style.color = '#025a93';
+      btn.style.fontWeight = '700';
+    } else {
+      btn.style.background = 'transparent';
+      btn.style.boxShadow = 'none';
+      btn.style.color = '#64748b';
+      btn.style.fontWeight = '600';
+    }
+  });
+  updateEstimatedPrice();
+}
+
+function toggleFreq() {
+  freqOnce = !freqOnce;
+  var toggle = document.getElementById('freqToggle');
+  var thumb = document.getElementById('freqThumb');
+  toggle.style.background = freqOnce ? '#025a93' : '#e2e8f0';
+  if(freqOnce) {
+    thumb.style.right = '3px';
+    thumb.style.left = 'auto';
+  } else {
+    thumb.style.left = '3px';
+    thumb.style.right = 'auto';
+  }
+}
+
+function saveChangeAlert() {
+  var pct = document.getElementById('changePercent').value;
+  var timeframe = document.getElementById('changeTimeframe').value;
+  var btn = document.querySelector('#page-change-alert button[onclick="saveChangeAlert()"]');
+  if(btn) {
+    btn.innerHTML = '✓ アラートを設定しました！';
+    btn.style.background = '#16a34a';
+    setTimeout(function(){
+      btn.innerHTML = '🔔 急騰落アラートを設定';
+      btn.style.background = '#025a93';
+    }, 2000);
+  }
+}
+
+// ===== 가격 알람 =====
+var alertCondition = 'above';
+var alertFreq = 'once';
+var pushEnabled = true;
+var emailEnabled = false;
+var activeAlerts = [];
+var currentAlertPair = 'EUR/USD';
+var alertPipSize = {'EUR/USD':0.0001,'GBP/USD':0.0001,'USD/JPY':0.01,'AUD/USD':0.0001,'BTC/USDT':1,'ETH/USDT':0.1,'GOLD/USD':0.1,'OIL/USD':0.01};
+
+function openAlert(pairName) {
+  currentAlertPair = pairName || 'EUR/USD';
+  var d = PAIR_DATA[pairName];
+
+  document.getElementById('alertPageTitle').textContent = currentAlertPair + ' Price Alert';
+
+  if(d) {
+    document.getElementById('alertCurrentPrice').textContent = d.price;
+    var changeEl = document.getElementById('alertPriceChange');
+    changeEl.innerHTML = (d.up ? '<span>📈</span>' : '<span>📉</span>') + '<span>' + d.change + '</span>';
+    changeEl.style.color = d.up ? '#10b981' : '#ef4444';
+
+    // 목표가격 초기값
+    var pip = alertPipSize[pairName] || 0.0001;
+    var currentNum = parseFloat(d.price.replace(',',''));
+    document.getElementById('alertTargetPrice').value = (currentNum + pip * 5).toFixed(
+      d.price.includes('.') ? d.price.split('.')[1].length : 2
+    );
+    document.getElementById('alertTargetPrice').step = pip;
+  }
+
+  // 초기화
+  selectAlertCondition('above', document.getElementById('cond-above'));
+  selectFreq('once', document.getElementById('freq-once'));
+  renderActiveAlerts();
+
+  pageHistory.push('pair-detail');
+  showPage('alert', false);
+}
+
+function adjustPrice(dir) {
+  var input = document.getElementById('alertTargetPrice');
+  var pip = alertPipSize[currentAlertPair] || 0.0001;
+  var val = parseFloat(input.value) + dir * pip * 5;
+  var decimals = pip < 0.01 ? 4 : pip < 1 ? 2 : 0;
+  input.value = val.toFixed(decimals);
+}
+
+function selectAlertCondition(type, el) {
+  alertCondition = type;
+  ['above','below'].forEach(function(t) {
+    var btn = document.getElementById('cond-'+t);
+    if(!btn) return;
+    if(t === type) {
+      btn.style.background = '#025a93';
+      btn.style.borderColor = '#025a93';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.background = '#fff';
+      btn.style.borderColor = '#e2e8f0';
+      btn.style.color = '#64748b';
+    }
+  });
+}
+
+function selectFreq(type, el) {
+  alertFreq = type;
+  ['once','always'].forEach(function(t) {
+    var btn = document.getElementById('freq-'+t);
+    if(!btn) return;
+    if(t === type) {
+      btn.style.background = '#025a93';
+      btn.style.borderColor = '#025a93';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.background = '#fff';
+      btn.style.borderColor = '#e2e8f0';
+      btn.style.color = '#64748b';
+    }
+  });
+}
+
+function togglePush() {
+  pushEnabled = !pushEnabled;
+  var toggle = document.getElementById('pushToggle');
+  var thumb = document.getElementById('pushThumb');
+  toggle.style.background = pushEnabled ? '#025a93' : '#e2e8f0';
+  thumb.style.right = pushEnabled ? '3px' : 'auto';
+  thumb.style.left = pushEnabled ? 'auto' : '3px';
+}
+
+function toggleEmail() {
+  emailEnabled = !emailEnabled;
+  var toggle = document.getElementById('emailToggle');
+  var thumb = document.getElementById('emailThumb');
+  toggle.style.background = emailEnabled ? '#025a93' : '#e2e8f0';
+  thumb.style.left = emailEnabled ? 'auto' : '3px';
+  thumb.style.right = emailEnabled ? '3px' : 'auto';
+}
+
+function selectSound() {
+  document.getElementById('soundOverlay').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('soundPanel').style.transform = 'translateY(0)'; }, 10);
+}
+
+function closeSoundSheet() {
+  document.getElementById('soundPanel').style.transform = 'translateY(100%)';
+  setTimeout(function(){ document.getElementById('soundOverlay').style.display = 'none'; }, 350);
+}
+
+function selectSoundOption(name) {
+  document.getElementById('alertSoundLabel').textContent = name;
+  closeSoundSheet();
+}
+
+function saveAlert() {
+  var targetPrice = document.getElementById('alertTargetPrice').value;
+  if(!targetPrice) { alert('目標価格を入力してください'); return; }
+
+  // 알람 저장
+  activeAlerts.push({
+    pair: currentAlertPair,
+    price: targetPrice,
+    condition: alertCondition,
+    freq: alertFreq,
+    time: new Date().toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'})
+  });
+
+  var btn = document.querySelector('#page-alert button[onclick="saveAlert()"]');
+  if(btn) {
+    btn.textContent = '✓ アラートを設定しました！';
+    btn.style.background = '#16a34a';
+    setTimeout(function(){
+      btn.textContent = '価格アラートを設定';
+      btn.style.background = '#025a93';
+    }, 2000);
+  }
+
+  renderActiveAlerts();
+}
+
+function renderActiveAlerts() {
+  var myAlerts = activeAlerts.filter(function(a){ return a.pair === currentAlertPair; });
+  var listEl = document.getElementById('activeAlertsList');
+  var container = document.getElementById('activeAlertsContainer');
+  if(!listEl || !container) return;
+
+  if(myAlerts.length === 0) {
+    listEl.style.display = 'none';
+    return;
+  }
+  listEl.style.display = 'block';
+  container.innerHTML = myAlerts.map(function(a, i) {
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-radius:12px;border:1px solid #f1f5f9">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<span style="font-size:18px">'+(a.condition==='above'?'📈':'📉')+'</span>' +
+        '<div>' +
+          '<p style="font-size:13px;font-weight:700;color:#0f172a">'+(a.condition==='above'?'以上':'以下')+' '+a.price+'</p>' +
+          '<p style="font-size:11px;color:#94a3b8">'+(a.freq==='once'?'1回のみ':'毎回')+' · '+a.time+'</p>' +
+        '</div>' +
+      '</div>' +
+      '<button onclick="removeAlert('+i+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:18px">×</button>' +
+    '</div>';
+  }).join('');
+}
+
+function removeAlert(idx) {
+  var myAlerts = activeAlerts.filter(function(a){ return a.pair === currentAlertPair; });
+  var globalIdx = activeAlerts.indexOf(myAlerts[idx]);
+  if(globalIdx !== -1) activeAlerts.splice(globalIdx, 1);
+  renderActiveAlerts();
+}
 
 // ===== 트레이드 브로커 연결 =====
 var BROKER_TRADE_URL = {
