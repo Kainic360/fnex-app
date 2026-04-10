@@ -900,15 +900,13 @@ body { font-family: 'Inter', sans-serif; background: #f6f7f8; overflow-x: hidden
 
     <!-- アラート 탭 -->
     <div id="market-alert" style="display:none;padding:16px;padding-bottom:100px">
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center">
         <div style="font-size:48px;margin-bottom:16px">🔔</div>
         <h3 style="font-size:16px;font-weight:700;color:#1e293b;margin-bottom:8px">価格アラート</h3>
-        <p style="font-size:14px;color:#94a3b8;line-height:1.6;margin-bottom:20px">ペアを選択してアラートを設定すると<br/>通知でお知らせします</p>
-        <div style="display:flex;flex-direction:column;gap:8px;width:100%"><button onclick="openAlert('EUR/USD')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">EUR/USD アラートを設定</button><button onclick="openAlert('USD/JPY')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">USD/JPY アラートを設定</button><button onclick="openAlert('GBP/USD')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">GBP/USD アラートを設定</button><button onclick="openAlert('BTC/USDT')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">BTC/USDT アラートを設定</button><button onclick="openAlert('GOLD/USD')" style="padding:12px 16px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:#025a93;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.06)">GOLD/USD アラートを設定</button></div>
+        <p style="font-size:14px;color:#94a3b8;line-height:1.6">ペアを選択してアラートを設定すると<br/>通知でお知らせします</p>
       </div>
     </div>
-
-    <!-- 하단 네비 -->
+        <!-- 하단 네비 -->
     <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,255,255,0.97);border-top:1px solid #f1f5f9;padding:8px 16px 20px;display:flex;justify-content:space-around;z-index:50">
       <button onclick="showPage('main',false);pageHistory=[]" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">📰</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">News</span></button>
       <button style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#025a93;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">📊</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">Market</span></button>
@@ -3899,9 +3897,6 @@ function createCard(item,i){
         '<button onclick="openShare(\''+safeLink+'\',\''+safeTitle.substring(0,50)+'...\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:#94a3b8;padding:0">🔗</button>'+
       '</div>'+
     '</div>'+
-    '<button onclick="openTrade(\''+safeTitle+'\')" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#025a93,#137fec);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:\'Inter\',sans-serif;box-shadow:0 2px 8px rgba(2,90,147,0.25)">'+
-      '📊 今すぐトレード'+
-    '</button>'+
   '</div>';
 }
 function filterNews(type){
