@@ -104,21 +104,28 @@ body.dark-mode .overlay { background: rgba(0,0,0,0.7) !important; }
 }
 
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
-.page { display:none;position:absolute;top:0;left:0;width:100%;height:100vh;background:#fff;transition:transform 0.35s ease;overflow-y:auto;-webkit-overflow-scrolling:touch; }
-.page.active { display:block;overflow-y:auto; }
-.page.slide-up { display:block;transform:translateY(100%);overflow-y:hidden;-webkit-overflow-scrolling:touch; }
-.page.slide-up.active { transform:translateY(0); }
-/* flex 내부 스크롤 레이아웃 페이지 - .page.active 보다 나중에 선언해서 우선순위 확보 */
-#page-calendar,
-#page-broker,
-#page-broker-detail-xm,
-#page-broker-detail-dexia,
-#page-broker-detail-exness,
-#page-broker-detail-vantage,
-#page-broker-detail-titanfx,
-#page-broker-detail-fxgt,
-#page-indicator-detail,
-#page-promo-detail { overflow: hidden !important; display:flex !important; flex-direction:column; height:100vh; }
+html, body {
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+.page { display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch; }
+.page.active { display:block; }
+.page.slide-up { display:none; }
+.page.slide-up.active { display:block; }
+/* flex 내부 스크롤 레이아웃 페이지 */
+#page-calendar.active,
+#page-broker.active,
+#page-broker-detail-xm.active,
+#page-broker-detail-dexia.active,
+#page-broker-detail-exness.active,
+#page-broker-detail-vantage.active,
+#page-broker-detail-titanfx.active,
+#page-broker-detail-fxgt.active,
+#page-indicator-detail.active,
+#page-promo-detail.active { overflow:hidden !important; display:flex !important; flex-direction:column !important; }
 .overlay { position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.3s; }
 .overlay.open { opacity:1;pointer-events:all; }
 .sidebar { position:fixed;bottom:-100%;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:85vh;background:#fff;z-index:201;transition:bottom 0.35s ease;display:flex;flex-direction:column;box-shadow:0 -4px 20px rgba(0,0,0,0.2);border-radius:20px 20px 0 0; }
@@ -5860,13 +5867,6 @@ function showPage(name, addHistory) {
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   var targetPage = document.getElementById('page-'+name);
   targetPage.classList.add('active');
-  // flex 레이아웃 페이지는 overflow:hidden 강제 적용
-  var flexPages = ['calendar','broker','broker-detail-xm','broker-detail-dexia','broker-detail-exness','broker-detail-vantage','broker-detail-titanfx','broker-detail-fxgt','indicator-detail','promo-detail'];
-  if(flexPages.indexOf(name) !== -1) {
-    targetPage.style.overflow = 'hidden';
-    targetPage.style.display = 'flex';
-    targetPage.style.flexDirection = 'column';
-  }
 
   // 모든 페이지 스크롤 최상단으로
   var el = document.getElementById('page-'+name);
