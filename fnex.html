@@ -111,10 +111,21 @@ html, body {
   position: fixed;
   width: 100%;
 }
-.page { display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch; }
-.page.active { display:block; }
-.page.slide-up { display:none; }
-.page.slide-up.active { display:block; }
+/* 모든 페이지: fixed + display:none이 기본 */
+.page {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #fff;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 10;
+}
+/* 활성 페이지만 보임 */
+.page.active { display: block; }
+.page.slide-up { display: none; }
+.page.slide-up.active { display: block; }
 /* flex 내부 스크롤 레이아웃 페이지 */
 #page-calendar.active,
 #page-broker.active,
@@ -125,7 +136,11 @@ html, body {
 #page-broker-detail-titanfx.active,
 #page-broker-detail-fxgt.active,
 #page-indicator-detail.active,
-#page-promo-detail.active { overflow:hidden !important; display:flex !important; flex-direction:column !important; }
+#page-promo-detail.active {
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
 .overlay { position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.3s; }
 .overlay.open { opacity:1;pointer-events:all; }
 .sidebar { position:fixed;bottom:-100%;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:85vh;background:#fff;z-index:201;transition:bottom 0.35s ease;display:flex;flex-direction:column;box-shadow:0 -4px 20px rgba(0,0,0,0.2);border-radius:20px 20px 0 0; }
@@ -5554,6 +5569,67 @@ function buildWeekEventRow(e) {
 }
 
 
+// ── Week 뷰 렌더 ──
+function renderCalWeek() {
+  var d = new Date(calWeekStart);
+  d.setDate(d.getDate() - d.getDay()); // 일요일로
+  calWeekStart = new Date(d);
+
+  var endD = new Date(d);
+  endD.setDate(endD.getDate() + 6);
+  document.getElementById('calWeekTitle').textContent =
+    (d.getMonth()+1)+'月'+d.getDate()+'日 〜 '+(endD.getMonth()+1)+'月'+endD.getDate()+'日 '+endD.getFullYear();
+
+  var container = document.getElementById('calWeekCards');
+  container.innerHTML = '';
+  var todayStr = dateStr(new Date());
+
+  for(var i = 0; i < 7; i++) {
+    var cur = new Date(d);
+    cur.setDate(cur.getDate() + i);
+    var dStr3 = dateStr(cur);
+    var events = getEventsForDate(dStr3, calCurrentTab);
+    var isToday2 = dStr3 === todayStr;
+
+    // 토요일: 주말 카드로 묶기
+    if(cur.getDay() === 6) {
+      var sun = new Date(cur); sun.setDate(sun.getDate()+1);
+      var weekendEvents = events.concat(getEventsForDate(dateStr(sun), calCurrentTab));
+      var wCard = document.createElement('div');
+      wCard.style.cssText = 'background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #f1f5f9';
+      wCard.innerHTML = '<h4 style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:12px">週末の見通し</h4>';
+      if(weekendEvents.length === 0) {
+        wCard.innerHTML += '<div style="text-align:center;padding:16px 0;color:#94a3b8"><div style="font-size:32px;margin-bottom:8px">🗓️</div><p style="font-size:12px">高インパクト指標の予定なし<br/>'+(cur.getMonth()+1)+'月'+cur.getDate()+'日 〜 '+sun.getDate()+'日</p></div>';
+      } else {
+        weekendEvents.forEach(function(e){ wCard.innerHTML += buildWeekEventRow(e); });
+      }
+      container.appendChild(wCard);
+      i++; // 일요일 건너뜀
+      continue;
+    }
+
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:'+(isToday2?'2px solid #025a93':'1px solid #f1f5f9');
+
+    var headerHtml = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+      + '<div style="display:flex;align-items:center;gap:8px">'
+        + '<h4 style="font-size:15px;font-weight:800;color:'+(isToday2?'#025a93':'#0f172a')+'">'
+          + DAY_SHORT[cur.getDay()]+'曜日, '+(cur.getMonth()+1)+'月'+cur.getDate()+'日</h4>'
+        + (isToday2?'<span style="font-size:10px;font-weight:700;color:#fff;background:#025a93;padding:2px 8px;border-radius:999px">LIVE</span>':'')
+      + '</div>'
+      + '<span style="font-size:12px;font-weight:600;color:#64748b">'+events.length+' 件</span>'
+    + '</div>';
+    card.innerHTML = headerHtml;
+
+    if(events.length > 0) {
+      events.forEach(function(e){ card.innerHTML += buildWeekEventRow(e); });
+    } else {
+      card.innerHTML += '<p style="font-size:12px;color:#94a3b8;text-align:center;padding:12px 0">イベントなし</p>';
+    }
+    container.appendChild(card);
+  }
+}
+
 // ── Day 뷰 렌더 (이미지3 디자인) ──
 // 타임라인 + 이벤트 카드 (HIGH/MED/LOW IMPACT 배지 + ACTUAL/FORECAST/PREVIOUS)
 function renderCalDay() {
@@ -5856,7 +5932,6 @@ function renderIndChart(history) {
 var pageHistory = [];
 
 function showPage(name, addHistory) {
-  var SUB_PAGES = ['profile','points','theme','glossary','policy'];
   var currentActive = document.querySelector('.page.active');
   var currentId = currentActive ? currentActive.id.replace('page-','') : 'main';
 
@@ -5864,14 +5939,30 @@ function showPage(name, addHistory) {
     pageHistory.push(currentId);
   }
 
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  // 모든 페이지 숨기기 (클래스 + 인라인 스타일 둘 다)
+  document.querySelectorAll('.page').forEach(function(p){
+    p.classList.remove('active');
+    p.style.cssText = 'display:none !important';
+  });
+
+  // 대상 페이지 표시
   var targetPage = document.getElementById('page-'+name);
+  if(!targetPage) return;
   targetPage.classList.add('active');
 
-  // 모든 페이지 스크롤 최상단으로
-  var el = document.getElementById('page-'+name);
-  if(el) el.scrollTop = 0;
-  window.scrollTo(0,0);
+  // flex 레이아웃 페이지 (내부 스크롤 방식)
+  var flexPages = ['calendar','broker','broker-detail-xm','broker-detail-dexia',
+    'broker-detail-exness','broker-detail-vantage','broker-detail-titanfx',
+    'broker-detail-fxgt','indicator-detail','promo-detail'];
+
+  if(flexPages.indexOf(name) !== -1) {
+    targetPage.style.cssText = 'display:flex;flex-direction:column;overflow:hidden;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:10';
+  } else {
+    targetPage.style.cssText = 'display:block;overflow-y:auto;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:10;-webkit-overflow-scrolling:touch';
+  }
+
+  // 스크롤 최상단
+  targetPage.scrollTop = 0;
 
   if(name==='glossary'){
     document.getElementById('glossarySearch').value='';
@@ -5881,7 +5972,8 @@ function showPage(name, addHistory) {
   if(name==='broker'){ renderBrokerHub(BROKER_HUB_DATA); currentBrokerFilter=''; filterBrokerHub(''); }
   if(name==='calendar'){ calCurrentDate=new Date(); calSelectedDate=new Date(); calWeekStart=new Date(); calDayDate=new Date(); switchCalView('month'); switchCalTab('all'); }
   if(name==='change-alert'){ initChangeAlertPage(); }
-  if(name==='alert'){ initAlertPage(); }}
+  if(name==='alert'){ initAlertPage(); }
+}
 
 function goBack() {
   if(pageHistory.length > 0) {
@@ -5892,6 +5984,21 @@ function goBack() {
   }
 }
 document.getElementById('menuBtn').addEventListener('click',function(){ openSidebar(); });
+// 초기 로드: page-main 제외 모든 페이지 강제 숨김
+(function() {
+  document.querySelectorAll('.page').forEach(function(p) {
+    if(p.id !== 'page-main') {
+      p.style.cssText = 'display:none !important';
+      p.classList.remove('active');
+    }
+  });
+  // page-main 명시적으로 표시
+  var main = document.getElementById('page-main');
+  if(main) {
+    main.style.cssText = 'display:block;overflow-y:auto;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:10;-webkit-overflow-scrolling:touch';
+    main.classList.add('active');
+  }
+})();
 function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('open'); document.getElementById('sidebar').scrollTop=0; }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
 function selectAvatar(el,emoji){
