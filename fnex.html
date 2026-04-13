@@ -135,6 +135,7 @@ html, body {
 #page-broker-detail-vantage.active,
 #page-broker-detail-titanfx.active,
 #page-broker-detail-fxgt.active,
+#page-journal.active,
 #page-indicator-detail.active,
 #page-promo-detail.active {
   overflow: hidden !important;
@@ -984,6 +985,55 @@ html, body {
   </div>
 
   <!-- ===== 마켓 페이지 ===== -->
+  <!-- ===== 프로모션 상세 페이지 (page-promo-detail) ===== -->
+  <div class="page slide-up" id="page-promo-detail">
+    <!-- 헤더 -->
+    <div id="promoDetailHeader" style="flex-shrink:0;display:flex;align-items:center;padding:0 16px;height:56px;background:linear-gradient(135deg,#025a93,#0077c2)">
+      <button onclick="goBack()" style="background:rgba(255,255,255,0.15);border:none;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0">←</button>
+      <span style="font-size:16px;font-weight:700;color:#fff;margin-left:12px;flex:1">プロモーション詳細</span>
+    </div>
+    <!-- 스크롤 영역 -->
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f8fafc;padding-bottom:32px">
+      <!-- 배너 -->
+      <div id="promoDetailBanner" style="position:relative;height:200px;background:linear-gradient(135deg,#025a93,#0077c2);display:flex;align-items:center;justify-content:center;overflow:hidden">
+        <div id="promoDetailBannerBg" style="position:absolute;font-size:120px;opacity:0.15;user-select:none">🎁</div>
+        <div style="position:relative;z-index:1;text-align:center;padding:0 24px">
+          <div id="promoDetailBadgeText" style="display:inline-block;background:rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:999px;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">プロモーション</div>
+          <h1 id="promoDetailTitle" style="font-size:22px;font-weight:900;color:#fff;line-height:1.3;text-shadow:0 2px 8px rgba(0,0,0,0.3)"></h1>
+        </div>
+      </div>
+      <!-- 부제목 -->
+      <div style="background:#fff;padding:20px 16px 16px">
+        <p id="promoDetailSubtitle" style="font-size:14px;color:#475569;line-height:1.8"></p>
+      </div>
+      <!-- 통계 카드 -->
+      <div style="padding:0 16px 16px;background:#fff">
+        <div id="promoDetailStats" style="display:flex;gap:10px"></div>
+      </div>
+      <!-- 혜택 요약 -->
+      <div style="margin:0 16px 16px;background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid #f1f5f9">
+        <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:12px">🎁 혜택 요약</h3>
+        <div id="promoDetailDesc" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+      <!-- 프로모션 상세 -->
+      <div style="margin:0 16px 16px;background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid #f1f5f9">
+        <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:12px">📋 プロモーション詳細</h3>
+        <p style="font-size:13px;color:#64748b;line-height:1.8">プロモーション詳細については公式サイトをご確認ください。内容は予告なく変更される場合があります。</p>
+      </div>
+      <!-- 참여 조건 -->
+      <div style="margin:0 16px 16px;background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid #f1f5f9">
+        <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:12px">✅ 参加条件</h3>
+        <div id="promoDetailConditions" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <!-- CTA -->
+      <div style="padding:0 16px 16px">
+        <button id="promoDetailCTA" onclick="" style="width:100%;background:#025a93;color:#fff;font-weight:800;font-size:15px;padding:15px;border-radius:14px;border:none;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 16px rgba(2,90,147,0.3)">今すぐ参加 →</button>
+        <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:10px">※ 本プロモーションはブロカーさの政策に従い変更될 수 있습니다</p>
+      </div>
+    </div>
+  </div>
+
+
   <div class="page slide-up" id="page-market">
     <!-- 헤더 -->
     <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #f1f5f9">
@@ -1224,7 +1274,7 @@ html, body {
     <div style="flex-shrink:0;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;padding:0 16px;gap:24px;overflow-x:auto" class="no-scrollbar">
       <button id="cal-tab-all" onclick="switchCalTab('all')" style="padding:14px 0;font-size:14px;font-weight:700;color:#025a93;border:none;background:none;cursor:pointer;border-bottom:2px solid #025a93;white-space:nowrap;font-family:'Inter',sans-serif">すべて</button>
       <button id="cal-tab-indicators" onclick="switchCalTab('indicators')" style="padding:14px 0;font-size:14px;font-weight:600;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'Inter',sans-serif">指標</button>
-      <button id="cal-tab-journal" onclick="switchCalTab('journal')" style="padding:14px 0;font-size:14px;font-weight:600;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'Inter',sans-serif">ジャーナル</button>
+      <button id="cal-tab-journal" onclick="switchCalTab('journal');openJournalPage()" style="padding:14px 0;font-size:14px;font-weight:600;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'Inter',sans-serif">収支表</button>
       <button id="cal-tab-promotions" onclick="switchCalTab('promotions')" style="padding:14px 0;font-size:14px;font-weight:600;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'Inter',sans-serif">プロモーション</button>
     </div>
     <div style="flex-shrink:0;background:#fff;padding:12px 16px">
@@ -1267,7 +1317,7 @@ html, body {
           </div>
           <div style="display:flex;align-items:center;gap:4px">
             <div style="width:10px;height:10px;border-radius:2px;background:#10b981"></div>
-            <span style="font-size:10px;color:#64748b;font-weight:600">ジャーナル</span>
+            <span style="font-size:10px;color:#64748b;font-weight:600">収支表</span>
           </div>
           <div style="display:flex;align-items:center;gap:4px">
             <div style="width:10px;height:10px;border-radius:2px;background:#8b5cf6"></div>
@@ -1300,6 +1350,238 @@ html, body {
       <button onclick="showPage('broker',false);pageHistory=[]" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif"><span style="font-size:24px">&#x1F3E6;</span><span style="font-size:10px;font-weight:700;text-transform:uppercase">ブローカー</span></button>
     </div>
   </div>
+
+  <!-- ===== 収支表 페이지 ===== -->
+  <div class="page slide-up" id="page-journal">
+
+    <!-- 헤더 -->
+    <div style="flex-shrink:0;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:56px">
+      <button onclick="goBack()" style="background:none;border:none;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#475569">←</button>
+      <span style="font-size:20px;font-weight:900;color:#025a93;letter-spacing:2px">FNEX</span>
+      <div style="width:36px"></div>
+    </div>
+
+    <!-- 분기 드롭다운 오버레이 -->
+    <div id="jnlQuarterOverlay" onclick="closeQuarterMenu()" style="display:none;position:fixed;inset:0;z-index:80;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px)"></div>
+    <div id="jnlQuarterMenu" style="display:none;position:fixed;top:0;left:0;right:0;z-index:90;background:#fff;border-radius:0 0 24px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.18)">
+      <!-- 연도 네비 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #f1f5f9">
+        <button onclick="jnlYearNav(-1)" style="width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;font-size:20px;color:#475569">&#8249;</button>
+        <span id="jnlQuarterYear" style="font-size:18px;font-weight:700;color:#0f172a"></span>
+        <button onclick="jnlYearNav(1)" style="width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;font-size:20px;color:#475569">&#8250;</button>
+      </div>
+      <!-- 메뉴 리스트 -->
+      <div id="jnlQuarterList" style="padding:0"></div>
+      <!-- 핸들 -->
+      <div style="display:flex;justify-content:center;padding:14px;background:#f8fafc;border-top:1px solid #f1f5f9">
+        <div style="width:48px;height:5px;border-radius:999px;background:#cbd5e1"></div>
+      </div>
+    </div>
+
+    <!-- 스크롤 영역 -->
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f6f7f8;padding-bottom:40px">
+
+      <!-- ── 공통 캘린더 영역 (Day/Week/Month) ── -->
+      <div id="jnlCalSection" style="background:#fff;padding:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <button onclick="jnlNavPrev()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;color:#475569;font-size:18px;display:flex;align-items:center;justify-content:center">&#8249;</button>
+          <p id="jnlCalTitle" style="font-size:17px;font-weight:700;color:#0f172a"></p>
+          <button onclick="jnlNavNext()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;color:#475569;font-size:18px;display:flex;align-items:center;justify-content:center">&#8250;</button>
+        </div>
+        <div id="jnlCalGrid"></div>
+      </div>
+
+      <!-- ── Year 뷰 연도+드롭다운 영역 ── -->
+      <div id="jnlYearSection" style="display:none;background:#fff;padding:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <button onclick="jnlYearNav(-1)" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;color:#475569;font-size:18px;display:flex;align-items:center;justify-content:center">&#8249;</button>
+          <p id="jnlYearTitle" style="font-size:17px;font-weight:700;color:#0f172a"></p>
+          <button onclick="jnlYearNav(1)" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;color:#475569;font-size:18px;display:flex;align-items:center;justify-content:center">&#8250;</button>
+        </div>
+        <!-- 드롭다운 버튼 -->
+        <button onclick="openQuarterMenu()" style="width:100%;border:2px solid #025a93;border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#fff;cursor:pointer;box-shadow:0 1px 4px rgba(2,90,147,0.1)">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:14px;color:#025a93">📅</span>
+            <span id="jnlSelectedLabel" style="font-size:13px;font-weight:700;color:#1e293b">전체기간 (2026년 전체)</span>
+          </div>
+          <span style="font-size:14px;color:#025a93">▾</span>
+        </button>
+      </div>
+
+      <!-- ── Day/Week/Month/Year 탭 ── -->
+      <div style="background:#fff;border-bottom:1px solid #e2e8f0;display:flex">
+        <button id="jnl-tab-day"   onclick="switchJournalPeriod('day')"   style="flex:1;padding:13px 0;font-size:13px;font-weight:700;color:#025a93;border:none;background:none;cursor:pointer;border-bottom:3px solid #025a93;font-family:'Inter',sans-serif">Day</button>
+        <button id="jnl-tab-week"  onclick="switchJournalPeriod('week')"  style="flex:1;padding:13px 0;font-size:13px;font-weight:500;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;font-family:'Inter',sans-serif">Week</button>
+        <button id="jnl-tab-month" onclick="switchJournalPeriod('month')" style="flex:1;padding:13px 0;font-size:13px;font-weight:500;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;font-family:'Inter',sans-serif">Month</button>
+        <button id="jnl-tab-year"  onclick="switchJournalPeriod('year')"  style="flex:1;padding:13px 0;font-size:13px;font-weight:500;color:#94a3b8;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;font-family:'Inter',sans-serif">Year</button>
+      </div>
+
+      <!-- ── DAY 콘텐츠 ── -->
+      <div id="jnl-day-content">
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(2,90,147,0.05);border:1px solid rgba(2,90,147,0.1);border-radius:14px;padding:14px 16px">
+            <p style="font-size:13px;font-weight:500;color:#64748b">일일 손익</p>
+            <div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#025a93">+154,200</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 1.86%</p></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #f1f5f9;border-radius:14px;padding:14px 16px">
+            <p style="font-size:13px;font-weight:500;color:#64748b">실현 손익</p>
+            <div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#0f172a">+154,200</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 8.2%</p></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #f1f5f9;border-radius:14px;padding:14px 16px">
+            <p style="font-size:13px;font-weight:500;color:#64748b">오늘의 수익률</p>
+            <div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#0f172a">+0.5%</p><p style="font-size:12px;color:#10b981">↗</p></div>
+          </div>
+        </div>
+        <div style="padding:0 16px 16px">
+          <p style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px">Daily Summary</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Avg Win/Loss</p><p style="font-size:14px;font-weight:700;color:#0f172a">2.4 : 1</p></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Daily Winning Streak</p><p style="font-size:14px;font-weight:700;color:#0f172a">7 Days</p></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Avg Hold Time</p><p style="font-size:14px;font-weight:700;color:#0f172a">4.2 Hours</p></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Daily PF</p><p style="font-size:14px;font-weight:700;color:#025a93">1.85</p></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border:1px solid #f1f5f9;border-radius:12px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;color:#10b981">↗</div><span style="font-size:13px;font-weight:500;color:#334155">오늘의 최고 수익</span></div><span style="font-size:13px;font-weight:700;color:#0f172a">+458,000원</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border:1px solid #f1f5f9;border-radius:12px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;color:#025a93">💳</div><span style="font-size:13px;font-weight:500;color:#334155">오늘의 입금</span></div><span style="font-size:13px;font-weight:700;color:#025a93">+5,000,000원</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border:1px solid #f1f5f9;border-radius:12px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;color:#ef4444">💸</div><span style="font-size:13px;font-weight:500;color:#334155">오늘의 출금</span></div><span style="font-size:13px;font-weight:700;color:#ef4444">-1,200,000원</span></div>
+          </div>
+        </div>
+        <div style="padding:0 16px 24px">
+          <p style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px">Trade Performance Cards</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;padding:16px"><div style="display:flex;align-items:center;gap:12px"><div style="display:flex"><div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:18px">🇺🇸</div><div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:18px;margin-left:-8px">🇯🇵</div></div><div><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:13px;font-weight:700;color:#0f172a">USD/JPY</span><span style="font-size:10px;padding:2px 7px;border-radius:999px;background:#d1fae5;color:#059669;font-weight:700">Buy</span></div><p style="font-size:10px;color:#94a3b8">Win Rate <span style="color:#025a93;font-weight:700">72%</span></p></div></div><div style="text-align:right"><p style="font-size:10px;font-weight:700;color:#10b981">✓ Profit</p><p style="font-size:16px;font-weight:800;color:#0f172a">+¥5,000</p></div></div>
+            <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;padding:16px"><div style="display:flex;align-items:center;gap:12px"><div style="display:flex"><div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:18px">🇪🇺</div><div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:18px;margin-left:-8px">🇺🇸</div></div><div><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:13px;font-weight:700;color:#0f172a">EUR/USD</span><span style="font-size:10px;padding:2px 7px;border-radius:999px;background:#fee2e2;color:#dc2626;font-weight:700">Sell</span></div><p style="font-size:10px;color:#94a3b8">Win Rate <span style="color:#025a93;font-weight:700">64%</span></p></div></div><div style="text-align:right"><p style="font-size:10px;font-weight:700;color:#ef4444">✕ Loss</p><p style="font-size:16px;font-weight:800;color:#0f172a">-¥1,000</p></div></div>
+          </div>
+        </div>
+      </div><!-- /jnl-day-content -->
+
+      <!-- ── WEEK 콘텐츠 ── -->
+      <div id="jnl-week-content" style="display:none">
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(2,90,147,0.05);border:1px solid rgba(2,90,147,0.1);border-radius:14px;padding:14px 16px"><p style="font-size:13px;font-weight:500;color:#64748b">총 손익</p><div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#025a93">+2,450,000</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 12.5%</p></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #f1f5f9;border-radius:14px;padding:14px 16px"><p style="font-size:13px;font-weight:500;color:#64748b">실현 손익</p><div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#0f172a">+1,800,000</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 8.2%</p></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #f1f5f9;border-radius:14px;padding:14px 16px"><p style="font-size:13px;font-weight:500;color:#64748b">평균 수익률</p><div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#0f172a">+4.5%</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 0.5%</p></div></div>
+        </div>
+        <div style="padding:0 16px 16px"><div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><p style="font-size:13px;font-weight:700;color:#0f172a">일별 자산 추이 (3주차)</p><span style="font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase">Unit: 10K KRW</span></div>
+          <svg width="100%" height="100" viewBox="0 0 400 100" preserveAspectRatio="none"><defs><linearGradient id="jG1" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#025a93" stop-opacity="0.15"/><stop offset="100%" stop-color="#025a93" stop-opacity="0"/></linearGradient></defs><path d="M0 80 Q50 75 100 62 T200 36 T300 20 T400 8" fill="none" stroke="#025a93" stroke-width="2.5" stroke-linecap="round"/><path d="M0 80 Q50 75 100 62 T200 36 T300 20 T400 8 V100 H0Z" fill="url(#jG1)"/><circle cx="300" cy="20" r="4" fill="#025a93"/></svg>
+          <div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:10px;color:#94a3b8">1일</span><span style="font-size:10px;color:#94a3b8">8일</span><span style="font-size:10px;color:#94a3b8">15일</span><span style="font-size:10px;color:#94a3b8">22일</span><span style="font-size:10px;color:#94a3b8">31일</span></div>
+        </div></div>
+        <div style="padding:0 16px 24px"><div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><p style="font-size:13px;font-weight:700;color:#0f172a">Win Rate Trend</p><span style="font-size:13px;font-weight:700;color:#025a93">68% Avg</span></div>
+          <svg width="100%" height="70" viewBox="0 0 400 70" preserveAspectRatio="none"><path d="M0 48 L80 36 L160 52 L240 24 L320 17 L400 10" fill="none" stroke="#025a93" stroke-width="1.5" stroke-dasharray="4 2" opacity="0.4"/><path d="M0 52 Q50 48 100 39 T200 26 T300 17 T400 12" fill="none" stroke="#025a93" stroke-width="2.5"/><circle cx="400" cy="12" r="3" fill="#025a93"/></svg>
+          <div style="display:flex;justify-content:space-between;margin-top:6px"><span style="font-size:10px;color:#94a3b8">Week 1</span><span style="font-size:10px;color:#94a3b8">Week 2</span><span style="font-size:10px;color:#94a3b8">Week 3</span><span style="font-size:10px;color:#94a3b8">Week 4</span><span style="font-size:10px;color:#94a3b8">Week 5</span></div>
+        </div></div>
+      </div><!-- /jnl-week-content -->
+
+      <!-- ── MONTH 콘텐츠 ── -->
+      <div id="jnl-month-content" style="display:none">
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(2,90,147,0.05);border:1px solid rgba(2,90,147,0.1);border-radius:14px;padding:14px 16px"><p style="font-size:13px;font-weight:500;color:#64748b">총 손익</p><div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#025a93">+2,450,000</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 12.5%</p></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #f1f5f9;border-radius:14px;padding:14px 16px"><p style="font-size:13px;font-weight:500;color:#64748b">실현 손익</p><div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#0f172a">+1,800,000</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 8.2%</p></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #f1f5f9;border-radius:14px;padding:14px 16px"><p style="font-size:13px;font-weight:500;color:#64748b">평균 수익률</p><div style="display:flex;align-items:center;gap:10px"><p style="font-size:16px;font-weight:700;color:#0f172a">+4.5%</p><p style="font-size:12px;font-weight:600;color:#10b981">↗ 0.5%</p></div></div>
+        </div>
+        <div style="padding:0 16px 16px"><div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><p style="font-size:13px;font-weight:700;color:#0f172a">일별 자산 추이 (3월)</p><span style="font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase">Unit: 10K KRW</span></div>
+          <svg width="100%" height="100" viewBox="0 0 400 100" preserveAspectRatio="none"><defs><linearGradient id="jG2" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#025a93" stop-opacity="0.15"/><stop offset="100%" stop-color="#025a93" stop-opacity="0"/></linearGradient></defs><path d="M0 80 Q50 75 100 62 T200 36 T300 20 T400 8" fill="none" stroke="#025a93" stroke-width="2.5" stroke-linecap="round"/><path d="M0 80 Q50 75 100 62 T200 36 T300 20 T400 8 V100 H0Z" fill="url(#jG2)"/><circle cx="280" cy="24" r="4" fill="#025a93"/></svg>
+          <div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:10px;color:#94a3b8">1일</span><span style="font-size:10px;color:#94a3b8">8일</span><span style="font-size:10px;color:#94a3b8">15일</span><span style="font-size:10px;color:#94a3b8">22일</span><span style="font-size:10px;color:#94a3b8">31일</span></div>
+        </div></div>
+        <div style="padding:0 16px 16px">
+          <p style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px">Monthly Summary</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Avg Win/Loss</p><p style="font-size:14px;font-weight:700;color:#0f172a">2.4 : 1</p></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Winning Streak</p><p style="font-size:14px;font-weight:700;color:#0f172a">7 Days</p></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Avg Hold Time</p><p style="font-size:14px;font-weight:700;color:#0f172a">4.2 Hours</p></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)"><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px">Profit Factor</p><p style="font-size:14px;font-weight:700;color:#025a93">1.85</p></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border:1px solid #f1f5f9;border-radius:12px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;color:#10b981">↗</div><span style="font-size:13px;color:#334155">최고 수익 거래</span></div><span style="font-size:13px;font-weight:700;color:#0f172a">+458,000원</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border:1px solid #f1f5f9;border-radius:12px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(2,90,147,0.1);display:flex;align-items:center;justify-content:center;color:#025a93">📅</div><span style="font-size:13px;color:#334155">거래 일수</span></div><span style="font-size:13px;font-weight:700;color:#0f172a">22일</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border:1px solid #f1f5f9;border-radius:12px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;color:#025a93">💳</div><span style="font-size:13px;color:#334155">총 입금</span></div><span style="font-size:13px;font-weight:700;color:#025a93">+5,000,000원</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border:1px solid #f1f5f9;border-radius:12px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;color:#ef4444">💸</div><span style="font-size:13px;color:#334155">총 출금</span></div><span style="font-size:13px;font-weight:700;color:#ef4444">-1,200,000원</span></div>
+          </div>
+        </div>
+      </div><!-- /jnl-month-content -->
+
+      <!-- ── YEAR 콘텐츠 (분기 선택으로 동적 변경) ── -->
+      <div id="jnl-year-content" style="display:none;padding:14px 16px">
+        <!-- 핵심 지표 3개 (JS로 동적 업데이트) -->
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+          <div style="background:rgba(2,90,147,0.05);border:1px solid rgba(2,90,147,0.1);border-radius:14px;padding:16px"><p style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">TOTAL P/L</p><p id="jnlYearTotalPL" style="font-size:26px;font-weight:800;color:#025a93;margin-bottom:4px">+₩24,850,000</p><p id="jnlYearTotalPLPct" style="font-size:12px;font-weight:700;color:#10b981">↗ 15.2%</p></div>
+          <div style="background:rgba(2,90,147,0.05);border:1px solid rgba(2,90,147,0.1);border-radius:14px;padding:16px"><p style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">REALIZED PROFIT</p><p id="jnlYearRealized" style="font-size:26px;font-weight:800;color:#025a93;margin-bottom:4px">+₩18,200,000</p><p id="jnlYearRealizedPct" style="font-size:12px;font-weight:700;color:#10b981">💳 10.5%</p></div>
+          <div style="background:rgba(2,90,147,0.05);border:1px solid rgba(2,90,147,0.1);border-radius:14px;padding:16px"><p style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">AVERAGE RETURN</p><p id="jnlYearAvgReturn" style="font-size:26px;font-weight:800;color:#025a93;margin-bottom:4px">12.4%</p><p id="jnlYearAvgReturnPct" style="font-size:12px;font-weight:700;color:#10b981">↗ +2.1%</p></div>
+        </div>
+
+        <!-- Asset Trend 차트 -->
+        <div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);margin-bottom:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <p id="jnlAssetTrendTitle" style="font-size:14px;font-weight:700;color:#0f172a">Asset Trend (Annual)</p>
+            <span style="font-size:11px;color:#94a3b8">Equity Growth</span>
+          </div>
+          <div style="position:relative;height:130px">
+            <svg id="jnlAssetSvg" width="100%" height="130" viewBox="0 0 400 130" preserveAspectRatio="none">
+              <defs><linearGradient id="jnlYG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#025a93" stop-opacity="0.18"/><stop offset="100%" stop-color="#025a93" stop-opacity="0"/></linearGradient></defs>
+              <path id="jnlAssetPath" d="M0 110 Q30 100 60 105 T120 72 T180 82 T240 41 T300 50 T350 18 T400 9" fill="none" stroke="#025a93" stroke-width="2.5" stroke-linecap="round"/>
+              <path id="jnlAssetFill" d="M0 110 Q30 100 60 105 T120 72 T180 82 T240 41 T300 50 T350 18 T400 9 V130 H0Z" fill="url(#jnlYG)"/>
+            </svg>
+          </div>
+          <div id="jnlAssetXLabels" style="display:flex;justify-content:space-between;margin-top:8px">
+            <span style="font-size:10px;font-weight:700;color:#94a3b8">Jan</span><span style="font-size:10px;font-weight:700;color:#94a3b8">Apr</span><span style="font-size:10px;font-weight:700;color:#94a3b8">Jul</span><span style="font-size:10px;font-weight:700;color:#94a3b8">Oct</span><span style="font-size:10px;font-weight:700;color:#94a3b8">Dec</span>
+          </div>
+        </div>
+
+        <!-- Win Rate 바 차트 -->
+        <div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);margin-bottom:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <p style="font-size:14px;font-weight:700;color:#0f172a">Win Rate Trend</p>
+            <span id="jnlWinRateAvg" style="font-size:11px;font-weight:700;color:#025a93;background:rgba(2,90,147,0.08);padding:3px 10px;border-radius:999px">Avg 68%</span>
+          </div>
+          <div id="jnlWinRateBars" style="display:flex;align-items:flex-end;justify-content:space-between;height:100px;gap:4px;margin-bottom:8px"></div>
+          <div id="jnlWinRateLabels" style="display:flex;justify-content:space-between;padding:0 2px"></div>
+        </div>
+
+        <!-- Summary 4칸 -->
+        <div id="jnlYearSummary" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px"></div>
+
+        <!-- Trade Volume Donut -->
+        <div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);margin-bottom:14px">
+          <p style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:14px">Trade Volume by Pair</p>
+          <div style="display:flex;align-items:center;justify-content:space-around">
+            <div style="position:relative;width:110px;height:110px">
+              <svg width="110" height="110" viewBox="0 0 36 36" style="transform:rotate(-90deg)">
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#f1f5f9" stroke-width="3" stroke-dasharray="100 100"/>
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#025a93" stroke-width="4" stroke-dasharray="60 40" stroke-dashoffset="0"/>
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#60a5fa" stroke-width="4" stroke-dasharray="25 75" stroke-dashoffset="-60"/>
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#94a3b8" stroke-width="4" stroke-dasharray="15 85" stroke-dashoffset="-85"/>
+              </svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                <span style="font-size:11px;font-weight:700;color:#0f172a">Total</span>
+                <span id="jnlDonutTotal" style="font-size:10px;color:#94a3b8">1,245 Trades</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:20px"><div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:#025a93"></div><span style="font-size:12px;color:#64748b">BTC/USD</span></div><span style="font-size:13px;font-weight:700;color:#0f172a">60%</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:20px"><div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:#60a5fa"></div><span style="font-size:12px;color:#64748b">EUR/USD</span></div><span style="font-size:13px;font-weight:700;color:#0f172a">25%</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:20px"><div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:#94a3b8"></div><span style="font-size:12px;color:#64748b">Others</span></div><span style="font-size:13px;font-weight:700;color:#0f172a">15%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pair Performance Detail -->
+        <div>
+          <p style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:12px">Pair Performance Detail</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:50%;background:rgba(2,90,147,0.06);border:1px solid rgba(2,90,147,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#025a93">₿</div><div><p style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:2px">BTC/USD</p><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase">Bitcoin / US Dollar</p></div></div><div style="text-align:right"><p id="jnlBtcPL" style="font-size:15px;font-weight:700;color:#10b981">+₩14,250,000</p><span style="font-size:10px;font-weight:700;color:#025a93;background:rgba(2,90,147,0.08);padding:2px 8px;border-radius:999px">72% Win Rate</span></div></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:50%;background:rgba(2,90,147,0.06);border:1px solid rgba(2,90,147,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#025a93">€</div><div><p style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:2px">EUR/USD</p><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase">Euro / US Dollar</p></div></div><div style="text-align:right"><p id="jnlEurPL" style="font-size:15px;font-weight:700;color:#10b981">+₩6,450,000</p><span style="font-size:10px;font-weight:700;color:#025a93;background:rgba(2,90,147,0.08);padding:2px 8px;border-radius:999px">65% Win Rate</span></div></div>
+            <div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:50%;background:rgba(2,90,147,0.06);border:1px solid rgba(2,90,147,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#025a93">¥</div><div><p style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:2px">USD/JPY</p><p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase">US Dollar / Japanese Yen</p></div></div><div style="text-align:right"><p id="jnlJpyPL" style="font-size:15px;font-weight:700;color:#ef4444">-₩2,150,000</p><span style="font-size:10px;font-weight:700;color:#025a93;background:rgba(2,90,147,0.08);padding:2px 8px;border-radius:999px">48% Win Rate</span></div></div>
+          </div>
+        </div>
+      </div><!-- /jnl-year-content -->
+
+    </div><!-- /스크롤 영역 -->
+  </div><!-- /page-journal -->
+
+
 
   <!-- ===== 지표 상세 페이지 ===== -->
   <div class="page slide-up" id="page-indicator-detail">
@@ -2830,9 +3112,8 @@ function toggleEmail() {
   emailEnabled = !emailEnabled;
   var toggle = document.getElementById('emailToggle');
   var thumb = document.getElementById('emailThumb');
-  toggle.style.background = emailEnabled ? '#025a93' : '#e2e8f0';
-  thumb.style.left = emailEnabled ? 'auto' : '3px';
-  thumb.style.right = emailEnabled ? '3px' : 'auto';
+  if(toggle) toggle.style.background = emailEnabled ? '#025a93' : '#e2e8f0';
+  if(thumb) { thumb.style.left = emailEnabled ? 'auto' : '3px'; thumb.style.right = emailEnabled ? '3px' : 'auto'; }
 }
 
 function selectSound() {
@@ -3690,6 +3971,24 @@ function copyShareUrl() {
 }
 
 // ===== 프로모션 상세 =====
+
+// 캘린더 프로모션 카드 → openPromo 연결
+function openPromoFromCalendar(idx) {
+  var e = CAL_EVENTS[idx];
+  if(!e) return;
+  // 브로커명 추출 (예: 'XM: Zero Commission Weekend' → 'XM')
+  var brokerName = e.title.split(':')[0].trim();
+  var brokerMap = {
+    'XM': { color: '#dc2626', icon: '📈' },
+    'Exness': { color: '#7c3aed', icon: '💱' },
+    'Dexia': { color: '#025a93', icon: '🏛️' },
+    'Vantage': { color: '#ea580c', icon: '🚀' },
+    'TitanFX': { color: '#0891b2', icon: '⚡' },
+    'FXGT': { color: '#d97706', icon: '₿' },
+  };
+  var b = brokerMap[brokerName] || { color: '#025a93', icon: '🎁' };
+  openPromo(brokerName, b.color, b.icon);
+}
 function openPromo(brokerName, brokerColor, brokerIcon) {
   // 브로커 정보 업데이트
   var iconEl = document.getElementById('promoBrokerIcon');
@@ -4069,658 +4368,6 @@ var BROKER_COLORS = {
   'Saxo Bank':'#1e40af','IG':'#15803d','FXCM':'#475569',
   'Tickmill':'#0f766e','FBS':'#7c2d12','HotForex':'#c2410c','RoboForex':'#1d4ed8',
 };
-
-var currentTradeTitle = '';
-
-function openTrade(title) {
-  currentTradeTitle = title || '';
-  document.getElementById('tradeNewsTitle').textContent = currentTradeTitle.substring(0, 60) + (currentTradeTitle.length > 60 ? '...' : '');
-
-  renderTradeBrokers();
-
-  document.getElementById('tradeOverlay').style.display = 'flex';
-  setTimeout(function(){
-    document.getElementById('tradePanel').style.transform = 'translateY(0)';
-  }, 10);
-}
-
-function closeTrade() {
-  document.getElementById('tradePanel').style.transform = 'translateY(100%)';
-  setTimeout(function(){ document.getElementById('tradeOverlay').style.display = 'none'; }, 350);
-}
-
-function handleTradeOverlay(e) {
-  if(e.target === document.getElementById('tradeOverlay')) closeTrade();
-}
-
-function renderTradeBrokers() {
-  // 등록된 브로커 (selectedBrokers에서)
-  var registered = [selectedBrokers[1], selectedBrokers[2], selectedBrokers[3]].filter(Boolean);
-
-  var regContainer = document.getElementById('tradeRegisteredBrokers');
-  if(registered.length === 0) {
-    regContainer.innerHTML = '<p style="font-size:13px;color:#94a3b8;padding:4px 0">プロフィールでブローカーを登録してください</p>';
-  } else {
-    regContainer.innerHTML = registered.map(function(name, i) {
-      var color = BROKER_COLORS[name] || '#025a93';
-      var url = BROKER_TRADE_URL[name] || 'https://www.google.com/search?q='+encodeURIComponent(name+' webtrader');
-      return '<button onclick="goToTrade(\''+url+'\',\''+name+'\')" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:14px;border:1.5px solid '+color+';background:'+color+'10;cursor:pointer;font-family:\'Inter\',sans-serif;transition:all 0.2s">' +
-        '<div style="display:flex;align-items:center;gap:12px">' +
-          '<div style="width:40px;height:40px;border-radius:10px;background:'+color+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:900">'+name[0]+'</div>' +
-          '<div style="text-align:left">' +
-            '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0">' + name + '</p>' +
-            '<p style="font-size:11px;color:#94a3b8;margin:2px 0 0">'+(i===0?'⭐ 1位':i===1?'⭐ 2位':'⭐ 3位')+'</p>' +
-          '</div>' +
-        '</div>' +
-        '<div style="display:flex;align-items:center;gap:6px;background:'+color+';color:#fff;padding:8px 14px;border-radius:8px">' +
-          '<span style="font-size:13px;font-weight:700">取引開始</span>' +
-          '<span style="font-size:14px">→</span>' +
-        '</div>' +
-      '</button>';
-    }).join('');
-  }
-
-  // 전체 브로커 목록
-  var allContainer = document.getElementById('tradeAllBrokers');
-  var allBrokers = Object.keys(BROKER_TRADE_URL);
-  allContainer.innerHTML = allBrokers.map(function(name) {
-    var color = BROKER_COLORS[name] || '#475569';
-    var url = BROKER_TRADE_URL[name];
-    var isReg = registered.indexOf(name) !== -1;
-    return '<button onclick="goToTrade(\''+url+'\',\''+name+'\')" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;font-family:\'Inter\',sans-serif">' +
-      '<div style="display:flex;align-items:center;gap:10px">' +
-        '<div style="width:36px;height:36px;border-radius:10px;background:'+color+'20;display:flex;align-items:center;justify-content:center;color:'+color+';font-size:14px;font-weight:900">'+name[0]+'</div>' +
-        '<span style="font-size:14px;font-weight:'+(isReg?'700':'500')+';color:#0f172a">'+name+(isReg?' ⭐':'')+'</span>' +
-      '</div>' +
-      '<span style="font-size:13px;color:#025a93;font-weight:600">Webトレード →</span>' +
-    '</button>';
-  }).join('');
-}
-
-function goToTrade(url, brokerName) {
-  closeTrade();
-  // 새 탭으로 브로커 웹트레이딩 오픈
-  window.open(url, '_blank');
-}
-
-// ===== 마켓 페이지 =====
-var marketPairs = ['EUR/USD','USD/JPY'];
-var deletingPair = null;
-
-
-function renderPairCards() {
-  var container = document.getElementById('pairCardList');
-  if(!container) return;
-
-  // 프로필 페이지 selectedPairs와 동기화
-  var pairs = selectedPairs && selectedPairs.length > 0 ? selectedPairs : marketPairs;
-
-  container.innerHTML = pairs.map(function(pair) {
-    var d = PAIR_DATA[pair];
-    if(!d) return '';
-    var isFlag = d.flag1.length <= 2;
-    var upColor = d.up ? '#10b981' : '#f43f5e';
-    var bgColor = d.up ? '#f0fdf4' : '#fff5f5';
-
-    return '<div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);border:1px solid #f1f5f9;cursor:pointer" onclick="openPairDetail(\''+pair+'\')">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">' +
-        '<div style="display:flex;align-items:center;gap:10px">' +
-          '<div style="display:flex">' +
-            '<div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 1px 4px rgba(0,0,0,0.1)">'+d.flag1+'</div>' +
-            '<div style="width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:16px;margin-left:-8px;box-shadow:0 1px 4px rgba(0,0,0,0.1)">'+d.flag2+'</div>' +
-          '</div>' +
-          '<div>' +
-            '<h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0">'+pair+'</h3>' +
-            '<p style="font-size:11px;color:#94a3b8;margin:2px 0 0">'+d.name+'</p>' +
-          '</div>' +
-        '</div>' +
-        '<div style="display:flex;gap:4px">' +
-          '<button style="width:32px;height:32px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#025a93">🔔</button>' +
-          '<button onclick="openDeleteConfirm(\''+pair+'\')" style="width:32px;height:32px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#94a3b8">🗑️</button>' +
-        '</div>' +
-      '</div>' +
-      '<div style="display:flex;align-items:flex-end;justify-content:space-between">' +
-        '<div>' +
-          '<div style="font-size:26px;font-weight:900;color:#0f172a;letter-spacing:-0.5px">'+d.price+'</div>' +
-          '<div style="font-size:13px;font-weight:600;color:'+upColor+';display:flex;align-items:center;gap:3px;margin-top:3px">' +
-            (d.up?'📈':'📉')+' '+d.change +
-          '</div>' +
-        '</div>' +
-        '<svg width="120" height="48" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">' +
-          '<defs><linearGradient id="grad-'+pair.replace('/','_')+'" x1="0%" y1="0%" x2="0%" y2="100%">' +
-            '<stop offset="0%" stop-color="'+d.sparkColor+'" stop-opacity="0.3"/>' +
-            '<stop offset="100%" stop-color="'+d.sparkColor+'" stop-opacity="0"/>' +
-          '</linearGradient></defs>' +
-          '<path d="'+d.sparkPath+'" fill="none" stroke="'+d.sparkColor+'" stroke-width="2" stroke-linecap="round"/>' +
-        '</svg>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-
-
-function openDeleteConfirm(pair) {
-  deletingPair = pair;
-  document.getElementById('deleteConfirmOverlay').style.display = 'flex';
-}
-
-function closeDeleteConfirm() {
-  deletingPair = null;
-  document.getElementById('deleteConfirmOverlay').style.display = 'none';
-}
-
-function confirmDeletePair() {
-  if(deletingPair) {
-    // selectedPairs에서 제거
-    var idx = selectedPairs.indexOf(deletingPair);
-    if(idx !== -1) selectedPairs.splice(idx, 1);
-    // marketPairs에서도 제거
-    var idx2 = marketPairs.indexOf(deletingPair);
-    if(idx2 !== -1) marketPairs.splice(idx2, 1);
-    renderPairCards();
-    // 프로필 페이지 태그도 업데이트
-    savePairsFromMarket();
-  }
-  closeDeleteConfirm();
-}
-
-function savePairsFromMarket() {
-  var container = document.getElementById('pairsContainer');
-  if(!container) return;
-  var addBtn = container.querySelector('.add-pair-btn');
-  container.innerHTML = '';
-  selectedPairs.forEach(function(p) {
-    var tag = document.createElement('div');
-    tag.className = 'pair-tag';
-    tag.innerHTML = p + ' <button onclick="removePair(this)">×</button>';
-    container.appendChild(tag);
-  });
-  if(addBtn) container.appendChild(addBtn);
-  else {
-    var newBtn = document.createElement('button');
-    newBtn.className = 'add-pair-btn';
-    newBtn.onclick = openPairModal;
-    newBtn.textContent = '＋ ペアを追加';
-    container.appendChild(newBtn);
-  }
-}
-
-// ===== 댓글 바텀시트 =====
-var currentCommentTitle = '';
-
-function openComment(title) {
-  currentCommentTitle = title || '';
-  document.getElementById('commentNewsTitle').textContent = currentCommentTitle;
-  document.getElementById('commentInput').value = '';
-  document.getElementById('commentCount').textContent = '0 / 300';
-  document.getElementById('commentOverlay').style.display = 'flex';
-  setTimeout(function(){
-    document.getElementById('commentPanel').style.transform = 'translateY(0)';
-    // 약간 딜레이 후 포커스
-    setTimeout(function(){ document.getElementById('commentInput').focus(); }, 400);
-  }, 10);
-}
-
-function closeComment() {
-  document.getElementById('commentPanel').style.transform = 'translateY(100%)';
-  setTimeout(function(){ document.getElementById('commentOverlay').style.display = 'none'; }, 350);
-}
-
-function handleCommentOverlay(e) {
-  if(e.target === document.getElementById('commentOverlay')) closeComment();
-}
-
-function updateCommentCount(el) {
-  var count = el.value.length;
-  var counter = document.getElementById('commentCount');
-  if(count > 300) { el.value = el.value.substring(0, 300); count = 300; }
-  counter.textContent = count + ' / 300';
-  counter.style.color = count > 250 ? '#ef4444' : '#94a3b8';
-}
-
-function submitComment() {
-  var text = document.getElementById('commentInput').value.trim();
-  if(!text) {
-    document.getElementById('commentInput').style.borderColor = '#ef4444';
-    setTimeout(function(){ document.getElementById('commentInput').style.borderColor = '#e2e8f0'; }, 1500);
-    return;
-  }
-  var btn = document.getElementById('commentSubmitBtn');
-  btn.textContent = '✓ 投稿しました！+5P';
-  btn.style.background = '#16a34a';
-  btn.disabled = true;
-  setTimeout(function(){
-    closeComment();
-    setTimeout(function(){
-      btn.textContent = '投稿する';
-      btn.style.background = '#025a93';
-      btn.disabled = false;
-    }, 400);
-  }, 1800);
-}
-
-// ===== SNS 공유 =====
-var currentShareUrl = '';
-var currentShareTitle = '';
-
-function openShare(url, title) {
-  currentShareUrl = url || window.location.href;
-  currentShareTitle = title || 'FNEX FXニュース';
-  document.getElementById('shareUrl').value = currentShareUrl;
-  document.getElementById('shareOverlay').style.display = 'flex';
-  setTimeout(function(){ document.getElementById('sharePanel').style.transform = 'translateY(0)'; }, 10);
-}
-
-function closeShare() {
-  document.getElementById('sharePanel').style.transform = 'translateY(100%)';
-  setTimeout(function(){ document.getElementById('shareOverlay').style.display = 'none'; }, 350);
-}
-
-function handleShareOverlay(e) {
-  if(e.target === document.getElementById('shareOverlay')) closeShare();
-}
-
-function shareToSNS(platform) {
-  var url = encodeURIComponent(currentShareUrl);
-  var text = encodeURIComponent(currentShareTitle + ' | FNEX');
-  var links = {
-    telegram: 'https://t.me/share/url?url=' + url + '&text=' + text,
-    kakao: 'https://sharer.kakao.com/talk/friends/picker/link?url=' + url,
-    twitter: 'https://twitter.com/intent/tweet?url=' + url + '&text=' + text,
-    line: 'https://social-plugins.line.me/lineit/share?url=' + url,
-    whatsapp: 'https://wa.me/?text=' + text + '%20' + url,
-  };
-  if(links[platform]) window.open(links[platform], '_blank');
-}
-
-function copyShareUrl() {
-  var input = document.getElementById('shareUrl');
-  var btn = document.getElementById('copyBtn');
-  if(navigator.clipboard) {
-    navigator.clipboard.writeText(input.value).then(function(){
-      btn.textContent = '✓ Copied!';
-      btn.style.background = '#16a34a';
-      setTimeout(function(){ btn.textContent='Copy'; btn.style.background='#025a93'; }, 2000);
-    });
-  } else {
-    input.select();
-    document.execCommand('copy');
-    btn.textContent = '✓ Copied!';
-    btn.style.background = '#16a34a';
-    setTimeout(function(){ btn.textContent='Copy'; btn.style.background='#025a93'; }, 2000);
-  }
-}
-
-// ===== 프로모션 상세 =====
-function openPromo(brokerName, brokerColor, brokerIcon) {
-  // 브로커 정보 업데이트
-  var iconEl = document.getElementById('promoBrokerIcon');
-  var nameEl = document.getElementById('promoBrokerName');
-  var mainBtn = document.getElementById('promoMainBtn');
-  var secondBtn = document.getElementById('promoSecondBtn');
-
-  if(iconEl) {
-    iconEl.textContent = brokerIcon || 'E';
-    iconEl.style.background = brokerColor || '#025a93';
-  }
-  if(nameEl) nameEl.textContent = brokerName || 'Exness Global';
-  if(mainBtn) mainBtn.textContent = brokerName ? brokerName + 'でアカウント作成' : 'アカウントを作成';
-  if(secondBtn) secondBtn.textContent = brokerName ? brokerName + ' へ移動' : 'ブローカーへ移動';
-
-  pageHistory.push('main');
-  showPage('promo', false);
-}
-
-// ===== 제휴/광고 문의 =====
-var selectedContactType = '提携提案';
-
-function selectContactType(btn, type) {
-  selectedContactType = type;
-  document.querySelectorAll('.contact-type-btn').forEach(function(b) {
-    b.style.background = '#fff';
-    b.style.borderColor = '#e2e8f0';
-    b.style.color = '#475569';
-  });
-  btn.style.background = '#025a93';
-  btn.style.borderColor = '#025a93';
-  btn.style.color = '#fff';
-}
-
-function submitContact() {
-  var title = document.getElementById('contact-title').value.trim();
-  var email = document.getElementById('contact-email').value.trim();
-  var body = document.getElementById('contact-body').value.trim();
-  var privacy = document.getElementById('contact-privacy').checked;
-
-  // 유효성 검사
-  if(!title) { alert('件名を入力してください'); return; }
-  if(!email || !email.includes('@')) { alert('正しいメールアドレスを入力してください'); return; }
-  if(!body) { alert('お問い合わせ内容を入力してください'); return; }
-  if(!privacy) { alert('個人情報の収集および利用に同意してください'); return; }
-
-  // 메일 내용 구성
-  var mailSubject = '[FNEX ' + selectedContactType + '] ' + title;
-  var mailBody =
-    '■ お問い合わせ種別: ' + selectedContactType + '\n' +
-    '■ 件名: ' + title + '\n' +
-    '■ 連絡先メール: ' + email + '\n' +
-    '\n' +
-    '■ お問い合わせ内容:\n' +
-    body + '\n' +
-    '\n' +
-    '---\n' +
-    'FNEX アプリからの送信';
-
-  // mailto 링크 생성 및 열기
-  var mailtoLink = 'mailto:japan.fx.info@gmail.com' +
-    '?subject=' + encodeURIComponent(mailSubject) +
-    '&body=' + encodeURIComponent(mailBody);
-
-  window.location.href = mailtoLink;
-
-  // 버튼 상태 변경
-  var btn = document.getElementById('contact-submit');
-  btn.textContent = '✓ メールアプリを開きました';
-  btn.style.background = '#16a34a';
-  btn.disabled = true;
-
-  // 입력 초기화
-  setTimeout(function() {
-    document.getElementById('contact-title').value = '';
-    document.getElementById('contact-email').value = '';
-    document.getElementById('contact-body').value = '';
-    document.getElementById('contact-privacy').checked = false;
-    document.getElementById('contact-count').textContent = '0 / 500文字';
-    btn.textContent = 'お問い合わせを送信';
-    btn.style.background = '#025a93';
-    btn.disabled = false;
-  }, 3000);
-}
-
-// 글자수 카운터
-document.addEventListener('DOMContentLoaded', function() {
-  var textarea = document.getElementById('contact-body');
-  if(textarea) {
-    textarea.addEventListener('input', function() {
-      var count = this.value.length;
-      var counter = document.getElementById('contact-count');
-      if(counter) {
-        counter.textContent = count + ' / 500文字';
-        counter.style.color = count > 450 ? '#ef4444' : '#94a3b8';
-      }
-      if(count > 500) this.value = this.value.substring(0, 500);
-    });
-  }
-});
-
-// ===== 이용약관 =====
-var POLICY_DATA = {
-  privacy: {
-    title: 'プライバシーポリシー',
-    sections: [
-      {
-        heading: '1. 収集する個人情報',
-        content: 'FNEXは、サービス提供のために以下の個人情報を収集します。\n\n・氏名、メールアドレス\n・ニックネーム、プロフィール画像\n・利用履歴、取引設定情報\n・デバイス情報（機種、OSバージョン）\n\n個人情報は、お客様の同意のもと収集し、法令に基づき適切に管理します。'
-      },
-      {
-        heading: '2. 個人情報の利用目的',
-        content: '収集した個人情報は以下の目的で利用します。\n\n・サービスの提供および改善\n・お客様へのお知らせ・通知\n・不正利用の防止および安全管理\n・統計データの作成（個人を特定しない形式）'
-      },
-      {
-        heading: '3. 第三者への提供',
-        content: 'FNEXは、以下の場合を除き、お客様の個人情報を第三者に提供しません。\n\n・お客様の同意がある場合\n・法令に基づく場合\n・人命・財産の保護に必要な場合\n\n提携ブローカーへの情報提供は、お客様が明示的に同意した場合のみ行います。'
-      },
-      {
-        heading: '4. 個人情報の保管期間',
-        content: '個人情報は、サービス利用期間中および退会後5年間保管します。ただし、法令で定められた保管期間がある場合はそれに従います。'
-      },
-      {
-        heading: '5. お問い合わせ',
-        content: 'プライバシーポリシーに関するお問い合わせは、アプリ内の「提携・広告のお問い合わせ」からご連絡ください。'
-      }
-    ]
-  },
-  terms: {
-    title: 'サービス利用規約',
-    sections: [
-      {
-        heading: '第1条（目的）',
-        content: '本規約は、FNEX（以下「当社」）が提供するFXニュース・情報サービス（以下「本サービス」）の利用に関する条件を定めることを目的とします。'
-      },
-      {
-        heading: '第2条（利用登録）',
-        content: '本サービスの利用には、所定の方法による登録が必要です。以下に該当する方の利用登録はお断りする場合があります。\n\n・虚偽の情報を登録した方\n・過去に利用規約違反により退会処分を受けた方\n・18歳未満の方（保護者の同意がある場合を除く）'
-      },
-      {
-        heading: '第3条（禁止事項）',
-        content: '本サービスの利用にあたり、以下の行為を禁止します。\n\n・法令または公序良俗に反する行為\n・他のユーザーへの誹謗中傷・ハラスメント\n・虚偽情報の流布\n・当社の許可なく商業目的でサービスを利用する行為\n・システムへの不正アクセス・改ざん'
-      },
-      {
-        heading: '第4条（免責事項）',
-        content: '本サービスが提供するFX情報・ニュースは参考情報であり、投資判断の根拠とする場合はご自身の責任において行ってください。当社は投資の結果について一切の責任を負いません。'
-      },
-      {
-        heading: '第5条（規約の変更）',
-        content: '当社は必要に応じて本規約を変更することができます。変更後の規約はアプリ内に掲載した時点から効力を生じます。継続してサービスを利用された場合、変更後の規約に同意したものとみなします。'
-      }
-    ]
-  },
-  community: {
-    title: 'コミュニティ運営ポリシー',
-    sections: [
-      {
-        heading: '1. コミュニティの目的',
-        content: 'FNEXのコミュニティは、FXトレーダーが情報を共有し、互いに学び合う場です。健全で有益な情報交換ができる環境を維持するため、以下のルールを設けています。'
-      },
-      {
-        heading: '2. 投稿ガイドライン',
-        content: '以下のような投稿を推奨します。\n\n・市場分析・チャート解説\n・ブローカーの体験談・レビュー（公平・客観的なもの）\n・取引戦略の共有\n・FX学習に役立つ情報\n\n投稿内容は正確な情報に基づいたものとし、他者を誤解させる内容は避けてください。'
-      },
-      {
-        heading: '3. 禁止コンテンツ',
-        content: '以下のコンテンツは削除対象となります。\n\n・スパム・広告目的の投稿\n・他ユーザーへの誹謗中傷\n・根拠のない投資推奨・詐欺的勧誘\n・著作権を侵害するコンテンツ\n・政治・宗教に関する過激な発言'
-      },
-      {
-        heading: '4. 違反への対応',
-        content: 'ポリシー違反が確認された場合、以下の措置を取ることがあります。\n\n・投稿の削除\n・警告メッセージの送信\n・一時的なコメント・投稿制限\n・アカウントの永久停止\n\n重大な違反の場合は、事前通知なく対応を行う場合があります。'
-      },
-      {
-        heading: '5. 報告機能の利用',
-        content: 'ガイドライン違反のコンテンツを発見した場合は、投稿の報告機能をご利用ください。報告内容はモデレーターが確認し、適切な対応を行います。'
-      }
-    ]
-  }
-};
-
-function openPolicy(type) {
-  var data = POLICY_DATA[type];
-  if(!data) return;
-
-  document.getElementById('policyTitle').textContent = data.title;
-
-  var content = data.sections.map(function(s) {
-    return '<div style="margin-bottom:24px">' +
-      '<h3 style="font-size:15px;font-weight:700;color:#025a93;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f1f5f9">' + s.heading + '</h3>' +
-      '<p style="font-size:14px;color:#475569;line-height:1.8;white-space:pre-line">' + s.content + '</p>' +
-      '</div>';
-  }).join('');
-
-  document.getElementById('policyContent').innerHTML = content +
-    '<div style="text-align:center;padding:20px 0;color:#94a3b8;font-size:12px">最終更新日: 2025年1月1日</div>';
-
-  document.getElementById('policyPanelOverlay').style.display = 'block';
-  setTimeout(function(){ document.getElementById('policyPanel').style.bottom = '0'; }, 10);
-}
-
-function closePolicy() {
-  document.getElementById('policyPanel').style.bottom = '-100%';
-  setTimeout(function(){ document.getElementById('policyPanelOverlay').style.display = 'none'; }, 350);
-}
-
-// ===== FX 용어사전 =====
-var GLOSSARY = [
-  {
-    term: 'Leverage（レバレッジ）',
-    en: 'Leverage',
-    desc: 'レバレッジとは、少ない証拠金で自分の資本よりもはるかに大きな規模の取引ができる仕組みです。例えば100:1のレバレッジを使うと、1,000ドルで100,000ドル相当のポジションを運用できます。利益を最大化できますが、損失も拡大する「諸刃の剣」です。',
-    tags: ['レバレッジ','証拠金','リスク']
-  },
-  {
-    term: 'Currency Pairs（通貨ペア）',
-    en: 'Currency Pairs',
-    desc: '外国為替取引において、2つの国の通貨が組み合わさって交換されるものを指します。前の通貨を基準通貨（Base Currency）、後ろの通貨を決済通貨（Quote Currency）と呼びます。例：EUR/USD。',
-    tags: ['通貨ペア','基準通貨','決済通貨']
-  },
-  {
-    term: 'Major Currencies（主要通貨）',
-    en: 'Major Currencies',
-    desc: '世界の外為市場で最も活発に取引される通貨のことです。米ドル（USD）、ユーロ（EUR）、日本円（JPY）、英ポンド（GBP）、豪ドル（AUD）、カナダドル（CAD）、スイスフラン（CHF）などが含まれます。',
-    tags: ['主要通貨','USD','EUR','JPY']
-  },
-  {
-    term: 'Spread（スプレッド）',
-    en: 'Spread',
-    desc: '買値（Ask）と売値（Bid）の価格差のことです。取引を成立させる際に発生するコストとみなされ、市場の流動性が高いほどスプレッドは狭くなる傾向があります。',
-    tags: ['スプレッド','コスト','流動性']
-  },
-  {
-    term: 'Margin Call（マージンコール）',
-    en: 'Margin Call',
-    desc: '口座の評価額が維持証拠金水準を下回ったとき、ブローカーが追加資金の入金またはポジション縮小を求める通知です。リスク管理において非常に重要な概念です。',
-    tags: ['マージンコール','証拠金','リスク管理']
-  },
-  {
-    term: 'Stop Loss（損切り）',
-    en: 'Stop Loss',
-    desc: '特定の価格水準に達したとき、自動的にポジションを決済してそれ以上の損失を防ぐために設定する注文方式です。リスク管理の重要なツールです。',
-    tags: ['損切り','ストップロス','リスク管理']
-  },
-  {
-    term: 'Stop Out（強制ロスカット）',
-    en: 'Stop Out',
-    desc: '口座の証拠金維持率が特定の水準（例：20%または50%）を下回ったとき、ブローカーがそれ以上の損失拡大を防ぐために最も損失の大きいポジションから順番に強制的に決済する手続きです。',
-    tags: ['ロスカット','強制決済','証拠金']
-  },
-  {
-    term: 'Trailing Stop（トレーリングストップ）',
-    en: 'Trailing Stop',
-    desc: '価格が有利な方向に動くとき、自動的に損切り価格を追随させる設定注文です。利益を確保しながら、市場の反転にも備えることができます。',
-    tags: ['トレーリングストップ','利益確定','自動注文']
-  },
-  {
-    term: 'Pip（ピップ）',
-    en: 'Pip',
-    desc: '外為取引における最小価格変動単位です。ほとんどの通貨ペアでは小数点4桁目（0.0001）が1pipsです。例えばEUR/USDが1.1050から1.1051に動いた場合、1pip上昇したことになります。',
-    tags: ['pip','ピップ','価格変動']
-  },
-  {
-    term: 'Lot（ロット）',
-    en: 'Lot',
-    desc: '外為取引の取引単位です。標準ロットは100,000通貨、ミニロットは10,000通貨、マイクロロットは1,000通貨です。取引量を決める際の基本単位として使われます。',
-    tags: ['ロット','取引単位','標準ロット']
-  },
-  {
-    term: 'Take Profit（利益確定）',
-    en: 'Take Profit',
-    desc: '特定の利益目標価格に達したとき、自動的にポジションを決済して利益を確定する注文方式です。感情に左右されずに利益を確実に取るために活用されます。',
-    tags: ['テイクプロフィット','利益確定','注文']
-  },
-  {
-    term: 'Swap（スワップ）',
-    en: 'Swap',
-    desc: 'ポジションを翌日に持ち越す際に発生する金利調整額です。高金利通貨を買い低金利通貨を売る場合はスワップを受け取り、逆の場合は支払います。スワップポイントとも呼ばれます。',
-    tags: ['スワップ','金利','オーバーナイト']
-  },
-  {
-    term: 'Volatility（ボラティリティ）',
-    en: 'Volatility',
-    desc: '価格の変動幅や変動の激しさを示す指標です。ボラティリティが高いほど価格の上下動が大きく、取引機会も多いですが、リスクも高まります。',
-    tags: ['ボラティリティ','価格変動','リスク']
-  },
-  {
-    term: 'Bull Market（強気相場）',
-    en: 'Bull Market',
-    desc: '価格が持続的に上昇している市場の状態を指します。強気派（Bull）は価格が上がると予測してロングポジション（買い）を取ります。',
-    tags: ['強気相場','ブル','上昇']
-  },
-  {
-    term: 'Bear Market（弱気相場）',
-    en: 'Bear Market',
-    desc: '価格が持続的に下落している市場の状態を指します。弱気派（Bear）は価格が下がると予測してショートポジション（売り）を取ります。',
-    tags: ['弱気相場','ベア','下落']
-  },
-  {
-    term: 'Liquidity（流動性）',
-    en: 'Liquidity',
-    desc: '資産を迅速に売買できる能力を指します。流動性が高い市場では取引が素早く成立しスプレッドも狭くなります。外為市場は世界最大の金融市場で、流動性が非常に高いです。',
-    tags: ['流動性','市場','スプレッド']
-  },
-];
-
-var openGlossaryIdx = -1;
-
-function renderGlossary(query) {
-  var q = (query||'').toLowerCase();
-  var list = document.getElementById('glossaryList');
-  list.innerHTML = '';
-
-  var filtered = GLOSSARY.filter(function(item) {
-    return !q || item.term.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q) || item.tags.some(function(t){ return t.toLowerCase().includes(q); });
-  });
-
-  if(!filtered.length) {
-    list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#94a3b8;font-size:14px">🔍 該当する用語が見つかりませんでした</div>';
-    return;
-  }
-
-  filtered.forEach(function(item, i) {
-    var idx = GLOSSARY.indexOf(item);
-    var isOpen = idx === openGlossaryIdx;
-    var card = document.createElement('div');
-    card.style.cssText = 'background:#fff;border-radius:14px;border:1px solid '+(isOpen?'#025a93':'#f1f5f9')+';margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);transition:border-color 0.2s';
-
-    var header = document.createElement('div');
-    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;background:'+(isOpen?'rgba(2,90,147,0.05)':'#fff');
-    header.innerHTML =
-      '<span style="font-size:15px;font-weight:600;color:#0f172a">'+item.term+'</span>' +
-      '<span style="font-size:18px;transition:transform 0.2s;display:inline-block;transform:'+(isOpen?'rotate(180deg)':'rotate(0deg)')+'">▾</span>';
-
-    var body = document.createElement('div');
-    body.style.cssText = 'padding:'+(isOpen?'0 16px 16px':'0')+';max-height:'+(isOpen?'500px':'0')+';overflow:hidden;transition:max-height 0.3s ease,padding 0.2s';
-
-    var inner = document.createElement('p');
-    inner.style.cssText = 'font-size:14px;color:#64748b;line-height:1.7;border-top:1px solid #f1f5f9;padding-top:12px';
-    inner.textContent = item.desc;
-    body.appendChild(inner);
-
-    // 태그
-    var tagDiv = document.createElement('div');
-    tagDiv.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:10px';
-    item.tags.forEach(function(tag) {
-      var t = document.createElement('span');
-      t.style.cssText = 'font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(2,90,147,0.08);color:#025a93';
-      t.textContent = '#'+tag;
-      tagDiv.appendChild(t);
-    });
-    body.appendChild(tagDiv);
-
-    header.onclick = (function(cardEl, bodyEl, headerEl, itemIdx) {
-      return function() {
-        if(openGlossaryIdx === itemIdx) {
-          openGlossaryIdx = -1;
-        } else {
-          openGlossaryIdx = itemIdx;
-        }
-        renderGlossary(document.getElementById('glossarySearch').value);
-      };
-    })(card, body, header, idx);
-
-    card.appendChild(header);
-    card.appendChild(body);
-    list.appendChild(card);
-  });
-}
 
 function filterGlossary(q) {
   openGlossaryIdx = -1;
@@ -5213,6 +4860,442 @@ function filterBrokerHubSearch(val) {
   applyBrokerFilters(currentBrokerFilter, val);
 }
 
+
+// ==========================================
+// 収支表 페이지 - 전체 JS
+// ==========================================
+
+// ── 상태 변수 ──
+var jnlCurrentPeriod = 'day';
+var jnlCurrentDate   = new Date();
+var jnlSelectedDate  = new Date();
+var jnlSelectedWeekStart = (function(){
+  var d = new Date(); d.setDate(d.getDate()-d.getDay()); return d;
+})();
+var jnlSelectedQuarter = 'all'; // 'all','q1','q2','q3','q4'
+var jnlQuarterYear = new Date().getFullYear();
+
+// ── 분기별 데이터 ──
+var JNL_QUARTER_DATA = {
+  all: {
+    label: '전체기간 ({Y}년 전체)',
+    titleSuffix: '',
+    totalPL: '+₩24,850,000', totalPLPct: '↗ 15.2%',
+    realized: '+₩18,200,000', realizedPct: '💳 10.5%',
+    avgReturn: '12.4%', avgReturnPct: '↗ +2.1%',
+    assetTitle: 'Asset Trend (Annual)',
+    assetPath: 'M0 110 Q30 100 60 105 T120 72 T180 82 T240 41 T300 50 T350 18 T400 9',
+    assetFill: 'M0 110 Q30 100 60 105 T120 72 T180 82 T240 41 T300 50 T350 18 T400 9 V130 H0Z',
+    xLabels: ['Jan','Apr','Jul','Oct','Dec'],
+    winBars:  [60,75,85,55,40,65,70,90,60,45,75,80],
+    winLabels:['J','F','M','A','M','J','J','A','S','O','N','D'],
+    winAvg: 'Avg 68%',
+    summary: { highest:'+₩2,405k', days:'248 Days', deposits:'₩45,000k', withdrawals:'₩12,500k' },
+    donutTotal: '1,245 Trades',
+    btcPL: '+₩14,250,000', eurPL: '+₩6,450,000', jpyPL: '-₩2,150,000'
+  },
+  q1: {
+    label: '1분기 (1월 - 3월)',
+    titleSuffix: ' 1분기',
+    totalPL: '+₩6,250,000', totalPLPct: '↗ 4.8%',
+    realized: '+₩4,800,000', realizedPct: '💳 3.2%',
+    avgReturn: '4.1%', avgReturnPct: '↗ +2.1%',
+    assetTitle: 'Asset Trend (Q1)',
+    assetPath: 'M0 120 Q40 118 80 112 T160 95 T240 72 T320 48 T400 15',
+    assetFill: 'M0 120 Q40 118 80 112 T160 95 T240 72 T320 48 T400 15 V130 H0Z',
+    xLabels: ['Jan','Feb','Mar'],
+    winBars:  [55,80,48],
+    winLabels:['January','February','March'],
+    winAvg: 'Avg 61%',
+    summary: { highest:'+₩850k', days:'62 Days', deposits:'₩15,000k', withdrawals:'₩3,200k' },
+    donutTotal: '312 Trades',
+    btcPL: '+₩3,800,000', eurPL: '+₩2,100,000', jpyPL: '-₩650,000'
+  },
+  q2: {
+    label: '2분기 (4월 - 6월)',
+    titleSuffix: ' 2분기',
+    totalPL: '+₩8,100,000', totalPLPct: '↗ 5.9%',
+    realized: '+₩6,200,000', realizedPct: '💳 4.1%',
+    avgReturn: '5.2%', avgReturnPct: '↗ +1.4%',
+    assetTitle: 'Asset Trend (Q2)',
+    assetPath: 'M0 115 Q40 110 80 100 T160 78 T240 55 T320 35 T400 12',
+    assetFill: 'M0 115 Q40 110 80 100 T160 78 T240 55 T320 35 T400 12 V130 H0Z',
+    xLabels: ['Apr','May','Jun'],
+    winBars:  [60,72,85],
+    winLabels:['April','May','June'],
+    winAvg: 'Avg 72%',
+    summary: { highest:'+₩1,200k', days:'65 Days', deposits:'₩12,000k', withdrawals:'₩4,500k' },
+    donutTotal: '328 Trades',
+    btcPL: '+₩4,950,000', eurPL: '+₩2,400,000', jpyPL: '+₩750,000'
+  },
+  q3: {
+    label: '3분기 (7월 - 9월)',
+    titleSuffix: ' 3분기',
+    totalPL: '+₩5,400,000', totalPLPct: '↗ 3.7%',
+    realized: '+₩4,100,000', realizedPct: '💳 2.8%',
+    avgReturn: '3.8%', avgReturnPct: '↗ +0.9%',
+    assetTitle: 'Asset Trend (Q3)',
+    assetPath: 'M0 118 Q40 112 80 108 T160 90 T240 70 T320 52 T400 22',
+    assetFill: 'M0 118 Q40 112 80 108 T160 90 T240 70 T320 52 T400 22 V130 H0Z',
+    xLabels: ['Jul','Aug','Sep'],
+    winBars:  [70,90,60],
+    winLabels:['July','August','September'],
+    winAvg: 'Avg 73%',
+    summary: { highest:'+₩980k', days:'68 Days', deposits:'₩10,000k', withdrawals:'₩2,800k' },
+    donutTotal: '301 Trades',
+    btcPL: '+₩3,200,000', eurPL: '+₩1,800,000', jpyPL: '+₩400,000'
+  },
+  q4: {
+    label: '4분기 (10월 - 12월)',
+    titleSuffix: ' 4분기',
+    totalPL: '+₩5,100,000', totalPLPct: '↗ 3.4%',
+    realized: '+₩3,100,000', realizedPct: '💳 2.4%',
+    avgReturn: '3.6%', avgReturnPct: '↗ +0.7%',
+    assetTitle: 'Asset Trend (Q4)',
+    assetPath: 'M0 116 Q40 110 80 106 T160 85 T240 65 T320 44 T400 18',
+    assetFill: 'M0 116 Q40 110 80 106 T160 85 T240 65 T320 44 T400 18 V130 H0Z',
+    xLabels: ['Oct','Nov','Dec'],
+    winBars:  [45,75,80],
+    winLabels:['October','November','December'],
+    winAvg: 'Avg 67%',
+    summary: { highest:'+₩1,050k', days:'53 Days', deposits:'₩8,000k', withdrawals:'₩2,000k' },
+    donutTotal: '304 Trades',
+    btcPL: '+₩2,300,000', eurPL: '+₩150,000', jpyPL: '-₩2,650,000'
+  }
+};
+
+// ── 페이지 진입 ──
+function openJournalPage() {
+  pageHistory.push('calendar');
+  showPage('journal', false);
+  jnlSelectedQuarter = 'all';
+  switchJournalPeriod('day');
+}
+
+function switchJournalTab(tab) { switchJournalPeriod(tab); }
+
+// ── 탭 전환 (핵심) ──
+function switchJournalPeriod(period) {
+  jnlCurrentPeriod = period;
+
+  // 탭 버튼 스타일
+  ['day','week','month','year'].forEach(function(p) {
+    var btn = document.getElementById('jnl-tab-'+p);
+    if(!btn) return;
+    var a = p === period;
+    btn.style.color = a ? '#025a93' : '#94a3b8';
+    btn.style.fontWeight = a ? '700' : '500';
+    btn.style.borderBottom = a ? '3px solid #025a93' : '3px solid transparent';
+  });
+
+  // 콘텐츠 전환
+  ['day','week','month','year'].forEach(function(p) {
+    var c = document.getElementById('jnl-'+p+'-content');
+    if(c) c.style.display = p === period ? 'block' : 'none';
+  });
+
+  // 캘린더 섹션 vs Year 섹션 토글
+  var calSec  = document.getElementById('jnlCalSection');
+  var yearSec = document.getElementById('jnlYearSection');
+
+  if(period === 'year') {
+    if(calSec)  calSec.style.display  = 'none';
+    if(yearSec) yearSec.style.display = 'block';
+    renderYearSection();
+  } else {
+    if(calSec)  calSec.style.display  = 'block';
+    if(yearSec) yearSec.style.display = 'none';
+    if(period === 'day')   renderJnlDay();
+    else if(period === 'week')  renderJnlWeek();
+    else if(period === 'month') renderJnlMonth();
+  }
+}
+
+// ── Year 섹션 렌더 ──
+function renderYearSection() {
+  var y = jnlQuarterYear;
+  var titleEl = document.getElementById('jnlYearTitle');
+  if(titleEl) titleEl.textContent = y + '년' + JNL_QUARTER_DATA[jnlSelectedQuarter].titleSuffix;
+
+  var labelEl = document.getElementById('jnlSelectedLabel');
+  var d = JNL_QUARTER_DATA[jnlSelectedQuarter];
+  if(labelEl) labelEl.textContent = d.label.replace('{Y}', y);
+
+  renderYearContent(d, y);
+}
+
+function renderYearContent(d, y) {
+  // 핵심 지표
+  var setT = function(id, v){ var e=document.getElementById(id); if(e) e.textContent=v; };
+  setT('jnlYearTotalPL',     d.totalPL);
+  setT('jnlYearTotalPLPct',  d.totalPLPct);
+  setT('jnlYearRealized',    d.realized);
+  setT('jnlYearRealizedPct', d.realizedPct);
+  setT('jnlYearAvgReturn',   d.avgReturn);
+  setT('jnlYearAvgReturnPct',d.avgReturnPct);
+
+  // Asset Trend 차트
+  setT('jnlAssetTrendTitle', d.assetTitle);
+  var p1 = document.getElementById('jnlAssetPath');
+  var p2 = document.getElementById('jnlAssetFill');
+  if(p1) p1.setAttribute('d', d.assetPath);
+  if(p2) p2.setAttribute('d', d.assetFill);
+
+  // X 라벨
+  var xl = document.getElementById('jnlAssetXLabels');
+  if(xl) xl.innerHTML = d.xLabels.map(function(l){
+    return '<span style="font-size:10px;font-weight:700;color:#94a3b8">'+l+'</span>';
+  }).join('');
+
+  // Win Rate 바 차트
+  var maxH = Math.max.apply(null, d.winBars);
+  var bars = document.getElementById('jnlWinRateBars');
+  if(bars) bars.innerHTML = d.winBars.map(function(v){
+    var pct = Math.round(v/maxH*100);
+    var col = v === Math.max.apply(null,d.winBars) ? '#025a93' : 'rgba(2,90,147,0.18)';
+    return '<div style="flex:1;background:'+col+';border-radius:4px 4px 0 0;height:'+pct+'%"></div>';
+  }).join('');
+  var lbls = document.getElementById('jnlWinRateLabels');
+  if(lbls) lbls.innerHTML = d.winLabels.map(function(l){
+    return '<span style="font-size:10px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:28px">'+l.charAt(0)+'</span>';
+  }).join('');
+  setT('jnlWinRateAvg', d.winAvg);
+
+  // Summary 4칸
+  var sum = document.getElementById('jnlYearSummary');
+  if(sum) sum.innerHTML = [
+    ['Highest Profit Trade', d.summary.highest, '#10b981'],
+    ['Trading Days', d.summary.days, '#0f172a'],
+    ['Total Deposits', d.summary.deposits, '#0f172a'],
+    ['Total Withdrawals', d.summary.withdrawals, '#0f172a']
+  ].map(function(r){
+    return '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">'
+      +'<p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">'+r[0]+'</p>'
+      +'<p style="font-size:16px;font-weight:700;color:'+r[2]+'">'+r[1]+'</p></div>';
+  }).join('');
+
+  // Donut 총 거래수
+  setT('jnlDonutTotal', d.donutTotal);
+
+  // Pair Performance
+  var btc = document.getElementById('jnlBtcPL');
+  var eur = document.getElementById('jnlEurPL');
+  var jpy = document.getElementById('jnlJpyPL');
+  if(btc){ btc.textContent=d.btcPL; btc.style.color=d.btcPL.startsWith('+')?'#10b981':'#ef4444'; }
+  if(eur){ eur.textContent=d.eurPL; eur.style.color=d.eurPL.startsWith('+')?'#10b981':'#ef4444'; }
+  if(jpy){ jpy.textContent=d.jpyPL; jpy.style.color=d.jpyPL.startsWith('+')?'#10b981':'#ef4444'; }
+}
+
+// ── 분기 드롭다운 ──
+function openQuarterMenu() {
+  var y = jnlQuarterYear;
+  var overlay = document.getElementById('jnlQuarterOverlay');
+  var menu    = document.getElementById('jnlQuarterMenu');
+  var yearEl  = document.getElementById('jnlQuarterYear');
+  if(yearEl) yearEl.textContent = y + '년';
+
+  // 리스트 렌더
+  var list = document.getElementById('jnlQuarterList');
+  var items = [
+    { key:'all', label:'All Time' },
+    { key:'q1',  label:'1st Quarter' },
+    { key:'q2',  label:'2nd Quarter' },
+    { key:'q3',  label:'3rd Quarter' },
+    { key:'q4',  label:'4th Quarter' }
+  ];
+  if(list) list.innerHTML = items.map(function(it){
+    var isActive = it.key === jnlSelectedQuarter;
+    return '<div onclick="selectQuarter(\''+it.key+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #f1f5f9;cursor:pointer;background:#fff;active-background:#f8fafc">'
+      +'<span style="font-size:17px;font-weight:'+(isActive?'700':'500')+';color:'+(isActive?'#025a93':'#334155')+'">'+it.label+'</span>'
+      +(isActive?'<span style="color:#025a93;font-size:20px;font-weight:700">✓</span>':'')
+    +'</div>';
+  }).join('');
+
+  if(overlay) overlay.style.display = 'block';
+  if(menu)    menu.style.display    = 'flex';
+  if(menu)    menu.style.flexDirection = 'column';
+}
+
+function closeQuarterMenu() {
+  var overlay = document.getElementById('jnlQuarterOverlay');
+  var menu    = document.getElementById('jnlQuarterMenu');
+  if(overlay) overlay.style.display = 'none';
+  if(menu)    menu.style.display    = 'none';
+}
+
+function selectQuarter(key) {
+  jnlSelectedQuarter = key;
+  closeQuarterMenu();
+  renderYearSection();
+}
+
+function jnlYearNav(dir) {
+  jnlQuarterYear += dir;
+  if(jnlCurrentPeriod === 'year') {
+    renderYearSection();
+  } else {
+    jnlCurrentDate.setFullYear(jnlQuarterYear);
+    if(jnlCurrentPeriod==='day') renderJnlDay();
+    else if(jnlCurrentPeriod==='week') renderJnlWeek();
+    else renderJnlMonth();
+  }
+}
+
+// ── 월 네비 ──
+function jnlNavPrev() {
+  jnlCurrentDate.setMonth(jnlCurrentDate.getMonth()-1);
+  if(jnlCurrentPeriod==='day') renderJnlDay();
+  else if(jnlCurrentPeriod==='week') renderJnlWeek();
+  else renderJnlMonth();
+}
+function jnlNavNext() {
+  jnlCurrentDate.setMonth(jnlCurrentDate.getMonth()+1);
+  if(jnlCurrentPeriod==='day') renderJnlDay();
+  else if(jnlCurrentPeriod==='week') renderJnlWeek();
+  else renderJnlMonth();
+}
+
+// ── 캘린더 공통 ──
+var JNL_DAY_LABELS  = ['S','M','T','W','T','F','S'];
+var JNL_DAY_COLORS  = ['#ef4444','#475569','#475569','#475569','#475569','#475569','#3b82f6'];
+
+function jnlDayHeader() {
+  return '<div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:6px">'
+    + JNL_DAY_LABELS.map(function(d,i){
+        return '<div style="font-size:11px;font-weight:700;color:'+JNL_DAY_COLORS[i]+';padding:4px 0">'+d+'</div>';
+      }).join('') + '</div>';
+}
+
+function jnlCalBase(y, m) {
+  return {
+    firstDay: new Date(y,m,1).getDay(),
+    daysInMonth: new Date(y,m+1,0).getDate(),
+    prevDays: new Date(y,m,0).getDate(),
+    today: new Date()
+  };
+}
+
+// ── Day 뷰 캘린더 ──
+function renderJnlDay() {
+  var y=jnlCurrentDate.getFullYear(), m=jnlCurrentDate.getMonth();
+  var el=document.getElementById('jnlCalTitle');
+  if(el) el.textContent=y+'년 '+(m+1)+'월';
+  var grid=document.getElementById('jnlCalGrid');
+  if(!grid) return;
+
+  var b=jnlCalBase(y,m), sd=jnlSelectedDate;
+  var html=jnlDayHeader()+'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">';
+
+  for(var i=0;i<b.firstDay;i++)
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:#cbd5e1">'+(b.prevDays-b.firstDay+i+1)+'</span></div>';
+
+  for(var d=1;d<=b.daysInMonth;d++){
+    var dow=(b.firstDay+d-1)%7;
+    var isToday=d===b.today.getDate()&&m===b.today.getMonth()&&y===b.today.getFullYear();
+    var isSel=d===sd.getDate()&&m===sd.getMonth()&&y===sd.getFullYear();
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="jnlSelectDay('+y+','+m+','+d+')">';
+    if(isSel)
+      html+='<span style="width:32px;height:32px;border-radius:50%;background:#025a93;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+d+'</span>';
+    else if(isToday)
+      html+='<span style="width:32px;height:32px;border-radius:50%;background:rgba(2,90,147,0.1);border:2px solid #025a93;color:#025a93;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+d+'</span>';
+    else
+      html+='<span style="font-size:13px;color:'+JNL_DAY_COLORS[dow]+'">'+d+'</span>';
+    html+='</div>';
+  }
+  var rem=(b.firstDay+b.daysInMonth)%7;
+  if(rem>0) for(var j=1;j<=7-rem;j++)
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:#cbd5e1">'+j+'</span></div>';
+  html+='</div>';
+  grid.innerHTML=html;
+}
+
+function jnlSelectDay(y,m,d){ jnlSelectedDate=new Date(y,m,d); renderJnlDay(); }
+
+// ── Week 뷰 캘린더 ──
+function renderJnlWeek() {
+  var y=jnlCurrentDate.getFullYear(), m=jnlCurrentDate.getMonth();
+  var el=document.getElementById('jnlCalTitle');
+  if(el) el.textContent=y+'년 '+(m+1)+'월';
+  var grid=document.getElementById('jnlCalGrid');
+  if(!grid) return;
+
+  var b=jnlCalBase(y,m);
+  var ws=new Date(jnlSelectedWeekStart), we=new Date(ws); we.setDate(we.getDate()+6);
+  var html=jnlDayHeader()+'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">';
+
+  for(var i=0;i<b.firstDay;i++)
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:#cbd5e1">'+(b.prevDays-b.firstDay+i+1)+'</span></div>';
+
+  for(var d=1;d<=b.daysInMonth;d++){
+    var dow=(b.firstDay+d-1)%7;
+    var cur=new Date(y,m,d);
+    var inWeek=cur>=ws&&cur<=we;
+    var isToday=cur.toDateString()===b.today.toDateString();
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="jnlSelectWeek('+y+','+m+','+d+')">';
+    if(inWeek){
+      var br=dow===0?'10px 0 0 10px':dow===6?'0 10px 10px 0':'0';
+      html+='<div style="width:100%;height:36px;background:#025a93;border-radius:'+br+';display:flex;align-items:center;justify-content:center"><span style="font-size:13px;font-weight:700;color:#fff">'+d+'</span></div>';
+    } else if(isToday){
+      html+='<span style="width:32px;height:32px;border-radius:50%;background:rgba(2,90,147,0.1);border:2px solid #025a93;color:#025a93;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+d+'</span>';
+    } else {
+      html+='<span style="font-size:13px;color:'+JNL_DAY_COLORS[dow]+'">'+d+'</span>';
+    }
+    html+='</div>';
+  }
+  var rem=(b.firstDay+b.daysInMonth)%7;
+  if(rem>0) for(var j=1;j<=7-rem;j++)
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:#cbd5e1">'+j+'</span></div>';
+  html+='</div>';
+  grid.innerHTML=html;
+}
+
+function jnlSelectWeek(y,m,d){
+  var c=new Date(y,m,d); c.setDate(c.getDate()-c.getDay());
+  jnlSelectedWeekStart=c; renderJnlWeek();
+}
+
+// ── Month 뷰 캘린더 ──
+function renderJnlMonth() {
+  var y=jnlCurrentDate.getFullYear(), m=jnlCurrentDate.getMonth();
+  var el=document.getElementById('jnlCalTitle');
+  if(el) el.textContent=y+'년 '+(m+1)+'월';
+  var grid=document.getElementById('jnlCalGrid');
+  if(!grid) return;
+
+  var b=jnlCalBase(y,m);
+  var html=jnlDayHeader()+'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:rgba(2,90,147,0.05);border:1.5px solid rgba(2,90,147,0.2);border-radius:12px;padding:8px">';
+
+  for(var i=0;i<b.firstDay;i++)
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:#cbd5e1">'+(b.prevDays-b.firstDay+i+1)+'</span></div>';
+
+  for(var d=1;d<=b.daysInMonth;d++){
+    var dow=(b.firstDay+d-1)%7;
+    var isToday=d===b.today.getDate()&&m===b.today.getMonth()&&y===b.today.getFullYear();
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center">';
+    if(isToday)
+      html+='<span style="width:32px;height:32px;border-radius:50%;background:#025a93;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+d+'</span>';
+    else
+      html+='<span style="font-size:13px;color:'+JNL_DAY_COLORS[dow]+'">'+d+'</span>';
+    html+='</div>';
+  }
+  var rem=(b.firstDay+b.daysInMonth)%7;
+  if(rem>0) for(var j=1;j<=7-rem;j++)
+    html+='<div style="height:44px;display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:#cbd5e1">'+j+'</span></div>';
+  html+='</div>';
+  grid.innerHTML=html;
+}
+
+function renderJnlCalendar() { renderJnlDay(); }
+
+function jnlNavMonth(dir, view) {
+  jnlCurrentDate.setMonth(jnlCurrentDate.getMonth()+dir);
+  if(view==='day') renderJnlDay();
+  else if(view==='week') renderJnlWeek();
+  else renderJnlMonth();
+}
+
+
+
 function openBrokerDetailPage(name) {
   var pageMap = {
     'XM': 'broker-detail-xm',
@@ -5260,7 +5343,7 @@ var CAL_EVENTS = [
     history: [{date:'2026-03-12', actual:'3.2%', forecast:'3.1%'}, {date:'2026-02-12', actual:'3.0%', forecast:'2.9%'}, {date:'2026-01-15', actual:'2.9%', forecast:'2.8%'}, {date:'2025-12-11', actual:'2.7%', forecast:'2.7%'}, {date:'2025-11-13', actual:'2.6%', forecast:'2.5%'}],
     relatedNews: [{title:'CPI発表控えドル円動向と注目ポイント', tag:'分析', time:'1時間前'},{title:'米インフレ率、鈍化トレンド継続か', tag:'経済', time:'4時間前'}]
   },
-  { date: '2026-04-10', type: 'journal', title: 'EUR/USD Trade Analysis', desc: '週次トレード執行のまとめと反省点。EUR/USDロングポジションの分析。', time: '09:00 JST', impact: '個人メモ', impactColor: '#64748b', impactBg: '#f1f5f9' },
+  { date: '2026-04-10', type: 'journal', title: 'EUR/USD Trade Analysis', desc: '週次トレード執行のまとめと反省点。EUR/USDロングポジションの分析。', time: '09:00 JST', impact: '収支表', impactColor: '#10b981', impactBg: '#f1f5f9' },
   { date: '2026-04-10', type: 'promotion', title: 'XM: Zero Commission Weekend', desc: '日曜深夜まで全仮想通貨ペアの手数料が$0。', time: 'All Day', impact: '期間限定', impactColor: '#d97706', impactBg: '#fff7ed' },
   { date: '2026-04-15', type: 'indicator', title: 'US Retail Sales', desc: '予想: +0.4% | 前回: -0.9%', time: '21:30 JST', impact: '中程度', impactColor: '#ea580c', impactBg: '#fff7ed',
     country: '米国', flag: '🇺🇸', currency: 'USD',
@@ -5277,7 +5360,7 @@ var CAL_EVENTS = [
     relatedNews: [{title:'ECB利下げサイクル、今後の展開を予測', tag:'政策', time:'1時間前'},{title:'ユーロ圏インフレ鈍化でECBの次の一手は？', tag:'分析', time:'3時間前'}]
   },
   { date: '2026-04-17', type: 'promotion', title: 'Exness: Instant Withdrawal', desc: '今週のFNEXユーザー限定: 出金手数料が無料。', time: 'All Day', impact: '期間限定', impactColor: '#d97706', impactBg: '#fff7ed' },
-  { date: '2026-04-22', type: 'journal', title: 'USD/JPY Weekly Review', desc: '日銀介入リスクの分析とポジションサイジングのメモ。', time: '10:00 JST', impact: '個人メモ', impactColor: '#64748b', impactBg: '#f1f5f9' },
+  { date: '2026-04-22', type: 'journal', title: 'USD/JPY Weekly Review', desc: '日銀介入リスクの分析とポジションサイジングのメモ。', time: '10:00 JST', impact: '収支表', impactColor: '#10b981', impactBg: '#f1f5f9' },
   { date: '2026-04-23', type: 'indicator', title: 'UK GDP (Q1 2026)', desc: '予想: 0.4% | 前回: 0.1%', time: '15:00 JST', impact: '中程度', impactColor: '#ea580c', impactBg: '#fff7ed',
     country: '英国', flag: '🇬🇧', currency: 'GBP',
     actual: '--', forecast: '0.4%', previous: '0.1%',
@@ -5478,7 +5561,7 @@ function getCatColor(e) {
 }
 function getCatLabel(e) {
   if(e.type === 'indicator') return e.impact;
-  if(e.type === 'journal')   return '個人メモ';
+  if(e.type === 'journal')   return '収支表';
   if(e.type === 'promotion') return 'プロモーション';
   return '';
 }
@@ -5507,7 +5590,8 @@ function buildMonthEventCard(e) {
     for(var s=0;s<3;s++) starHtml += '<span style="font-size:10px;color:'+(s<filled?c.bar:'#e2e8f0')+'">★</span>';
   }
 
-  var clickAttr = isInd ? 'onclick="openIndicatorDetail('+idx+')"' : '';
+  var isJnl = e.type === 'journal';
+  var clickAttr = isInd ? 'onclick="openIndicatorDetail('+idx+')"' : (isJnl ? 'onclick="openJournalPage()"' : '');
 
   return '<div '+clickAttr+' style="display:flex;gap:0;margin-bottom:10px;border-radius:14px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,0.08);'+(isInd?'cursor:pointer':'')+';">'
     + '<div style="width:5px;flex-shrink:0;background:'+c.bar+'"></div>'
@@ -5528,7 +5612,8 @@ function buildMonthEventCard(e) {
       + '</div>'
       + '<p style="font-size:11px;color:#64748b;line-height:1.5;margin:0;">'+e.desc+'</p>'
       + (isInd?'<p style="font-size:11px;color:'+c.bar+';margin-top:6px;font-weight:700;">詳細を見る →</p>':'')
-      + (e.type==='promotion'?'<button onclick="event.stopPropagation()" style="margin-top:7px;font-size:11px;font-weight:700;color:#7c3aed;background:#f5f3ff;border:1px solid #ede9fe;cursor:pointer;padding:4px 10px;border-radius:7px;font-family:Inter,sans-serif;">特典を受け取る →</button>':'')
+      + (isJnl?'<p style="font-size:11px;color:#10b981;margin-top:6px;font-weight:700;">収支表を見る →</p>':'')
+      + (e.type==='promotion'?'<button onclick="event.stopPropagation();openPromoFromCalendar('+CAL_EVENTS.indexOf(e)+')" style="margin-top:7px;font-size:11px;font-weight:700;color:#7c3aed;background:#f5f3ff;border:1px solid #ede9fe;cursor:pointer;padding:4px 10px;border-radius:7px;font-family:Inter,sans-serif;">特典を受け取る →</button>':'')
     + '</div>'
   + '</div>';
 }
@@ -5563,7 +5648,7 @@ function buildWeekEventRow(e) {
       + '<p style="font-size:13px;font-weight:700;color:#0f172a;margin:0 0 3px;">'+e.title+'</p>'
       + (e.desc?'<p style="font-size:11px;color:#64748b;margin:0;">'+e.desc+'</p>':'')
       + (isInd?'<p style="font-size:10px;color:'+c.bar+';margin-top:4px;font-weight:700;">詳細 →</p>':'')
-      + (e.type==='promotion'?'<p style="font-size:10px;color:#7c3aed;margin-top:4px;font-weight:700;">特典を見る →</p>':'')
+      + (e.type==='promotion'?'<p onclick="event.stopPropagation();openPromoFromCalendar('+CAL_EVENTS.indexOf(e)+')" style="font-size:10px;color:#7c3aed;margin-top:4px;font-weight:700;cursor:pointer;">特典を見る →</p>':'')
     + '</div>'
   + '</div>';
 }
@@ -5732,7 +5817,7 @@ function renderCalDay() {
 
     body.innerHTML = topRow + titleRow + countryRow + (isInd?statsRow:'<p style="font-size:12px;color:#64748b;">'+e.desc+'</p>')
       + (isInd?'<p style="font-size:11px;color:'+c.bar+';margin-top:8px;font-weight:700;">詳細を見る →</p>':'')
-      + (e.type==='promotion'?'<button onclick="event.stopPropagation()" style="margin-top:8px;font-size:11px;font-weight:700;color:#7c3aed;background:#f5f3ff;border:1px solid #ede9fe;cursor:pointer;padding:5px 12px;border-radius:8px;width:100%;font-family:Inter,sans-serif;">特典を受け取る →</button>':'');
+      + (e.type==='promotion'?'<button onclick="event.stopPropagation();openPromoFromCalendar('+CAL_EVENTS.indexOf(e)+')" style="margin-top:8px;font-size:11px;font-weight:700;color:#7c3aed;background:#f5f3ff;border:1px solid #ede9fe;cursor:pointer;padding:5px 12px;border-radius:8px;width:100%;font-family:Inter,sans-serif;">特典を受け取る →</button>':'');
 
     card.appendChild(body);
     row.appendChild(card);
@@ -5953,7 +6038,7 @@ function showPage(name, addHistory) {
   // flex 레이아웃 페이지 (내부 스크롤 방식)
   var flexPages = ['calendar','broker','broker-detail-xm','broker-detail-dexia',
     'broker-detail-exness','broker-detail-vantage','broker-detail-titanfx',
-    'broker-detail-fxgt','indicator-detail','promo-detail'];
+    'broker-detail-fxgt','indicator-detail','promo-detail','journal'];
 
   if(flexPages.indexOf(name) !== -1) {
     targetPage.style.cssText = 'display:flex;flex-direction:column;overflow:hidden;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:10';
@@ -5971,6 +6056,7 @@ function showPage(name, addHistory) {
   if(name==='market'){ renderPairCards(); }
   if(name==='broker'){ renderBrokerHub(BROKER_HUB_DATA); currentBrokerFilter=''; filterBrokerHub(''); }
   if(name==='calendar'){ calCurrentDate=new Date(); calSelectedDate=new Date(); calWeekStart=new Date(); calDayDate=new Date(); switchCalView('month'); switchCalTab('all'); }
+  if(name==='journal'){ switchJournalTab('day'); renderJnlCalendar(); }
   if(name==='change-alert'){ initChangeAlertPage(); }
   if(name==='alert'){ initAlertPage(); }
 }
